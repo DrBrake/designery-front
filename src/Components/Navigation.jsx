@@ -5,6 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+
 import { Add, Filter, Archive, Search } from "./Icons";
 
 const useStyles = makeStyles((theme) => ({
