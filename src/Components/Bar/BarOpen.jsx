@@ -5,9 +5,11 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Chip from "../Chip";
+import Image from "../Image";
 import { Close, Add } from "../Icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +79,23 @@ const useStyles = makeStyles((theme) => ({
   fullWidth: {
     width: "100%",
   },
+  button: {
+    minWidth: theme.spacing(17),
+    borderRadius: theme.spacing(1),
+  },
+  buttonContainer: {
+    alignSelf: "flex-end",
+  },
+  bottomContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  fontWeightBold: {
+    fontWeight: "bold",
+  },
+  pointer: {
+    cursor: "pointer",
+  },
 }));
 
 const BarClosed = ({ setOpen, isLast }) => {
@@ -112,8 +131,15 @@ const BarClosed = ({ setOpen, isLast }) => {
             <div className={classes.fullWidth}>
               <div className={classes.spaceBetween}>
                 <div className={classes.flex}>
-                  <Typography className={classes.marginRight}>Tags</Typography>
-                  <Add />
+                  <Typography
+                    className={classnames(
+                      classes.marginRight,
+                      classes.fontWeightBold
+                    )}
+                  >
+                    Tags
+                  </Typography>
+                  <Add className={classes.pointer} />
                 </div>
                 <Typography
                   className={classnames(
@@ -132,25 +158,68 @@ const BarClosed = ({ setOpen, isLast }) => {
                 <Chip label="Tag" lastTag />
               </div>
               <div className={classnames(classes.flex, classes.marginBottom3)}>
-                <Select value="" />
-                <Add />
+                <Select value="" className={classes.marginRight} />
+                <Add className={classes.pointer} />
               </div>
               <div
                 className={classnames(classes.fullWidth, classes.marginBottom3)}
               >
-                <Typography>Inspirations</Typography>
+                <div className={classes.flex}>
+                  <Typography
+                    className={classnames(
+                      classes.marginRight,
+                      classes.fontWeightBold
+                    )}
+                  >
+                    Inspirations
+                  </Typography>
+                  <Add className={classes.pointer} />
+                </div>
                 <Typography>
                   <Link href="#">Inspiration 1</Link>
+                </Typography>
+                <Typography>
                   <Link href="#">Inspiration 2</Link>
                 </Typography>
               </div>
             </div>
           </div>
-          <div className={classes.flex}>
-            <Typography className={classes.marginRight}>
-              Image references
-            </Typography>
-            <Add />
+          <div className={classes.bottomContainer}>
+            <div>
+              <div className={classes.flex}>
+                <Typography
+                  className={classnames(
+                    classes.marginRight,
+                    classes.fontWeightBold
+                  )}
+                >
+                  Image references
+                </Typography>
+                <Add className={classes.pointer} />
+              </div>
+              <Image
+                variant="bar"
+                src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
+              />
+            </div>
+            <div className={classes.buttonContainer}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classnames(classes.button, classes.marginRight)}
+                onClick={() => null}
+              >
+                Archive
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={() => null}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </Grid>
       </Grid>
