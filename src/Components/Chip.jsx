@@ -5,9 +5,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginRight: "16px",
-    paddingLeft: "26px",
-    paddingRight: "26px",
+    marginRight: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
     color: theme.palette.primary.light,
     background: "white",
     border: `1px solid ${theme.palette.primary.dark}`,

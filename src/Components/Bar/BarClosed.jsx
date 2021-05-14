@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import classnames from "classnames";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Chip from "../Components/Chip";
-import { ChevronDown, ChevronUp } from "./Icons";
+import Chip from "../Chip";
+import { ChevronDown } from "../Icons";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     cursor: "pointer",
-    maxWidth: "1640px",
     border: `1px solid ${theme.palette.primary.dark}`,
-    padding: `${theme.spacing(5)}px ${theme.spacing(5)}px 12px ${theme.spacing(5)}px`,
+    // eslint-disable-next-line prettier/prettier
+    padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(1)}px ${theme.spacing(5)}px`,
     borderBottomWidth: "0px",
   },
   lastContainer: {
@@ -25,20 +25,23 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "16px",
     fontWeight: "500",
   },
+  descriptionText: {
+    fontSize: "16px",
+  },
   lightGrey: {
     color: theme.palette.primary.dark,
   },
   icon: {
-    marginRight: "52px",
-    marginTop: "12px",
+    marginRight: theme.spacing(6),
+    marginTop: theme.spacing(1),
   },
   date: {
     textAlign: "right",
   },
   tag: {
-    marginRight: "16px",
-    paddingLeft: "26px",
-    paddingRight: "26px",
+    marginRight: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
     color: theme.palette.primary.light,
   },
   lastTag: {
@@ -46,8 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Bar = ({ isLast }) => {
-  const [open, setOpen] = useState(false);
+const BarClosed = ({ setOpen, isLast }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -56,17 +58,15 @@ const Bar = ({ isLast }) => {
       className={classnames(classes.container, {
         [classes.lastContainer]: isLast,
       })}
-      onClick={() => setOpen(!open)}
+      onClick={() => setOpen(true)}
     >
       <Grid item className={classes.firstItem}>
-        {open ? (
-          <ChevronUp className={classes.icon} />
-        ) : (
-          <ChevronDown className={classes.icon} />
-        )}
+        <ChevronDown className={classes.icon} />
         <div>
           <Typography className={classes.text}>Title</Typography>
-          <Typography className={classnames(classes.text, classes.lightGrey)}>
+          <Typography
+            className={classnames(classes.descriptionText, classes.lightGrey)}
+          >
             Description
           </Typography>
         </div>
@@ -84,4 +84,4 @@ const Bar = ({ isLast }) => {
   );
 };
 
-export default Bar;
+export default BarClosed;

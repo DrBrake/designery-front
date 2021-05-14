@@ -21,11 +21,11 @@ if (isDeveloping) {
     watchOptions: {
       aggregateTimeout: 300,
       poll: 500,
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     stats: {
-      colors: true
-    }
+      colors: true,
+    },
   });
 
   const bundlePath = path.join(__dirname, "/dist/index.html");
@@ -39,7 +39,7 @@ if (isDeveloping) {
 } else {
   const staticPath = path.join(__dirname, "dist");
   app.use(expressStaticGzip(staticPath));
-  app.get("*", function(req, res) {
+  app.get("*", function (req, res) {
     res.sendFile(staticPath + "/index.html");
   });
 }

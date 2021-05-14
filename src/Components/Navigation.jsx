@@ -6,7 +6,15 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Add, Filter, Archive, Search } from "./Icons";
+import {
+  Add,
+  Filter,
+  Archive,
+  Search,
+  Random,
+  GridOn,
+  SmallChevronDown,
+} from "./Icons";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,12 +26,17 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     cursor: "pointer",
     marginRight: theme.spacing(5),
+    display: "flex",
   },
   paper: {
     padding: theme.spacing(2),
   },
   text: {
     fontWeight: "bold",
+    cursor: "pointer",
+  },
+  flex: {
+    display: "flex",
   },
 }));
 
@@ -35,31 +48,39 @@ const Navigation = ({ children }) => {
   return (
     <>
       <Grid container wrap="nowrap" spacing={2} className={classes.container}>
-        <Grid item xs={12}>
-          <Add className={classes.icon} onClick={() => null} />
+        <Grid item xs={12} className={classes.icon} onClick={() => null}>
+          <Add />
+          <SmallChevronDown />
         </Grid>
-        <Grid item>
-          <Search className={classes.icon} onClick={() => null} />
+        <Grid item className={classes.icon} onClick={() => null}>
+          <Search />
         </Grid>
-        <Grid item>
-          <Archive className={classes.icon} onClick={() => null} />
+        <Grid item className={classes.icon} onClick={() => null}>
+          <Random />
+          <SmallChevronDown />
         </Grid>
-        <Grid item>
+        <Grid item className={classes.icon} onClick={() => null}>
+          <GridOn />
+        </Grid>
+        <Grid item className={classes.icon} onClick={() => null}>
+          <Archive />
+        </Grid>
+        <Grid item className={classes.icon} onClick={() => null}>
           <Filter
             aria-describedby="tagFilter"
-            className={classes.icon}
             onClick={(e) => {
               setOpen(!open);
               setAnchorEl(e.currentTarget);
             }}
           />
+          <SmallChevronDown />
           <Popper id="tagFilter" open={open} anchorEl={anchorEl}>
             <ClickAwayListener onClickAway={() => setOpen(false)}>
               <Paper elevation={3} className={classes.paper}></Paper>
             </ClickAwayListener>
           </Popper>
         </Grid>
-        <Grid item>
+        <Grid item onClick={() => null}>
           <Typography className={classes.text}>Designery</Typography>
         </Grid>
       </Grid>
