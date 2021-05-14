@@ -132,7 +132,7 @@ const BarClosed = ({ setOpen, isLast }) => {
                 <Chip label="Tag" lastTag />
               </div>
               <div className={classnames(classes.flex, classes.marginBottom3)}>
-                <Select />
+                <Select value="" />
                 <Add />
               </div>
               <div
