@@ -20,9 +20,9 @@ const List = () => {
   return (
     <div className={classes.container}>
       <div className={classes.innerContainer}>
-        <Bar />
-        <Bar />
-        <Bar isLast />
+        <Bar variant="idea" />
+        <Bar variant="inspiration" />
+        <Bar variant="project" isLast />
       </div>
     </div>
   );

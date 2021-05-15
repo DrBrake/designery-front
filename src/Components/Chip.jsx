@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme) => ({
   lastTag: {
     marginRight: "0px",
   },
-  pointer: {
-    cursor: "pointer",
-  },
 }));
 
 const Chip = ({ label, lastTag, onClick }) => {
@@ -33,7 +30,6 @@ const Chip = ({ label, lastTag, onClick }) => {
       onClick={onClick}
       className={classnames(classes.text, classes.container, {
         [classes.lastTag]: lastTag,
-        [classes.pointer]: onClick,
       })}
     />
   );

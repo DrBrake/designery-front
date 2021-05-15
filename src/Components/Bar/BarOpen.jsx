@@ -6,11 +6,13 @@ import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
+import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Chip from "../Chip";
 import Image from "../Image";
 import { Close, Add } from "../Icons";
+import { VARIANTS, IMAGE_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -98,8 +100,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarClosed = ({ setOpen, isLast }) => {
+const BarClosed = ({ setOpen, isLast, completedWorkUrl, variant }) => {
   const classes = useStyles();
+  const getImageRefs = () =>
+    (variant === VARIANTS.IDEA || variant === VARIANTS.INSPIRATION) && (
+      <div
+        className={classnames({
+          [classes.marginBottom3]: variant === VARIANTS.INSPIRATION,
+        })}
+      >
+        <div className={classes.flex}>
+          <Typography
+            className={classnames(classes.marginRight, classes.fontWeightBold)}
+          >
+            Image references
+          </Typography>
+          <Add className={classes.pointer} />
+        </div>
+        <Image
+          variant={IMAGE_TYPE.BAR}
+          src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
+        />
+      </div>
+    );
   return (
     <div
       className={classnames(classes.container, {
@@ -128,64 +151,86 @@ const BarClosed = ({ setOpen, isLast }) => {
                 rows={8}
               />
             </div>
-            <div className={classes.fullWidth}>
-              <div className={classes.spaceBetween}>
-                <div className={classes.flex}>
+            {variant === VARIANTS.IDEA && (
+              <div className={classes.fullWidth}>
+                <div className={classes.spaceBetween}>
+                  <div className={classes.flex}>
+                    <Typography
+                      className={classnames(
+                        classes.marginRight,
+                        classes.fontWeightBold
+                      )}
+                    >
+                      Tags
+                    </Typography>
+                    <Add className={classes.pointer} />
+                  </div>
                   <Typography
                     className={classnames(
-                      classes.marginRight,
-                      classes.fontWeightBold
+                      classes.text,
+                      classes.lightGrey,
+                      classes.date
                     )}
                   >
-                    Tags
+                    16.11.2020
                   </Typography>
-                  <Add className={classes.pointer} />
                 </div>
-                <Typography
+                <div
                   className={classnames(
-                    classes.text,
-                    classes.lightGrey,
-                    classes.date
+                    classes.fullWidth,
+                    classes.marginBottom3
                   )}
                 >
-                  16.11.2020
-                </Typography>
-              </div>
-              <div
-                className={classnames(classes.fullWidth, classes.marginBottom3)}
-              >
-                <Chip label="Tag" />
-                <Chip label="Tag" lastTag />
-              </div>
-              <div className={classnames(classes.flex, classes.marginBottom3)}>
-                <Select value="" className={classes.marginRight} />
-                <Add className={classes.pointer} />
-              </div>
-              <div
-                className={classnames(classes.fullWidth, classes.marginBottom3)}
-              >
-                <div className={classes.flex}>
-                  <Typography
-                    className={classnames(
-                      classes.marginRight,
-                      classes.fontWeightBold
-                    )}
+                  <Chip label="Tag" onClick={() => null} />
+                  <Chip label="Tag" lastTag onClick={() => null} />
+                </div>
+                <div
+                  className={classnames(classes.flex, classes.marginBottom3)}
+                >
+                  <Select
+                    value=""
+                    className={classes.marginRight}
+                    onChange={() => null}
                   >
-                    Inspirations
-                  </Typography>
+                    <MenuItem value="">Projects</MenuItem>
+                    <MenuItem value="project1">Project 1</MenuItem>
+                    <MenuItem value="project2">Project 2</MenuItem>
+                    <MenuItem value="project3">Project 3</MenuItem>
+                  </Select>
                   <Add className={classes.pointer} />
                 </div>
-                <Typography>
-                  <Link href="#">Inspiration 1</Link>
-                </Typography>
-                <Typography>
-                  <Link href="#">Inspiration 2</Link>
-                </Typography>
+                <div
+                  className={classnames(
+                    classes.fullWidth,
+                    classes.marginBottom3
+                  )}
+                >
+                  <div className={classes.flex}>
+                    <Typography
+                      className={classnames(
+                        classes.marginRight,
+                        classes.fontWeightBold
+                      )}
+                    >
+                      Inspirations
+                    </Typography>
+                    <Add className={classes.pointer} />
+                  </div>
+                  <Typography>
+                    <Link href="#">Inspiration 1</Link>
+                  </Typography>
+                  <Typography>
+                    <Link href="#">Inspiration 2</Link>
+                  </Typography>
+                </div>
               </div>
-            </div>
+            )}
           </div>
-          <div className={classes.bottomContainer}>
-            <div>
+          {variant === VARIANTS.INSPIRATION && getImageRefs()}
+          {variant === VARIANTS.IDEA && completedWorkUrl && (
+            <div
+              className={classnames(classes.fullWidth, classes.marginBottom3)}
+            >
               <div className={classes.flex}>
                 <Typography
                   className={classnames(
@@ -193,24 +238,42 @@ const BarClosed = ({ setOpen, isLast }) => {
                     classes.fontWeightBold
                   )}
                 >
-                  Image references
+                  Completed work
                 </Typography>
                 <Add className={classes.pointer} />
               </div>
               <Image
-                variant="bar"
-                src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
+                variant={IMAGE_TYPE.COMPLETED_WORK}
+                src={completedWorkUrl}
               />
             </div>
+          )}
+          <div className={classes.bottomContainer}>
+            {variant === VARIANTS.IDEA && getImageRefs()}
+            {variant !== VARIANTS.IDEA && (
+              <div>
+                <Typography className={classes.fontWeightBold}>
+                  Linked ideas
+                </Typography>
+                <Typography>
+                  <Link href="#">Linked idea 1</Link>
+                </Typography>
+                <Typography>
+                  <Link href="#">Linked idea 2</Link>
+                </Typography>
+              </div>
+            )}
             <div className={classes.buttonContainer}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classnames(classes.button, classes.marginRight)}
-                onClick={() => null}
-              >
-                Archive
-              </Button>
+              {variant === VARIANTS.IDEA && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classnames(classes.button, classes.marginRight)}
+                  onClick={() => null}
+                >
+                  Archive
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="primary"
