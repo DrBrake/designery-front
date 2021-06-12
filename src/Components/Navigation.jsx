@@ -247,7 +247,7 @@ const Navigation = ({ children }) => {
             </Popper>
           </div>
           <Typography className={classes.text} onClick={() => null}>
-            Designery
+            designery
           </Typography>
         </Grid>
       </Grid>

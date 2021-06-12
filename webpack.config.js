@@ -1,23 +1,16 @@
 const path = require("path");
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 
-var javascriptEntryPath = path.resolve(__dirname, "src", "index.js");
-var buildPath = path.resolve(__dirname, "dist");
-
 module.exports = {
-  entry: ["react-hot-loader/patch", javascriptEntryPath],
-  output: {
-    path: buildPath,
-    filename: "bundle.js",
-    publicPath: "/",
-  },
   resolve: {
     extensions: [".js", ".jsx"],
-    alias: {
-      "react-dom": "@hot-loader/react-dom",
-    },
+  },
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -28,47 +21,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        use: [
-          "babel-loader",
-          {
-            loader: "react-svg-loader",
-            query: {
-              svgo: {
-                plugins: [{ cleanUpIDs: false }],
-              },
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(gif|png|jpe?g)$/i,
-        use: [
-          "file-loader",
-          {
-            loader: "image-webpack-loader",
-            options: {
-              bypassOnDebug: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(otf|eot|woff|woff2|ttf)$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "fonts/[hash:6].[ext]",
-            },
-          },
-        ],
-      },
-      {
-        test: /\.ico$/,
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-        },
+        type: "asset/inline",
       },
     ],
   },
@@ -78,6 +31,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
+      favicon: "src/favicon.png",
     }),
   ],
 };
