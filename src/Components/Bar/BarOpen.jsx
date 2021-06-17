@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
   column: {
     display: "flex",
     flexDirection: "column",
-    flex: "0 1 60%",
     width: "100%",
     marginRight: theme.spacing(5),
   },
@@ -77,6 +76,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     marginBottom: theme.spacing(3),
+  },
+  selectContainer: {
+    display: "flex",
+    alignItems: "center",
   },
   fullWidth: {
     width: "100%",
@@ -185,14 +188,19 @@ const BarClosed = ({ setOpen, isLast, completedWorkUrl, variant }) => {
                   <Chip label="Tag" lastTag onClick={() => null} />
                 </div>
                 <div
-                  className={classnames(classes.flex, classes.marginBottom3)}
+                  className={classnames(
+                    classes.selectContainer,
+                    classes.marginBottom3
+                  )}
                 >
                   <Select
-                    value=""
+                    value="novalue"
                     className={classes.marginRight}
                     onChange={() => null}
+                    variant="outlined"
+                    fullWidth
                   >
-                    <MenuItem value="">Projects</MenuItem>
+                    <MenuItem value="novalue">Projects</MenuItem>
                     <MenuItem value="project1">Project 1</MenuItem>
                     <MenuItem value="project2">Project 2</MenuItem>
                     <MenuItem value="project3">Project 3</MenuItem>

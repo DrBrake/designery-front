@@ -9,3 +9,8 @@ export const IMAGE_TYPE = {
   COMPLETED_WORK: "completedWork",
   GRID: "grid",
 };
+
+export const ROUTES = {
+  ROOT: "/",
+  GRID: "/grid",
+};

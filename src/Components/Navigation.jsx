@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import classnames from "classnames";
+import { withRouter } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Popper from "@material-ui/core/Popper";
 import Paper from "@material-ui/core/Paper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { ROUTES } from "../constants";
 import Chip from "../Components/Chip";
 import {
   Add,
@@ -16,6 +18,7 @@ import {
   Random,
   GridOn,
   SmallChevronDown,
+  Close,
 } from "./Icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -65,12 +68,19 @@ const useStyles = makeStyles((theme) => ({
   fontWeightBold: {
     fontWeight: "bold",
   },
+  highlightColor: {
+    color: theme.palette.secondary.main,
+  },
+  fullWidth: {
+    width: "100%",
+  },
 }));
 
-const Navigation = ({ children }) => {
+const Navigation = ({ children, history, location }) => {
   const [addOpen, setAddOpen] = useState(false);
   const [randomOpen, setRandomOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const classes = useStyles();
 
@@ -94,47 +104,67 @@ const Navigation = ({ children }) => {
             setAnchorEl(e.currentTarget);
           }}
         >
-          <Add />
-          <SmallChevronDown />
+          <Add className={classnames({ [classes.highlightColor]: addOpen })} />
+          <SmallChevronDown
+            className={classnames({ [classes.highlightColor]: addOpen })}
+          />
           <Popper id="addPopper" open={addOpen} anchorEl={anchorEl}>
-            <ClickAwayListener onClickAway={() => setAddOpen(false)}>
-              <Paper elevation={3} className={classes.paper}>
-                <Typography
-                  className={classnames(
-                    classes.marginBottom1,
-                    classes.fontWeightBold,
-                    classes.pointer
-                  )}
-                  onClick={() => null}
-                >
-                  Idea
-                </Typography>
-                <Typography
-                  className={classnames(
-                    classes.marginBottom1,
-                    classes.fontWeightBold,
-                    classes.pointer
-                  )}
-                  onClick={() => null}
-                >
-                  Inspiration
-                </Typography>
-                <Typography
-                  className={classnames(
-                    classes.marginBottom1,
-                    classes.fontWeightBold,
-                    classes.pointer
-                  )}
-                  onClick={() => null}
-                >
-                  Project
-                </Typography>
-              </Paper>
-            </ClickAwayListener>
+            <Paper elevation={3} className={classes.paper}>
+              <Typography
+                className={classnames(
+                  classes.marginBottom1,
+                  classes.fontWeightBold,
+                  classes.pointer
+                )}
+                onClick={() => null}
+              >
+                Idea
+              </Typography>
+              <Typography
+                className={classnames(
+                  classes.marginBottom1,
+                  classes.fontWeightBold,
+                  classes.pointer
+                )}
+                onClick={() => null}
+              >
+                Inspiration
+              </Typography>
+              <Typography
+                className={classnames(
+                  classes.marginBottom1,
+                  classes.fontWeightBold,
+                  classes.pointer
+                )}
+                onClick={() => null}
+              >
+                Project
+              </Typography>
+            </Paper>
           </Popper>
         </Grid>
+        {searchOpen && (
+          <Grid item className={classes.fullWidth}>
+            <TextField
+              value=""
+              placeholder="Search"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+        )}
         <Grid item className={classes.flex}>
-          <Search className={classes.icon} onClick={() => null} />
+          {searchOpen ? (
+            <Close
+              className={classes.icon}
+              onClick={() => setSearchOpen(false)}
+            />
+          ) : (
+            <Search
+              className={classes.icon}
+              onClick={() => setSearchOpen(true)}
+            />
+          )}
           <div
             className={classnames(classes.icon, {
               [classes.openIcon]: randomOpen,
@@ -144,51 +174,49 @@ const Navigation = ({ children }) => {
               setAnchorEl(e.currentTarget);
             }}
           >
-            <Random />
-            <SmallChevronDown />
+            <Random
+              className={classnames({ [classes.highlightColor]: randomOpen })}
+            />
+            <SmallChevronDown
+              className={classnames({ [classes.highlightColor]: randomOpen })}
+            />
             <Popper id="randomPopper" open={randomOpen} anchorEl={anchorEl}>
-              <ClickAwayListener onClickAway={() => setRandomOpen(false)}>
-                <Paper elevation={3} className={classes.paper}>
-                  <Typography
-                    className={classnames(
-                      classes.marginBottom1,
-                      classes.fontWeightBold
-                    )}
-                  >
-                    Random
-                  </Typography>
-                  <Typography
-                    className={classnames(
-                      classes.pointer,
-                      classes.marginBottom1
-                    )}
-                    onClick={() => null}
-                  >
-                    Combine two inspirations
-                  </Typography>
-                  <Typography
-                    className={classnames(
-                      classes.pointer,
-                      classes.marginBottom1
-                    )}
-                    onClick={() => null}
-                  >
-                    Combine two ideas
-                  </Typography>
-                  <Typography
-                    className={classnames(
-                      classes.pointer,
-                      classes.marginBottom1
-                    )}
-                    onClick={() => null}
-                  >
-                    Combine idea and inspiration
-                  </Typography>
-                </Paper>
-              </ClickAwayListener>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography
+                  className={classnames(
+                    classes.marginBottom1,
+                    classes.fontWeightBold
+                  )}
+                >
+                  Random
+                </Typography>
+                <Typography
+                  className={classnames(classes.pointer, classes.marginBottom1)}
+                  onClick={() => null}
+                >
+                  Combine two inspirations
+                </Typography>
+                <Typography
+                  className={classnames(classes.pointer, classes.marginBottom1)}
+                  onClick={() => null}
+                >
+                  Combine two ideas
+                </Typography>
+                <Typography
+                  className={classnames(classes.pointer, classes.marginBottom1)}
+                  onClick={() => null}
+                >
+                  Combine idea and inspiration
+                </Typography>
+              </Paper>
             </Popper>
           </div>
-          <GridOn className={classes.icon} onClick={() => null} />
+          <GridOn
+            className={classnames(classes.icon, {
+              [classes.highlightColor]: location.pathname.includes(ROUTES.GRID),
+            })}
+            onClick={() => history.push(ROUTES.GRID)}
+          />
           <Archive className={classes.icon} onClick={() => null} />
           <div
             className={classnames(classes.icon, {
@@ -199,54 +227,60 @@ const Navigation = ({ children }) => {
               setAnchorEl(e.currentTarget);
             }}
           >
-            <Filter aria-describedby="tagFilter" />
-            <SmallChevronDown />
+            <Filter
+              aria-describedby="tagFilter"
+              className={classnames({ [classes.highlightColor]: filterOpen })}
+            />
+            <SmallChevronDown
+              className={classnames({ [classes.highlightColor]: filterOpen })}
+            />
             <Popper id="filterPopper" open={filterOpen} anchorEl={anchorEl}>
-              <ClickAwayListener onClickAway={() => setFilterOpen(false)}>
-                <Paper elevation={3} className={classes.paper}>
-                  <div
-                    className={classnames(classes.flex, classes.marginBottom3)}
-                  >
-                    <Typography
-                      className={classnames(
-                        classes.text,
-                        classes.marginRight2,
-                        classes.pointer
-                      )}
-                      onClick={() => null}
-                    >
-                      Ideas
-                    </Typography>
-                    <Typography
-                      className={classnames(
-                        classes.text,
-                        classes.marginRight2,
-                        classes.pointer
-                      )}
-                      onClick={() => null}
-                    >
-                      Inspiration
-                    </Typography>
-                    <Typography
-                      className={classnames(classes.text, classes.pointer)}
-                      onClick={() => null}
-                    >
-                      Projects
-                    </Typography>
-                  </div>
+              <Paper elevation={3} className={classes.paper}>
+                <div
+                  className={classnames(classes.flex, classes.marginBottom3)}
+                >
                   <Typography
-                    className={classnames(classes.text, classes.marginBottom2)}
+                    className={classnames(
+                      classes.text,
+                      classes.marginRight2,
+                      classes.pointer
+                    )}
                     onClick={() => null}
                   >
-                    Tags
+                    Ideas
                   </Typography>
-                  <Chip label="Tag" onClick={() => null} />
-                  <Chip label="Tag" onClick={() => null} />
-                </Paper>
-              </ClickAwayListener>
+                  <Typography
+                    className={classnames(
+                      classes.text,
+                      classes.marginRight2,
+                      classes.pointer
+                    )}
+                    onClick={() => null}
+                  >
+                    Inspiration
+                  </Typography>
+                  <Typography
+                    className={classnames(classes.text, classes.pointer)}
+                    onClick={() => null}
+                  >
+                    Projects
+                  </Typography>
+                </div>
+                <Typography
+                  className={classnames(classes.text, classes.marginBottom2)}
+                  onClick={() => null}
+                >
+                  Tags
+                </Typography>
+                <Chip label="Tag" onClick={() => null} />
+                <Chip label="Tag" onClick={() => null} />
+              </Paper>
             </Popper>
           </div>
-          <Typography className={classes.text} onClick={() => null}>
+          <Typography
+            className={classnames(classes.text, classes.pointer)}
+            onClick={() => history.push(ROUTES.ROOT)}
+          >
             designery
           </Typography>
         </Grid>
@@ -256,4 +290,4 @@ const Navigation = ({ children }) => {
   );
 };
 
-export default Navigation;
+export default withRouter(Navigation);

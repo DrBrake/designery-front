@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
   },
   grid: {
     maxHeight: 370,
+    width: "100%",
   },
 }));
 
