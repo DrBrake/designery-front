@@ -14,3 +14,11 @@ export const ROUTES = {
   ROOT: "/",
   GRID: "/grid",
 };
+
+export const DIALOG_VARIANT = {
+  IMAGE: "image",
+  TAG: "tag",
+  PROJECT: "project",
+  INSPIRATION: "inspiration",
+  COMPLETED_WORK: "completedWork",
+};

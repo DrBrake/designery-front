@@ -4,7 +4,7 @@ const baseConfig = require("./webpack.config");
 
 module.exports = merge(baseConfig, {
   mode: "development",
-  devtool: "inline-source-map",
+  devtool: "eval-source-map",
   entry: [
     "react-hot-loader/patch",
     "webpack-hot-middleware/client",

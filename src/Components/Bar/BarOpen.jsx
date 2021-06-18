@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -11,8 +11,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Chip from "../Chip";
 import Image from "../Image";
+import AddDialog from "../AddDialog";
 import { Close, Add } from "../Icons";
-import { VARIANTS, IMAGE_TYPE } from "../../constants";
+import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -103,7 +104,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarClosed = ({ setOpen, isLast, completedWorkUrl, variant }) => {
+const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogVariant, setDialogVariant] = useState("");
   const classes = useStyles();
   const getImageRefs = () =>
     (variant === VARIANTS.IDEA || variant === VARIANTS.INSPIRATION) && (
@@ -118,7 +121,13 @@ const BarClosed = ({ setOpen, isLast, completedWorkUrl, variant }) => {
           >
             Image references
           </Typography>
-          <Add className={classes.pointer} />
+          <Add
+            className={classes.pointer}
+            onClick={() => {
+              setDialogOpen(true);
+              setDialogVariant(DIALOG_VARIANT.IMAGE);
+            }}
+          />
         </div>
         <Image
           variant={IMAGE_TYPE.BAR}
@@ -127,175 +136,206 @@ const BarClosed = ({ setOpen, isLast, completedWorkUrl, variant }) => {
       </div>
     );
   return (
-    <div
-      className={classnames(classes.container, {
-        [classes.lastContainer]: isLast,
-      })}
-    >
-      <Grid container wrap="nowrap">
-        <Grid item>
-          <Close className={classes.icon} onClick={() => setOpen(false)} />
-        </Grid>
-        <Grid item xs={12}>
-          <div className={classes.flex}>
-            <div className={classes.column}>
-              <TextField
-                value="Title"
-                variant="outlined"
-                fullWidth
-                className={classes.marginBottom2}
-              />
-              <TextField
-                value="Description"
-                variant="outlined"
-                fullWidth
-                className={classes.marginBottom2}
-                multiline
-                rows={8}
-              />
-            </div>
-            {variant === VARIANTS.IDEA && (
-              <div className={classes.fullWidth}>
-                <div className={classes.spaceBetween}>
-                  <div className={classes.flex}>
+    <>
+      <div
+        className={classnames(classes.container, {
+          [classes.lastContainer]: isLast,
+        })}
+      >
+        <Grid container wrap="nowrap">
+          <Grid item>
+            <Close className={classes.icon} onClick={() => setOpen(false)} />
+          </Grid>
+          <Grid item xs={12}>
+            <div className={classes.flex}>
+              <div className={classes.column}>
+                <TextField
+                  value="Title"
+                  variant="outlined"
+                  fullWidth
+                  className={classes.marginBottom2}
+                />
+                <TextField
+                  value="Description"
+                  variant="outlined"
+                  fullWidth
+                  className={classes.marginBottom2}
+                  multiline
+                  rows={8}
+                />
+              </div>
+              {variant === VARIANTS.IDEA && (
+                <div className={classes.fullWidth}>
+                  <div className={classes.spaceBetween}>
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Tags
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setDialogOpen(true);
+                          setDialogVariant(DIALOG_VARIANT.TAG);
+                        }}
+                      />
+                    </div>
                     <Typography
                       className={classnames(
-                        classes.marginRight,
-                        classes.fontWeightBold
+                        classes.text,
+                        classes.lightGrey,
+                        classes.date
                       )}
                     >
-                      Tags
+                      16.11.2020
                     </Typography>
-                    <Add className={classes.pointer} />
                   </div>
-                  <Typography
+                  <div
                     className={classnames(
-                      classes.text,
-                      classes.lightGrey,
-                      classes.date
+                      classes.fullWidth,
+                      classes.marginBottom3
                     )}
                   >
-                    16.11.2020
-                  </Typography>
-                </div>
-                <div
-                  className={classnames(
-                    classes.fullWidth,
-                    classes.marginBottom3
-                  )}
-                >
-                  <Chip label="Tag" onClick={() => null} />
-                  <Chip label="Tag" lastTag onClick={() => null} />
-                </div>
-                <div
-                  className={classnames(
-                    classes.selectContainer,
-                    classes.marginBottom3
-                  )}
-                >
-                  <Select
-                    value="novalue"
-                    className={classes.marginRight}
-                    onChange={() => null}
-                    variant="outlined"
-                    fullWidth
-                  >
-                    <MenuItem value="novalue">Projects</MenuItem>
-                    <MenuItem value="project1">Project 1</MenuItem>
-                    <MenuItem value="project2">Project 2</MenuItem>
-                    <MenuItem value="project3">Project 3</MenuItem>
-                  </Select>
-                  <Add className={classes.pointer} />
-                </div>
-                <div
-                  className={classnames(
-                    classes.fullWidth,
-                    classes.marginBottom3
-                  )}
-                >
-                  <div className={classes.flex}>
-                    <Typography
-                      className={classnames(
-                        classes.marginRight,
-                        classes.fontWeightBold
-                      )}
-                    >
-                      Inspirations
-                    </Typography>
-                    <Add className={classes.pointer} />
+                    <Chip label="Tag" onClick={() => null} />
+                    <Chip label="Tag" lastTag onClick={() => null} />
                   </div>
-                  <Typography>
-                    <Link href="#">Inspiration 1</Link>
+                  <div
+                    className={classnames(
+                      classes.selectContainer,
+                      classes.marginBottom3
+                    )}
+                  >
+                    <Select
+                      value="novalue"
+                      className={classes.marginRight}
+                      onChange={() => null}
+                      variant="outlined"
+                      fullWidth
+                    >
+                      <MenuItem value="novalue">Projects</MenuItem>
+                      <MenuItem value="project1">Project 1</MenuItem>
+                      <MenuItem value="project2">Project 2</MenuItem>
+                      <MenuItem value="project3">Project 3</MenuItem>
+                    </Select>
+                    <Add
+                      className={classes.pointer}
+                      onClick={() => {
+                        setDialogOpen(true);
+                        setDialogVariant(DIALOG_VARIANT.PROJECT);
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Inspirations
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setDialogOpen(true);
+                          setDialogVariant(DIALOG_VARIANT.INSPIRATION);
+                        }}
+                      />
+                    </div>
+                    <Typography>
+                      <Link href="#">Inspiration 1</Link>
+                    </Typography>
+                    <Typography>
+                      <Link href="#">Inspiration 2</Link>
+                    </Typography>
+                  </div>
+                </div>
+              )}
+            </div>
+            {variant === VARIANTS.INSPIRATION && getImageRefs()}
+            {variant === VARIANTS.IDEA && completedWorkUrl && (
+              <div
+                className={classnames(classes.fullWidth, classes.marginBottom3)}
+              >
+                <div className={classes.flex}>
+                  <Typography
+                    className={classnames(
+                      classes.marginRight,
+                      classes.fontWeightBold
+                    )}
+                  >
+                    Completed work
+                  </Typography>
+                  <Add
+                    className={classes.pointer}
+                    onClick={() => {
+                      setDialogOpen(true);
+                      setDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
+                    }}
+                  />
+                </div>
+                <Image
+                  variant={IMAGE_TYPE.COMPLETED_WORK}
+                  src={completedWorkUrl}
+                />
+              </div>
+            )}
+            <div className={classes.bottomContainer}>
+              {variant === VARIANTS.IDEA && getImageRefs()}
+              {variant !== VARIANTS.IDEA && (
+                <div>
+                  <Typography className={classes.fontWeightBold}>
+                    Linked ideas
                   </Typography>
                   <Typography>
-                    <Link href="#">Inspiration 2</Link>
+                    <Link href="#">Linked idea 1</Link>
+                  </Typography>
+                  <Typography>
+                    <Link href="#">Linked idea 2</Link>
                   </Typography>
                 </div>
-              </div>
-            )}
-          </div>
-          {variant === VARIANTS.INSPIRATION && getImageRefs()}
-          {variant === VARIANTS.IDEA && completedWorkUrl && (
-            <div
-              className={classnames(classes.fullWidth, classes.marginBottom3)}
-            >
-              <div className={classes.flex}>
-                <Typography
-                  className={classnames(
-                    classes.marginRight,
-                    classes.fontWeightBold
-                  )}
-                >
-                  Completed work
-                </Typography>
-                <Add className={classes.pointer} />
-              </div>
-              <Image
-                variant={IMAGE_TYPE.COMPLETED_WORK}
-                src={completedWorkUrl}
-              />
-            </div>
-          )}
-          <div className={classes.bottomContainer}>
-            {variant === VARIANTS.IDEA && getImageRefs()}
-            {variant !== VARIANTS.IDEA && (
-              <div>
-                <Typography className={classes.fontWeightBold}>
-                  Linked ideas
-                </Typography>
-                <Typography>
-                  <Link href="#">Linked idea 1</Link>
-                </Typography>
-                <Typography>
-                  <Link href="#">Linked idea 2</Link>
-                </Typography>
-              </div>
-            )}
-            <div className={classes.buttonContainer}>
-              {variant === VARIANTS.IDEA && (
+              )}
+              <div className={classes.buttonContainer}>
+                {variant === VARIANTS.IDEA && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classnames(classes.button, classes.marginRight)}
+                    onClick={() => null}
+                  >
+                    Archive
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   color="primary"
-                  className={classnames(classes.button, classes.marginRight)}
+                  className={classes.button}
                   onClick={() => null}
                 >
-                  Archive
+                  Save
                 </Button>
-              )}
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={() => null}
-              >
-                Save
-              </Button>
+              </div>
             </div>
-          </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+      <AddDialog
+        dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
+        variant={dialogVariant}
+      />
+    </>
   );
 };
 
-export default BarClosed;
+export default BarOpen;
