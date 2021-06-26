@@ -80,3 +80,31 @@ export const Close = (props) => (
     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
   </SvgIcon>
 );
+
+export const BulletList = (props) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z" />
+  </SvgIcon>
+);
+
+export const NumberedList = (props) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M18 17h2v.5h-1v1h1v.5h-2v1h3v-4h-3v1zm1-9h1V4h-2v1h1v3zm-1 3h1.8L18 13.1v.9h3v-1h-1.8l1.8-2.1V10h-3v1zM2 5h14v2H2V5zm0 12h14v2H2v-2zm0-6h14v2H2v-2z" />
+  </SvgIcon>
+);
+
+export const Bold = (props) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" />
+  </SvgIcon>
+);
+
+export const Italic = (props) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z" />
+  </SvgIcon>
+);

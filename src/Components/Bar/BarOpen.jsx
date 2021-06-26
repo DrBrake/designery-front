@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Chip from "../Chip";
 import Image from "../Image";
 import AddDialog from "../AddDialog";
+import RichTextEditor from "../RichTextEditor";
 import { Close, Add } from "../Icons";
 import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
 
@@ -155,14 +156,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
                   fullWidth
                   className={classes.marginBottom2}
                 />
-                <TextField
-                  value="Description"
-                  variant="outlined"
-                  fullWidth
-                  className={classes.marginBottom2}
-                  multiline
-                  rows={8}
-                />
+                <RichTextEditor />
               </div>
               {variant === VARIANTS.IDEA && (
                 <div className={classes.fullWidth}>

@@ -15,5 +15,13 @@ module.exports = merge(baseConfig, {
       "react-dom": "@hot-loader/react-dom",
     },
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
   plugins: [new webpack.HotModuleReplacementPlugin()],
 });
