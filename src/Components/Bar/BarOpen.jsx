@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import classnames from "classnames";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import Link from "@material-ui/core/Link";
-import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
+import {
+  Typography,
+  Grid,
+  TextField,
+  Select,
+  InputLabel,
+  FormControl,
+  Link,
+  Button,
+  MenuItem,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Chip from "../Chip";
@@ -68,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
   marginRight: {
     marginRight: theme.spacing(2),
   },
+  paddingLeft: {
+    paddingLeft: theme.spacing(2),
+  },
   flex: {
     display: "flex",
   },
@@ -102,6 +109,9 @@ const useStyles = makeStyles((theme) => ({
   },
   pointer: {
     cursor: "pointer",
+  },
+  displayNone: {
+    display: "none",
   },
 }));
 
@@ -151,12 +161,12 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
             <div className={classes.flex}>
               <div className={classes.column}>
                 <TextField
-                  value="Title"
+                  placeholder="Title"
                   variant="outlined"
                   fullWidth
                   className={classes.marginBottom2}
                 />
-                <RichTextEditor />
+                <RichTextEditor placeholder="Description" />
               </div>
               {variant === VARIANTS.IDEA && (
                 <div className={classes.fullWidth}>
@@ -203,18 +213,28 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
                       classes.marginBottom3
                     )}
                   >
-                    <Select
-                      value="novalue"
-                      className={classes.marginRight}
-                      onChange={() => null}
-                      variant="outlined"
-                      fullWidth
-                    >
-                      <MenuItem value="novalue">Projects</MenuItem>
-                      <MenuItem value="project1">Project 1</MenuItem>
-                      <MenuItem value="project2">Project 2</MenuItem>
-                      <MenuItem value="project3">Project 3</MenuItem>
-                    </Select>
+                    <FormControl fullWidth className={classes.marginRight}>
+                      <InputLabel
+                        id="projectSelect"
+                        classes={{
+                          root: classes.paddingLeft,
+                          focused: classes.displayNone,
+                        }}
+                        disableAnimation
+                      >
+                        Project
+                      </InputLabel>
+                      <Select
+                        labelId="projectSelect"
+                        value=""
+                        onChange={() => null}
+                        variant="outlined"
+                      >
+                        <MenuItem value="project1">Project 1</MenuItem>
+                        <MenuItem value="project2">Project 2</MenuItem>
+                        <MenuItem value="project3">Project 3</MenuItem>
+                      </Select>
+                    </FormControl>
                     <Add
                       className={classes.pointer}
                       onClick={() => {

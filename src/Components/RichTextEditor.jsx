@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Editor, EditorState, RichUtils } from "draft-js";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
+import { IconButton, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
 import "draft-js/dist/Draft.css";
@@ -48,7 +47,7 @@ const BLOCK_BUTTONS = [
   },
 ];
 
-const RichTextEditor = () => {
+const RichTextEditor = ({ placeholder }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const classes = useStyles();
   const editor = useRef(null);
@@ -100,6 +99,7 @@ const RichTextEditor = () => {
         editorState={editorState}
         onChange={setEditorState}
         handleKeyCommand={handleKeyCommand}
+        placeholder={placeholder}
       />
     </div>
   );

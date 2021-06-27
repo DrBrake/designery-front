@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
+import Sort from "../Components/Sort";
 import Bar from "../Components/Bar/Bar";
 
 const useStyles = makeStyles(() => ({
@@ -14,6 +15,7 @@ const List = () => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
+      <Sort />
       <Bar variant="idea" />
       <Bar variant="inspiration" />
       <Bar variant="project" isLast />
