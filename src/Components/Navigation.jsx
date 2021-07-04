@@ -4,8 +4,9 @@ import { withRouter } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { ROUTES } from "../constants";
+import { ROUTES, RANDOM_DIALOG_TYPE } from "../constants";
 import Chip from "../Components/Chip";
+import RandomDialog from "../Components/RandomDialog";
 import {
   Add,
   Filter,
@@ -75,6 +76,7 @@ const useStyles = makeStyles((theme) => ({
 const Navigation = ({ children, history, location }) => {
   const [addOpen, setAddOpen] = useState(false);
   const [randomOpen, setRandomOpen] = useState(false);
+  const [randomDialogType, setRandomDialogType] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -188,19 +190,21 @@ const Navigation = ({ children, history, location }) => {
                 </Typography>
                 <Typography
                   className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() => null}
+                  onClick={() =>
+                    setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS)
+                  }
                 >
                   Combine two inspirations
                 </Typography>
                 <Typography
                   className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() => null}
+                  onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS)}
                 >
                   Combine two ideas
                 </Typography>
                 <Typography
                   className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() => null}
+                  onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH)}
                 >
                   Combine idea and inspiration
                 </Typography>
@@ -282,6 +286,10 @@ const Navigation = ({ children, history, location }) => {
         </Grid>
       </Grid>
       {children}
+      <RandomDialog
+        randomDialogType={randomDialogType}
+        setRandomDialogType={setRandomDialogType}
+      />
     </>
   );
 };

@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { IMAGE_TYPE } from "../constants";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   image: {
     cursor: "pointer",
     objectFit: "cover",
@@ -20,6 +20,15 @@ const useStyles = makeStyles(() => ({
     maxHeight: 370,
     width: "100%",
   },
+  randomPopUp: {
+    width: 240,
+    height: 240,
+    cursor: "initial",
+    marginRight: theme.spacing(2),
+    "&:last-child": {
+      marginRight: 0,
+    },
+  },
 }));
 
 const Image = ({ src, onClick, variant }) => {
@@ -32,6 +41,7 @@ const Image = ({ src, onClick, variant }) => {
         [classes.barImageRef]: variant === IMAGE_TYPE.BAR,
         [classes.completedWork]: variant === IMAGE_TYPE.COMPLETED_WORK,
         [classes.grid]: variant === IMAGE_TYPE.GRID,
+        [classes.randomPopUp]: variant === IMAGE_TYPE.RANDOM_POPUP,
       })}
     />
   );
