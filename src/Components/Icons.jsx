@@ -8,6 +8,13 @@ export const Add = (props) => (
   </SvgIcon>
 );
 
+export const Remove = (props) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M6 19h12v2H6v-2z" />
+  </SvgIcon>
+);
+
 export const Filter = (props) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />

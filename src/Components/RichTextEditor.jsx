@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "18.5px 14px",
     fontSize: theme.typography.fontSize,
     fontFamily: "Roboto",
+    marginBottom: theme.spacing(2),
   },
   divider: {
     margin: `${theme.spacing(1)}px 0`,
@@ -94,13 +95,15 @@ const RichTextEditor = ({ placeholder }) => {
         </IconButton>
       ))}
       <Divider classes={{ root: classes.divider }} />
-      <Editor
-        ref={editor}
-        editorState={editorState}
-        onChange={setEditorState}
-        handleKeyCommand={handleKeyCommand}
-        placeholder={placeholder}
-      />
+      <div>
+        <Editor
+          ref={editor}
+          editorState={editorState}
+          onChange={setEditorState}
+          handleKeyCommand={handleKeyCommand}
+          placeholder={placeholder}
+        />
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 import { Dialog, Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -35,15 +35,20 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     alignSelf: "flex-end",
   },
+  pointer: {
+    cursor: "pointer",
+  },
 }));
 
 const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
+  const [url, setUrl] = useState("");
   const classes = useStyles();
   const getTitle = () => {
-    if (variant === DIALOG_VARIANT.IMAGE) return "Add image reference";
+    if (variant === DIALOG_VARIANT.IMAGE_REF) return "Add image reference";
     else if (variant === DIALOG_VARIANT.TAG) return "Add a tag";
     else if (variant === DIALOG_VARIANT.PROJECT) return "Add a project";
     else if (variant === DIALOG_VARIANT.INSPIRATION) return "Add a inspiration";
+    else if (variant === DIALOG_VARIANT.DRAFT) return "Add a draft";
     else if (variant === DIALOG_VARIANT.COMPLETED_WORK) {
       return "Add a completed work";
     }
@@ -66,7 +71,8 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
       >
         {getTitle()}
       </Typography>
-      {variant === DIALOG_VARIANT.IMAGE ||
+      {variant === DIALOG_VARIANT.IMAGE_REF ||
+      variant === DIALOG_VARIANT.DRAFT ||
       variant === DIALOG_VARIANT.COMPLETED_WORK ? (
         <div className={classnames(classes.alignCenter, classes.marginBottom2)}>
           <TextField
@@ -74,17 +80,17 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
             variant="outlined"
             fullWidth
             className={classes.marginRight}
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
           />
-          <>
-            <Button
-              variant="text"
-              color="primary"
-              className={classes.button}
-              onClick={() => null}
-            >
-              Browse
-            </Button>
-          </>
+          <Button
+            variant="text"
+            color="primary"
+            className={classes.button}
+            onClick={() => null}
+          >
+            Browse
+          </Button>
         </div>
       ) : (
         <TextField

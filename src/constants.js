@@ -9,6 +9,7 @@ export const IMAGE_TYPE = {
   COMPLETED_WORK: "completedWork",
   GRID: "grid",
   RANDOM_POPUP: "randomPopup",
+  DRAFT: "draft",
 };
 
 export const ROUTES = {
@@ -17,11 +18,12 @@ export const ROUTES = {
 };
 
 export const DIALOG_VARIANT = {
-  IMAGE: "image",
+  IMAGE_REF: "imageReference",
   TAG: "tag",
   PROJECT: "project",
   INSPIRATION: "inspiration",
   COMPLETED_WORK: "completedWork",
+  DRAFT: "draft",
 };
 
 export const RANDOM_DIALOG_TYPE = {

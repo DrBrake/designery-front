@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
+const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogVariant, setDialogVariant] = useState("");
   const classes = useStyles();
@@ -126,6 +126,21 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
           [classes.marginBottom3]: variant === VARIANTS.INSPIRATION,
         })}
       >
+        <div className={classnames(classes.flex, classes.marginBottom2)}>
+          <Typography
+            className={classnames(classes.marginRight, classes.fontWeightBold)}
+          >
+            Drafts
+          </Typography>
+          <Add
+            className={classes.pointer}
+            onClick={() => {
+              setDialogOpen(true);
+              setDialogVariant(DIALOG_VARIANT.DRAFT);
+            }}
+          />
+        </div>
+        {draftUrl && <Image variant={IMAGE_TYPE.DRAFT} src={draftUrl} />}
         <div className={classes.flex}>
           <Typography
             className={classnames(classes.marginRight, classes.fontWeightBold)}
@@ -136,7 +151,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
             className={classes.pointer}
             onClick={() => {
               setDialogOpen(true);
-              setDialogVariant(DIALOG_VARIANT.IMAGE);
+              setDialogVariant(DIALOG_VARIANT.IMAGE_REF);
             }}
           />
         </div>
@@ -288,7 +303,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
                       classes.fontWeightBold
                     )}
                   >
-                    Completed work
+                    Completed works
                   </Typography>
                   <Add
                     className={classes.pointer}
@@ -327,7 +342,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, variant }) => {
                     className={classnames(classes.button, classes.marginRight)}
                     onClick={() => null}
                   >
-                    Archive
+                    Complete
                   </Button>
                 )}
                 <Button

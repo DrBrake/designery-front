@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const Navigation = ({ randomDialogType, setRandomDialogType }) => {
   const classes = useStyles();
   return (
-    <Dialog dialogOpen={randomDialogType} setDialogOpen={setRandomDialogType}>
+    <Dialog dialogOpen={!!randomDialogType} setDialogOpen={setRandomDialogType}>
       <div className={classes.flex}>
         <div className={classes.randomPopUpDialogContainer}>
           <Typography className={classes.marginBottom2}>Title 1</Typography>
