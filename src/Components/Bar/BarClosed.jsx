@@ -1,5 +1,6 @@
 import React from "react";
 import classnames from "classnames";
+import dayjs from "dayjs";
 import { Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -14,8 +15,14 @@ const useStyles = makeStyles((theme) => ({
     padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(1)}px ${theme.spacing(5)}px`,
     borderBottomWidth: "0px",
   },
+  firstContainer: {
+    borderTopLeftRadius: "4px",
+    borderTopRightRadius: "4px",
+  },
   lastContainer: {
     borderBottomWidth: "1px",
+    borderBottomLeftRadius: "4px",
+    borderBottomRightRadius: "4px",
   },
   firstItem: {
     display: "flex",
@@ -48,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarClosed = ({ setOpen, isLast }) => {
+const BarClosed = ({ itemData, setOpen, isLast, isFirst }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -56,17 +63,18 @@ const BarClosed = ({ setOpen, isLast }) => {
       justify="space-between"
       className={classnames(classes.container, {
         [classes.lastContainer]: isLast,
+        [classes.firstContainer]: isFirst,
       })}
       onClick={() => setOpen(true)}
     >
       <Grid item className={classes.firstItem}>
         <ChevronDown className={classes.icon} />
         <div>
-          <Typography className={classes.text}>Title</Typography>
+          <Typography className={classes.text}>{itemData.Title}</Typography>
           <Typography
             className={classnames(classes.descriptionText, classes.lightGrey)}
           >
-            Description
+            {itemData.Description}
           </Typography>
         </div>
       </Grid>
@@ -74,7 +82,7 @@ const BarClosed = ({ setOpen, isLast }) => {
         <Typography
           className={classnames(classes.text, classes.lightGrey, classes.date)}
         >
-          16.11.2020
+          {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
         </Typography>
         <Chip label="Tag" />
         <Chip label="Tag" lastTag />

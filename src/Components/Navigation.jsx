@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import classnames from "classnames";
+import dayjs from "dayjs";
+import { v4 as uuidv4 } from "uuid";
 import { withRouter } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
 
-import { ROUTES, RANDOM_DIALOG_TYPE } from "../constants";
+import { addNewItem, selectNewItems } from "../Reducers/appSlice";
+import { useGetDataQuery } from "../Services/dataAPI";
+
+import { ROUTES, RANDOM_DIALOG_TYPE, VARIANTS } from "../constants";
 import Chip from "../Components/Chip";
 import RandomDialog from "../Components/RandomDialog";
 import {
@@ -71,6 +77,16 @@ const useStyles = makeStyles((theme) => ({
   fullWidth: {
     width: "100%",
   },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "100%",
+    width: "100%",
+    opacity: 0,
+    zIndex: 0,
+    cursor: "initial",
+  },
 }));
 
 const Navigation = ({ children, history, location }) => {
@@ -80,7 +96,173 @@ const Navigation = ({ children, history, location }) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { data } = useGetDataQuery();
+  const newItems = useSelector(selectNewItems);
+
+  const getAddPopper = () => (
+    <>
+      <div className={classes.overlay} onClick={() => setAddOpen(false)} />
+      <Popper id="addPopper" open={addOpen} anchorEl={anchorEl}>
+        <Paper elevation={3} className={classes.paper}>
+          <Typography
+            className={classnames(
+              classes.marginBottom1,
+              classes.fontWeightBold,
+              classes.pointer
+            )}
+            onClick={() =>
+              dispatch(
+                addNewItem({
+                  Title: `New idea #${newItems.length + 1}`,
+                  Description: "",
+                  ImageRefs: [],
+                  Drafts: [],
+                  CompletedWorks: [],
+                  Completed: false,
+                  Tags: [],
+                  Project: "",
+                  Inspirations: [],
+                  DateCreated: dayjs().format(),
+                  Variant: VARIANTS.IDEA,
+                })
+              )
+            }
+          >
+            Idea
+          </Typography>
+          <Typography
+            className={classnames(
+              classes.marginBottom1,
+              classes.fontWeightBold,
+              classes.pointer
+            )}
+            onClick={() =>
+              dispatch(
+                addNewItem({
+                  Title: `New inspiration #${newItems.length + 1}`,
+                  ImageRefs: [],
+                  Ideas: [],
+                  DateCreated: dayjs(),
+                  Variant: VARIANTS.INSPIRATION,
+                })
+              )
+            }
+          >
+            Inspiration
+          </Typography>
+          <Typography
+            className={classnames(
+              classes.marginBottom1,
+              classes.fontWeightBold,
+              classes.pointer
+            )}
+            onClick={() =>
+              dispatch(
+                addNewItem({
+                  Title: `New project #${newItems.length + 1}`,
+                  Description: "",
+                  Ideas: [],
+                  DateCreated: dayjs(),
+                  Variant: VARIANTS.PROJECT,
+                })
+              )
+            }
+          >
+            Project
+          </Typography>
+        </Paper>
+      </Popper>
+    </>
+  );
+
+  const getRandomPopper = () => (
+    <>
+      <div className={classes.overlay} onClick={() => setRandomOpen(false)} />
+      <Popper id="randomPopper" open={randomOpen} anchorEl={anchorEl}>
+        <Paper elevation={3} className={classes.paper}>
+          <Typography
+            className={classnames(
+              classes.marginBottom1,
+              classes.fontWeightBold
+            )}
+          >
+            Random
+          </Typography>
+          <Typography
+            className={classnames(classes.pointer, classes.marginBottom1)}
+            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS)}
+          >
+            Combine two inspirations
+          </Typography>
+          <Typography
+            className={classnames(classes.pointer, classes.marginBottom1)}
+            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS)}
+          >
+            Combine two ideas
+          </Typography>
+          <Typography
+            className={classnames(classes.pointer, classes.marginBottom1)}
+            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH)}
+          >
+            Combine idea and inspiration
+          </Typography>
+        </Paper>
+      </Popper>
+    </>
+  );
+
+  const getFilterPopper = () => (
+    <>
+      <div className={classes.overlay} onClick={() => setFilterOpen(false)} />
+      <Popper id="filterPopper" open={filterOpen} anchorEl={anchorEl}>
+        <Paper elevation={3} className={classes.paper}>
+          <div className={classnames(classes.flex, classes.marginBottom3)}>
+            <Typography
+              className={classnames(
+                classes.text,
+                classes.marginRight2,
+                classes.pointer
+              )}
+              onClick={() => null}
+            >
+              Ideas
+            </Typography>
+            <Typography
+              className={classnames(
+                classes.text,
+                classes.marginRight2,
+                classes.pointer
+              )}
+              onClick={() => null}
+            >
+              Inspiration
+            </Typography>
+            <Typography
+              className={classnames(classes.text, classes.pointer)}
+              onClick={() => null}
+            >
+              Projects
+            </Typography>
+          </div>
+          <Typography
+            className={classnames(classes.text, classes.marginBottom2)}
+            onClick={() => null}
+          >
+            Tags
+          </Typography>
+          {data &&
+            data.tags &&
+            data.tags.map((item) => (
+              <Chip label={item} onClick={() => null} key={uuidv4()} />
+            ))}
+        </Paper>
+      </Popper>
+    </>
+  );
 
   return (
     <>
@@ -106,41 +288,8 @@ const Navigation = ({ children, history, location }) => {
           <SmallChevronDown
             className={classnames({ [classes.highlightColor]: addOpen })}
           />
-          <Popper id="addPopper" open={addOpen} anchorEl={anchorEl}>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography
-                className={classnames(
-                  classes.marginBottom1,
-                  classes.fontWeightBold,
-                  classes.pointer
-                )}
-                onClick={() => null}
-              >
-                Idea
-              </Typography>
-              <Typography
-                className={classnames(
-                  classes.marginBottom1,
-                  classes.fontWeightBold,
-                  classes.pointer
-                )}
-                onClick={() => null}
-              >
-                Inspiration
-              </Typography>
-              <Typography
-                className={classnames(
-                  classes.marginBottom1,
-                  classes.fontWeightBold,
-                  classes.pointer
-                )}
-                onClick={() => null}
-              >
-                Project
-              </Typography>
-            </Paper>
-          </Popper>
         </Grid>
+        {addOpen && getAddPopper()}
         {searchOpen && (
           <Grid item className={classes.fullWidth}>
             <TextField
@@ -178,39 +327,8 @@ const Navigation = ({ children, history, location }) => {
             <SmallChevronDown
               className={classnames({ [classes.highlightColor]: randomOpen })}
             />
-            <Popper id="randomPopper" open={randomOpen} anchorEl={anchorEl}>
-              <Paper elevation={3} className={classes.paper}>
-                <Typography
-                  className={classnames(
-                    classes.marginBottom1,
-                    classes.fontWeightBold
-                  )}
-                >
-                  Random
-                </Typography>
-                <Typography
-                  className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() =>
-                    setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS)
-                  }
-                >
-                  Combine two inspirations
-                </Typography>
-                <Typography
-                  className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS)}
-                >
-                  Combine two ideas
-                </Typography>
-                <Typography
-                  className={classnames(classes.pointer, classes.marginBottom1)}
-                  onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH)}
-                >
-                  Combine idea and inspiration
-                </Typography>
-              </Paper>
-            </Popper>
           </div>
+          {randomOpen && getRandomPopper()}
           <GridOn
             className={classnames(classes.icon, {
               [classes.highlightColor]: location.pathname.includes(ROUTES.GRID),
@@ -234,49 +352,8 @@ const Navigation = ({ children, history, location }) => {
             <SmallChevronDown
               className={classnames({ [classes.highlightColor]: filterOpen })}
             />
-            <Popper id="filterPopper" open={filterOpen} anchorEl={anchorEl}>
-              <Paper elevation={3} className={classes.paper}>
-                <div
-                  className={classnames(classes.flex, classes.marginBottom3)}
-                >
-                  <Typography
-                    className={classnames(
-                      classes.text,
-                      classes.marginRight2,
-                      classes.pointer
-                    )}
-                    onClick={() => null}
-                  >
-                    Ideas
-                  </Typography>
-                  <Typography
-                    className={classnames(
-                      classes.text,
-                      classes.marginRight2,
-                      classes.pointer
-                    )}
-                    onClick={() => null}
-                  >
-                    Inspiration
-                  </Typography>
-                  <Typography
-                    className={classnames(classes.text, classes.pointer)}
-                    onClick={() => null}
-                  >
-                    Projects
-                  </Typography>
-                </div>
-                <Typography
-                  className={classnames(classes.text, classes.marginBottom2)}
-                  onClick={() => null}
-                >
-                  Tags
-                </Typography>
-                <Chip label="Tag" onClick={() => null} />
-                <Chip label="Tag" onClick={() => null} />
-              </Paper>
-            </Popper>
           </div>
+          {filterOpen && getFilterPopper()}
           <Typography
             className={classnames(classes.text, classes.pointer)}
             onClick={() => history.push(ROUTES.ROOT)}

@@ -1,11 +1,11 @@
 import React from "react";
 import { Switch, Router } from "react-router";
 import { Route } from "react-router-dom";
+
 import ScrollToTop from "./Components/ScrollToTop";
 import { List, Grid } from "./Views";
 import Navigation from "./Components/Navigation";
 import { browserHistory } from "./utils";
-
 import { ROUTES } from "./constants";
 
 const App = () => (

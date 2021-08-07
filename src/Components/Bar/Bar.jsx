@@ -3,17 +3,23 @@ import React, { useState } from "react";
 import BarOpen from "./BarOpen";
 import BarClosed from "./BarClosed";
 
-const Bar = ({ isLast, isArchive, variant }) => {
+const Bar = ({ itemData, isLast, isFirst, isArchive }) => {
   const [open, setOpen] = useState(false);
   return open ? (
     <BarOpen
+      itemData={itemData}
       setOpen={setOpen}
       isLast={isLast}
+      isFirst={isFirst}
       isArchive={isArchive}
-      variant={variant}
     />
   ) : (
-    <BarClosed setOpen={setOpen} isLast={isLast} />
+    <BarClosed
+      itemData={itemData}
+      setOpen={setOpen}
+      isLast={isLast}
+      isFirst={isFirst}
+    />
   );
 };
 

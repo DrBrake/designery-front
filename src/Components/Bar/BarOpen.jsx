@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import classnames from "classnames";
+import dayjs from "dayjs";
+import { v4 as uuidv4 } from "uuid";
 import {
   Typography,
   Grid,
@@ -27,8 +29,14 @@ const useStyles = makeStyles((theme) => ({
     padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(1)}px ${theme.spacing(5)}px`,
     borderBottomWidth: "0px",
   },
+  firstContainer: {
+    borderTopLeftRadius: "4px",
+    borderTopRightRadius: "4px",
+  },
   lastContainer: {
     borderBottomWidth: "1px",
+    borderBottomLeftRadius: "4px",
+    borderBottomRightRadius: "4px",
   },
   text: {
     fontSize: "16px",
@@ -115,15 +123,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
+const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogVariant, setDialogVariant] = useState("");
   const classes = useStyles();
   const getImageRefs = () =>
-    (variant === VARIANTS.IDEA || variant === VARIANTS.INSPIRATION) && (
+    (itemData.variant === VARIANTS.IDEA ||
+      itemData.variant === VARIANTS.INSPIRATION) && (
       <div
         className={classnames({
-          [classes.marginBottom3]: variant === VARIANTS.INSPIRATION,
+          [classes.marginBottom3]: itemData.variant === VARIANTS.INSPIRATION,
         })}
       >
         <div className={classnames(classes.flex, classes.marginBottom2)}>
@@ -140,7 +149,10 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
             }}
           />
         </div>
-        {draftUrl && <Image variant={IMAGE_TYPE.DRAFT} src={draftUrl} />}
+        {itemData.Drafts &&
+          itemData.Drafts.map((item) => (
+            <Image variant={IMAGE_TYPE.DRAFT} src={item} key={uuidv4()} />
+          ))}
         <div className={classes.flex}>
           <Typography
             className={classnames(classes.marginRight, classes.fontWeightBold)}
@@ -155,10 +167,10 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
             }}
           />
         </div>
-        <Image
-          variant={IMAGE_TYPE.BAR}
-          src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-        />
+        {itemData.ImageRefs &&
+          itemData.ImageRefs.map((item) => (
+            <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+          ))}
       </div>
     );
   return (
@@ -166,6 +178,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
       <div
         className={classnames(classes.container, {
           [classes.lastContainer]: isLast,
+          [classes.firstContainer]: isFirst,
         })}
       >
         <Grid container wrap="nowrap">
@@ -183,7 +196,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                 />
                 <RichTextEditor placeholder="Description" />
               </div>
-              {variant === VARIANTS.IDEA && (
+              {itemData.variant === VARIANTS.IDEA && (
                 <div className={classes.fullWidth}>
                   <div className={classes.spaceBetween}>
                     <div className={classes.flex}>
@@ -210,7 +223,7 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                         classes.date
                       )}
                     >
-                      16.11.2020
+                      {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
                     </Typography>
                   </div>
                   <div
@@ -219,8 +232,15 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                       classes.marginBottom3
                     )}
                   >
-                    <Chip label="Tag" onClick={() => null} />
-                    <Chip label="Tag" lastTag onClick={() => null} />
+                    {itemData.Tags &&
+                      itemData.Tags.map((item, index) => (
+                        <Chip
+                          label={item}
+                          onClick={() => null}
+                          lastTag={index + 1 === itemData.Tags.length}
+                          key={uuidv4()}
+                        />
+                      ))}
                   </div>
                   <div
                     className={classnames(
@@ -241,13 +261,15 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                       </InputLabel>
                       <Select
                         labelId="projectSelect"
-                        value=""
+                        value={itemData.Project}
                         onChange={() => null}
                         variant="outlined"
                       >
-                        <MenuItem value="project1">Project 1</MenuItem>
-                        <MenuItem value="project2">Project 2</MenuItem>
-                        <MenuItem value="project3">Project 3</MenuItem>
+                        {projects.map((item) => (
+                          <MenuItem value={item.Title} key={uuidv4()}>
+                            {item.Title}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                     <Add
@@ -281,18 +303,18 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                         }}
                       />
                     </div>
-                    <Typography>
-                      <Link href="#">Inspiration 1</Link>
-                    </Typography>
-                    <Typography>
-                      <Link href="#">Inspiration 2</Link>
-                    </Typography>
+                    {itemData.Inspirations &&
+                      itemData.Inspirations.map((item) => (
+                        <Typography key={uuidv4()}>
+                          <Link href="#">{item.Title}</Link>
+                        </Typography>
+                      ))}
                   </div>
                 </div>
               )}
             </div>
-            {variant === VARIANTS.INSPIRATION && getImageRefs()}
-            {variant === VARIANTS.IDEA && completedWorkUrl && (
+            {itemData.variant === VARIANTS.INSPIRATION && getImageRefs()}
+            {itemData.variant === VARIANTS.IDEA && itemData.Completed && (
               <div
                 className={classnames(classes.fullWidth, classes.marginBottom3)}
               >
@@ -313,29 +335,33 @@ const BarOpen = ({ setOpen, isLast, completedWorkUrl, draftUrl, variant }) => {
                     }}
                   />
                 </div>
-                <Image
-                  variant={IMAGE_TYPE.COMPLETED_WORK}
-                  src={completedWorkUrl}
-                />
+                {itemData.CompletedWorks &&
+                  itemData.CompletedWorks.map((item) => (
+                    <Image
+                      variant={IMAGE_TYPE.COMPLETED_WORK}
+                      src={item}
+                      key={uuidv4()}
+                    />
+                  ))}
               </div>
             )}
             <div className={classes.bottomContainer}>
-              {variant === VARIANTS.IDEA && getImageRefs()}
-              {variant !== VARIANTS.IDEA && (
+              {itemData.variant === VARIANTS.IDEA && getImageRefs()}
+              {itemData.variant !== VARIANTS.IDEA && (
                 <div>
                   <Typography className={classes.fontWeightBold}>
                     Linked ideas
                   </Typography>
-                  <Typography>
-                    <Link href="#">Linked idea 1</Link>
-                  </Typography>
-                  <Typography>
-                    <Link href="#">Linked idea 2</Link>
-                  </Typography>
+                  {itemData.Ideas &&
+                    itemData.Ideas.map((item) => (
+                      <Typography key={uuidv4()}>
+                        <Link href="#">{item.Title}</Link>
+                      </Typography>
+                    ))}
                 </div>
               )}
               <div className={classes.buttonContainer}>
-                {variant === VARIANTS.IDEA && (
+                {itemData.variant === VARIANTS.IDEA && (
                   <Button
                     variant="contained"
                     color="primary"

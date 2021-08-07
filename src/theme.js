@@ -14,6 +14,11 @@ const theme = createMuiTheme({
       main: "#a2957f",
     },
   },
+  breakpoints: {
+    values: {
+      xl: "1640",
+    },
+  },
 });
 
 export default theme;
