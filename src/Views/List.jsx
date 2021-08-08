@@ -33,6 +33,9 @@ const List = () => {
             isFirst={index === 0}
             isLast={index + 1 === newItems.length}
             key={uuidv4()}
+            projects={data.projects}
+            isNewItem
+            index={index}
           />
         ))}
       {isLoading && <Typography>Loading</Typography>}
@@ -46,6 +49,7 @@ const List = () => {
               isFirst={index === 0}
               isLast={index + 1 === data.length}
               key={uuidv4()}
+              projects={data.projects}
             />
           ))}
         </>

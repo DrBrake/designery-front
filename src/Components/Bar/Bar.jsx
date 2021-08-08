@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import BarOpen from "./BarOpen";
 import BarClosed from "./BarClosed";
 
-const Bar = ({ itemData, isLast, isFirst, isArchive }) => {
+const Bar = ({
+  itemData,
+  isLast,
+  isFirst,
+  isArchive,
+  isNewItem,
+  projects,
+  index,
+}) => {
   const [open, setOpen] = useState(false);
   return open ? (
     <BarOpen
@@ -12,6 +20,9 @@ const Bar = ({ itemData, isLast, isFirst, isArchive }) => {
       isLast={isLast}
       isFirst={isFirst}
       isArchive={isArchive}
+      isNewItem={isNewItem}
+      projects={projects}
+      index={index}
     />
   ) : (
     <BarClosed

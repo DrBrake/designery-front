@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
+import { useFormik } from "formik";
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import {
   Typography,
   Grid,
@@ -14,7 +16,9 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
 
+import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
 import Chip from "../Chip";
 import Image from "../Image";
 import AddDialog from "../AddDialog";
@@ -123,16 +127,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
+const BarOpen = ({
+  itemData,
+  projects,
+  setOpen,
+  isLast,
+  isFirst,
+  isNewItem,
+  index,
+}) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogVariant, setDialogVariant] = useState("");
+
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const handleValues = (values) => {
+    values.Description = convertToRaw(values.Description.getCurrentContent());
+    return values;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      Title: itemData.Title || "",
+      Description: itemData.Description
+        ? EditorState.createWithContent(convertFromRaw(itemData.Description))
+        : EditorState.createEmpty(),
+      ImageRefs: itemData.ImageRefs || [],
+      Drafts: itemData.Drafts || [],
+      CompletedWorks: itemData.CompletedWorks || [],
+      Completed: itemData.Completed || false,
+      Tags: itemData.Tags || [],
+      Project: itemData.Project || "",
+      Inspirations: itemData.Inspirations || [],
+      DateCreated: itemData.DateCreated || dayjs().format(),
+      Variant: itemData.Variant || "",
+    },
+    onSubmit: (values) => {
+      const handledValues = handleValues(values);
+      console.log(handledValues);
+    },
+  });
+
   const getImageRefs = () =>
-    (itemData.variant === VARIANTS.IDEA ||
-      itemData.variant === VARIANTS.INSPIRATION) && (
+    (itemData.Variant === VARIANTS.IDEA ||
+      itemData.Variant === VARIANTS.INSPIRATION) && (
       <div
         className={classnames({
-          [classes.marginBottom3]: itemData.variant === VARIANTS.INSPIRATION,
+          [classes.marginBottom3]: itemData.Variant === VARIANTS.INSPIRATION,
         })}
       >
         <div className={classnames(classes.flex, classes.marginBottom2)}>
@@ -173,17 +215,31 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
           ))}
       </div>
     );
+
   return (
     <>
-      <div
+      <form
         className={classnames(classes.container, {
           [classes.lastContainer]: isLast,
           [classes.firstContainer]: isFirst,
         })}
+        onSubmit={formik.handleSubmit}
       >
         <Grid container wrap="nowrap">
           <Grid item>
-            <Close className={classes.icon} onClick={() => setOpen(false)} />
+            <Close
+              className={classes.icon}
+              onClick={() => {
+                setOpen(false);
+                if (isNewItem)
+                  dispatch(
+                    updateNewItem({
+                      index,
+                      values: handleValues(formik.values),
+                    })
+                  );
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
             <div className={classes.flex}>
@@ -193,10 +249,19 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
                   variant="outlined"
                   fullWidth
                   className={classes.marginBottom2}
+                  value={formik.values.Title}
+                  onChange={formik.handleChange}
+                  required
                 />
-                <RichTextEditor placeholder="Description" />
+                <RichTextEditor
+                  placeholder="Description"
+                  editorState={formik.values.Description}
+                  setFieldValue={(value) =>
+                    formik.setFieldValue("Description", value)
+                  }
+                />
               </div>
-              {itemData.variant === VARIANTS.IDEA && (
+              {itemData.Variant === VARIANTS.IDEA && (
                 <div className={classes.fullWidth}>
                   <div className={classes.spaceBetween}>
                     <div className={classes.flex}>
@@ -261,8 +326,8 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
                       </InputLabel>
                       <Select
                         labelId="projectSelect"
-                        value={itemData.Project}
-                        onChange={() => null}
+                        value={formik.values.Project}
+                        onChange={formik.handleChange}
                         variant="outlined"
                       >
                         {projects.map((item) => (
@@ -313,8 +378,8 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
                 </div>
               )}
             </div>
-            {itemData.variant === VARIANTS.INSPIRATION && getImageRefs()}
-            {itemData.variant === VARIANTS.IDEA && itemData.Completed && (
+            {itemData.Variant === VARIANTS.INSPIRATION && getImageRefs()}
+            {itemData.Variant === VARIANTS.IDEA && itemData.Completed && (
               <div
                 className={classnames(classes.fullWidth, classes.marginBottom3)}
               >
@@ -346,8 +411,8 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
               </div>
             )}
             <div className={classes.bottomContainer}>
-              {itemData.variant === VARIANTS.IDEA && getImageRefs()}
-              {itemData.variant !== VARIANTS.IDEA && (
+              {itemData.Variant === VARIANTS.IDEA && getImageRefs()}
+              {itemData.Variant !== VARIANTS.IDEA && (
                 <div>
                   <Typography className={classes.fontWeightBold}>
                     Linked ideas
@@ -361,7 +426,7 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
                 </div>
               )}
               <div className={classes.buttonContainer}>
-                {itemData.variant === VARIANTS.IDEA && (
+                {itemData.Variant === VARIANTS.IDEA && !isNewItem && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -371,11 +436,21 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
                     Complete
                   </Button>
                 )}
+                {isNewItem && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classnames(classes.button, classes.marginRight)}
+                    onClick={() => dispatch(removeNewItem({ index }))}
+                  >
+                    Remove
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={() => null}
+                  type="submit"
                 >
                   Save
                 </Button>
@@ -383,7 +458,7 @@ const BarOpen = ({ itemData, projects, setOpen, isLast, isFirst }) => {
             </div>
           </Grid>
         </Grid>
-      </div>
+      </form>
       <AddDialog
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}

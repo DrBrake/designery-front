@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Editor, EditorState, RichUtils } from "draft-js";
+import React, { useRef } from "react";
+import { Editor, RichUtils } from "draft-js";
 import { IconButton, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
@@ -48,15 +48,14 @@ const BLOCK_BUTTONS = [
   },
 ];
 
-const RichTextEditor = ({ placeholder }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+const RichTextEditor = ({ placeholder, editorState, setFieldValue }) => {
   const classes = useStyles();
   const editor = useRef(null);
 
   const handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setEditorState(newState);
+      setFieldValue(newState);
       return "handled";
     }
     return "not-handled";
@@ -68,9 +67,7 @@ const RichTextEditor = ({ placeholder }) => {
         <IconButton
           onMouseDown={(e) => {
             e.preventDefault();
-            setEditorState(
-              RichUtils.toggleInlineStyle(editorState, item.value)
-            );
+            setFieldValue(RichUtils.toggleInlineStyle(editorState, item.value));
           }}
           color="primary"
           size="small"
@@ -84,7 +81,7 @@ const RichTextEditor = ({ placeholder }) => {
         <IconButton
           onMouseDown={(e) => {
             e.preventDefault();
-            setEditorState(RichUtils.toggleBlockType(editorState, item.value));
+            setFieldValue(RichUtils.toggleBlockType(editorState, item.value));
           }}
           color="primary"
           size="small"
@@ -99,7 +96,9 @@ const RichTextEditor = ({ placeholder }) => {
         <Editor
           ref={editor}
           editorState={editorState}
-          onChange={setEditorState}
+          onChange={(editorState) => {
+            setFieldValue(editorState);
+          }}
           handleKeyCommand={handleKeyCommand}
           placeholder={placeholder}
         />

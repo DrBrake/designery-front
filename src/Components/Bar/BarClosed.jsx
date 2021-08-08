@@ -1,6 +1,8 @@
 import React from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
+import { v4 as uuidv4 } from "uuid";
+import { convertFromRaw } from "draft-js";
 import { Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -74,7 +76,8 @@ const BarClosed = ({ itemData, setOpen, isLast, isFirst }) => {
           <Typography
             className={classnames(classes.descriptionText, classes.lightGrey)}
           >
-            {itemData.Description}
+            {itemData.Description &&
+              convertFromRaw(itemData.Description).getPlainText()}
           </Typography>
         </div>
       </Grid>
@@ -84,8 +87,14 @@ const BarClosed = ({ itemData, setOpen, isLast, isFirst }) => {
         >
           {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
         </Typography>
-        <Chip label="Tag" />
-        <Chip label="Tag" lastTag />
+        {itemData.Tags &&
+          itemData.Tags.map((item, index) => (
+            <Chip
+              label={item}
+              isLast={index + 1 === itemData.Tags.length}
+              key={uuidv4()}
+            />
+          ))}
       </Grid>
     </Grid>
   );

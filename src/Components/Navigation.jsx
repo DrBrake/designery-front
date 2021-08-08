@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
+import { EditorState, convertToRaw } from "draft-js";
 import { v4 as uuidv4 } from "uuid";
 import { withRouter } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
@@ -118,7 +119,9 @@ const Navigation = ({ children, history, location }) => {
               dispatch(
                 addNewItem({
                   Title: `New idea #${newItems.length + 1}`,
-                  Description: "",
+                  Description: convertToRaw(
+                    EditorState.createEmpty().getCurrentContent()
+                  ),
                   ImageRefs: [],
                   Drafts: [],
                   CompletedWorks: [],
