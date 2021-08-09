@@ -88,6 +88,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 0,
     cursor: "initial",
   },
+  disabledColor: {
+    color: theme.palette.grey["400"],
+  },
 }));
 
 const Navigation = ({ children, history, location }) => {
@@ -149,7 +152,7 @@ const Navigation = ({ children, history, location }) => {
                   Title: `New inspiration #${newItems.length + 1}`,
                   ImageRefs: [],
                   Ideas: [],
-                  DateCreated: dayjs(),
+                  DateCreated: dayjs().format(),
                   Variant: VARIANTS.INSPIRATION,
                 })
               )
@@ -167,9 +170,11 @@ const Navigation = ({ children, history, location }) => {
               dispatch(
                 addNewItem({
                   Title: `New project #${newItems.length + 1}`,
-                  Description: "",
+                  Description: convertToRaw(
+                    EditorState.createEmpty().getCurrentContent()
+                  ),
                   Ideas: [],
-                  DateCreated: dayjs(),
+                  DateCreated: dayjs().format(),
                   Variant: VARIANTS.PROJECT,
                 })
               )
@@ -182,41 +187,68 @@ const Navigation = ({ children, history, location }) => {
     </>
   );
 
-  const getRandomPopper = () => (
-    <>
-      <div className={classes.overlay} onClick={() => setRandomOpen(false)} />
-      <Popper id="randomPopper" open={randomOpen} anchorEl={anchorEl}>
-        <Paper elevation={3} className={classes.paper}>
-          <Typography
-            className={classnames(
-              classes.marginBottom1,
-              classes.fontWeightBold
-            )}
-          >
-            Random
-          </Typography>
-          <Typography
-            className={classnames(classes.pointer, classes.marginBottom1)}
-            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS)}
-          >
-            Combine two inspirations
-          </Typography>
-          <Typography
-            className={classnames(classes.pointer, classes.marginBottom1)}
-            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS)}
-          >
-            Combine two ideas
-          </Typography>
-          <Typography
-            className={classnames(classes.pointer, classes.marginBottom1)}
-            onClick={() => setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH)}
-          >
-            Combine idea and inspiration
-          </Typography>
-        </Paper>
-      </Popper>
-    </>
-  );
+  const getRandomPopper = () => {
+    const enoughInspirations = data?.inspirations?.length > 1;
+    const enoughIdeas = data?.ideas?.length > 1;
+    const enoughBoth =
+      data?.ideas?.length > 0 && data?.inspirations?.length > 0;
+    return (
+      <>
+        <div className={classes.overlay} onClick={() => setRandomOpen(false)} />
+        <Popper id="randomPopper" open={randomOpen} anchorEl={anchorEl}>
+          <Paper elevation={3} className={classes.paper}>
+            <Typography
+              className={classnames(
+                classes.marginBottom1,
+                classes.fontWeightBold
+              )}
+            >
+              Random
+            </Typography>
+            <Typography
+              className={classnames(classes.marginBottom1, {
+                [classes.pointer]: enoughInspirations,
+                [classes.disabledColor]: !enoughInspirations,
+              })}
+              onClick={() => {
+                if (enoughInspirations) {
+                  setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS);
+                }
+              }}
+            >
+              Combine two inspirations
+            </Typography>
+            <Typography
+              className={classnames(classes.marginBottom1, {
+                [classes.pointer]: enoughIdeas,
+                [classes.disabledColor]: !enoughIdeas,
+              })}
+              onClick={() => {
+                if (enoughIdeas) {
+                  setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS);
+                }
+              }}
+            >
+              Combine two ideas
+            </Typography>
+            <Typography
+              className={classnames(classes.marginBottom1, {
+                [classes.pointer]: enoughBoth,
+                [classes.disabledColor]: !enoughBoth,
+              })}
+              onClick={() => {
+                if (enoughBoth) {
+                  setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH);
+                }
+              }}
+            >
+              Combine idea and inspiration
+            </Typography>
+          </Paper>
+        </Popper>
+      </>
+    );
+  };
 
   const getFilterPopper = () => (
     <>
@@ -369,6 +401,7 @@ const Navigation = ({ children, history, location }) => {
       <RandomDialog
         randomDialogType={randomDialogType}
         setRandomDialogType={setRandomDialogType}
+        data={data}
       />
     </>
   );

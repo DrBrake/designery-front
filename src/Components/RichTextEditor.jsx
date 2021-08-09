@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: "text",
     padding: "18.5px 14px",
     fontSize: theme.typography.fontSize,
-    fontFamily: "Roboto",
+    fontFamily: theme.typography.fontFamily,
     marginBottom: theme.spacing(2),
   },
   divider: {

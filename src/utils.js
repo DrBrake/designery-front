@@ -15,3 +15,26 @@ export const handleDataForList = (data) => {
   }
   return [];
 };
+
+export const getRandomBetween = (min, max) => {
+  if (min && max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+  return 0;
+};
+
+export const getTwoRandomUniqueValuesFromArray = (array) => {
+  if (array) {
+    const firstRandom = getRandomBetween(0, array.length);
+    const firstItem = array[firstRandom];
+    const arrayWithoutFirstValue = array.filter(
+      (item) => item._id !== firstItem._id
+    );
+    const secondRandom = getRandomBetween(0, arrayWithoutFirstValue.length);
+    const secondItem = arrayWithoutFirstValue[secondRandom];
+    return [firstItem, secondItem];
+  }
+  return [];
+};

@@ -2,8 +2,11 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { v4 as uuidv4 } from "uuid";
+import { convertFromRaw } from "draft-js";
 
-import { IMAGE_TYPE } from "../constants";
+import { IMAGE_TYPE, RANDOM_DIALOG_TYPE } from "../constants";
+import { getRandomBetween, getTwoRandomUniqueValuesFromArray } from "../utils";
 import Chip from "../Components/Chip";
 import Dialog from "../Components/Dialog";
 import Image from "../Components/Image";
@@ -29,73 +32,71 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navigation = ({ randomDialogType, setRandomDialogType }) => {
+const RandomDialog = ({ randomDialogType, setRandomDialogType, data }) => {
   const classes = useStyles();
+  const getRamdonItems = () => {
+    if (randomDialogType === RANDOM_DIALOG_TYPE.IDEAS) {
+      return getTwoRandomUniqueValuesFromArray(data.ideas);
+    } else if (randomDialogType === RANDOM_DIALOG_TYPE.INSPIRATIONS) {
+      return getTwoRandomUniqueValuesFromArray(data.inspirations);
+    } else if (randomDialogType === RANDOM_DIALOG_TYPE.BOTH) {
+      const firstItem = data.ideas[getRandomBetween(0, data.ideas.length)];
+      const secondItem =
+        data.inspirations[getRandomBetween(0, data.inspirations.length)];
+      return [firstItem, secondItem];
+    }
+    return [];
+  };
   return (
     <Dialog dialogOpen={!!randomDialogType} setDialogOpen={setRandomDialogType}>
       <div className={classes.flex}>
-        <div className={classes.randomPopUpDialogContainer}>
-          <Typography className={classes.marginBottom2}>Title 1</Typography>
-          <Typography className={classes.marginBottom2}>
-            Description 1
-          </Typography>
-          <div className={classes.randomPopUpImageContainer}>
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-          </div>
-          <div className={classes.marginBottom2}>
-            <Chip label="Tag" />
-            <Chip label="Tag" lastTag />
-          </div>
-          <Typography className={classes.marginBottom2}>Project 1</Typography>
-          <Typography>Inspiration 1</Typography>
-          <Typography>Inspiration 2</Typography>
-        </div>
-        <div className={classes.border} />
-        <div className={classes.randomPopUpDialogContainer}>
-          <Typography className={classes.marginBottom2}>Title 2</Typography>
-          <Typography className={classes.marginBottom2}>
-            Description 2
-          </Typography>
-          <div className={classes.randomPopUpImageContainer}>
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-            <Image
-              variant={IMAGE_TYPE.RANDOM_POPUP}
-              src="https://cdn.vox-cdn.com/thumbor/E8q_XhXOvit56AdG5rxdP46C4lw=/1400x788/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22438562/GettyImages_102679046.jpg"
-            />
-          </div>
-          <div className={classes.marginBottom2}>
-            <Chip label="Tag" />
-            <Chip label="Tag" lastTag />
-          </div>
-          <Typography className={classes.marginBottom2}>Project 2</Typography>
-          <Typography>Inspiration 3</Typography>
-          <Typography>Inspiration 4</Typography>
-        </div>
+        {getRamdonItems().map((item, index) => (
+          <>
+            <div className={classes.randomPopUpDialogContainer} key={uuidv4()}>
+              <Typography className={classes.marginBottom2}>
+                {item.Title}
+              </Typography>
+              <Typography className={classes.marginBottom2}>
+                {convertFromRaw(item.Description).getPlainText()}
+              </Typography>
+              <div className={classes.randomPopUpImageContainer}>
+                {item.ImageRefs &&
+                  item.ImageRefs.map((image) => (
+                    <Image
+                      variant={IMAGE_TYPE.RANDOM_POPUP}
+                      src={image}
+                      key={uuidv4()}
+                    />
+                  ))}
+              </div>
+              <div className={classes.marginBottom2}>
+                {item.Tags &&
+                  item.Tags.map((tag, tagIndex) => (
+                    <Chip
+                      label={tag}
+                      lastTag={tagIndex + 1 === item.Tags.length}
+                      key={uuidv4()}
+                    />
+                  ))}
+              </div>
+              <Typography className={classes.marginBottom2}>
+                {item.Project}
+              </Typography>
+              {item.Inspirations &&
+                item.Inspirations.map((inspiration) => (
+                  <Typography key={uuidv4()}>{inspiration}</Typography>
+                ))}
+              {item.Ideas &&
+                item.Ideas.map((idea) => (
+                  <Typography key={uuidv4()}>{idea}</Typography>
+                ))}
+            </div>
+            {index === 0 && <div className={classes.border} />}
+          </>
+        ))}
       </div>
     </Dialog>
   );
 };
 
-export default withRouter(Navigation);
+export default withRouter(RandomDialog);
