@@ -7,33 +7,17 @@ export const dataAPI = createApi({
     getData: builder.query({
       query: () => "/",
     }),
-    postIdea: builder.mutation({
-      query: ({ ...body }) => ({
-        url: "idea",
-        method: "POST",
-        body: body,
-      }),
-      transformResponse: (response) => response.data,
-    }),
-    postProject: builder.mutation({
-      query: ({ ...body }) => ({
-        url: "project",
-        method: "POST",
-        body: body,
-      }),
-      transformResponse: (response) => response.data,
-    }),
-    postInspiration: builder.mutation({
-      query: ({ ...body }) => ({
-        url: "inspiration",
+    postItem: builder.mutation({
+      query: (body) => ({
+        url: `/item/${body.Variant}`,
         method: "POST",
         body: body,
       }),
       transformResponse: (response) => response.data,
     }),
     postTag: builder.mutation({
-      query: ({ ...body }) => ({
-        url: "tag",
+      query: (body) => ({
+        url: "/item/tag",
         method: "POST",
         body: body,
       }),
@@ -44,8 +28,6 @@ export const dataAPI = createApi({
 
 export const {
   useGetDataQuery,
-  usePostIdea,
-  usePostProject,
-  usePostInspiration,
-  usePostTag,
+  usePostItemMutation,
+  usePostTagMutation,
 } = dataAPI;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
-import { useFormik } from "formik";
+import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import {
   Typography,
@@ -19,6 +19,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
+import { usePostItemMutation } from "../../Services/dataAPI";
 import Chip from "../Chip";
 import Image from "../Image";
 import AddDialog from "../AddDialog";
@@ -138,36 +139,18 @@ const BarOpen = ({
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogVariant, setDialogVariant] = useState("");
+  const [postItem] = usePostItemMutation();
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const handleValues = (values) => {
-    values.Description = convertToRaw(values.Description.getCurrentContent());
-    return values;
+  const handleFieldValues = (values) => {
+    const tempValues = { ...values };
+    tempValues.Description = convertToRaw(
+      tempValues.Description.getCurrentContent()
+    );
+    return tempValues;
   };
-
-  const formik = useFormik({
-    initialValues: {
-      Title: itemData.Title || "",
-      Description: itemData.Description
-        ? EditorState.createWithContent(convertFromRaw(itemData.Description))
-        : EditorState.createEmpty(),
-      ImageRefs: itemData.ImageRefs || [],
-      Drafts: itemData.Drafts || [],
-      CompletedWorks: itemData.CompletedWorks || [],
-      Completed: itemData.Completed || false,
-      Tags: itemData.Tags || [],
-      Project: itemData.Project || "",
-      Inspirations: itemData.Inspirations || [],
-      DateCreated: itemData.DateCreated || dayjs().format(),
-      Variant: itemData.Variant || "",
-    },
-    onSubmit: (values) => {
-      const handledValues = handleValues(values);
-      console.log(handledValues);
-    },
-  });
 
   const getImageRefs = () =>
     (itemData.Variant === VARIANTS.IDEA ||
@@ -218,52 +201,196 @@ const BarOpen = ({
 
   return (
     <>
-      <form
-        className={classnames(classes.container, {
-          [classes.lastContainer]: isLast,
-          [classes.firstContainer]: isFirst,
-        })}
-        onSubmit={formik.handleSubmit}
+      <Formik
+        initialValues={{
+          Title: itemData.Title || "",
+          Description: itemData.Description
+            ? EditorState.createWithContent(
+                convertFromRaw(itemData.Description)
+              )
+            : EditorState.createEmpty(),
+          ImageRefs: itemData.ImageRefs || [],
+          Drafts: itemData.Drafts || [],
+          CompletedWorks: itemData.CompletedWorks || [],
+          Completed: itemData.Completed || false,
+          Tags: itemData.Tags || [],
+          Project: itemData.Project || "",
+          Inspirations: itemData.Inspirations || [],
+          DateCreated: itemData.DateCreated || dayjs().format(),
+          Variant: itemData.Variant || "",
+        }}
+        onSubmit={(values) => postItem(handleFieldValues(values))}
       >
-        <Grid container wrap="nowrap">
-          <Grid item>
-            <Close
-              className={classes.icon}
-              onClick={() => {
-                setOpen(false);
-                if (isNewItem)
-                  dispatch(
-                    updateNewItem({
-                      index,
-                      values: handleValues(formik.values),
-                    })
-                  );
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <div className={classes.flex}>
-              <div className={classes.column}>
-                <TextField
-                  placeholder="Title"
-                  variant="outlined"
-                  fullWidth
-                  className={classes.marginBottom2}
-                  value={formik.values.Title}
-                  onChange={formik.handleChange}
-                  required
+        {({ values, handleChange, setFieldValue }) => (
+          <Form
+            className={classnames(classes.container, {
+              [classes.lastContainer]: isLast,
+              [classes.firstContainer]: isFirst,
+            })}
+          >
+            <Grid container wrap="nowrap">
+              <Grid item>
+                <Close
+                  className={classes.icon}
+                  onClick={() => {
+                    setOpen(false);
+                    if (isNewItem)
+                      dispatch(
+                        updateNewItem({
+                          index,
+                          values: handleFieldValues(values),
+                        })
+                      );
+                  }}
                 />
-                <RichTextEditor
-                  placeholder="Description"
-                  editorState={formik.values.Description}
-                  setFieldValue={(value) =>
-                    formik.setFieldValue("Description", value)
-                  }
-                />
-              </div>
-              {itemData.Variant === VARIANTS.IDEA && (
-                <div className={classes.fullWidth}>
-                  <div className={classes.spaceBetween}>
+              </Grid>
+              <Grid item xs={12}>
+                <div className={classes.flex}>
+                  <div className={classes.column}>
+                    <TextField
+                      placeholder="Title"
+                      variant="outlined"
+                      fullWidth
+                      className={classes.marginBottom2}
+                      value={values.Title}
+                      name="Title"
+                      onChange={handleChange}
+                      required
+                    />
+                    <RichTextEditor
+                      placeholder="Description"
+                      editorState={values.Description}
+                      setFieldValue={(value) =>
+                        setFieldValue("Description", value)
+                      }
+                    />
+                  </div>
+                  {itemData.Variant === VARIANTS.IDEA && (
+                    <div className={classes.fullWidth}>
+                      <div className={classes.spaceBetween}>
+                        <div className={classes.flex}>
+                          <Typography
+                            className={classnames(
+                              classes.marginRight,
+                              classes.fontWeightBold
+                            )}
+                          >
+                            Tags
+                          </Typography>
+                          <Add
+                            className={classes.pointer}
+                            onClick={() => {
+                              setDialogOpen(true);
+                              setDialogVariant(DIALOG_VARIANT.TAG);
+                            }}
+                          />
+                        </div>
+                        <Typography
+                          className={classnames(
+                            classes.text,
+                            classes.lightGrey,
+                            classes.date
+                          )}
+                        >
+                          {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
+                        </Typography>
+                      </div>
+                      <div
+                        className={classnames(
+                          classes.fullWidth,
+                          classes.marginBottom3
+                        )}
+                      >
+                        {itemData.Tags &&
+                          itemData.Tags.map((item, index) => (
+                            <Chip
+                              label={item}
+                              onClick={() => null}
+                              lastTag={index + 1 === itemData.Tags.length}
+                              key={uuidv4()}
+                            />
+                          ))}
+                      </div>
+                      <div
+                        className={classnames(
+                          classes.selectContainer,
+                          classes.marginBottom3
+                        )}
+                      >
+                        <FormControl fullWidth className={classes.marginRight}>
+                          <InputLabel
+                            id="projectSelect"
+                            classes={{
+                              root: classes.paddingLeft,
+                              focused: classes.displayNone,
+                            }}
+                            disableAnimation
+                          >
+                            Project
+                          </InputLabel>
+                          <Select
+                            labelId="projectSelect"
+                            value={values.Project}
+                            onChange={handleChange}
+                            variant="outlined"
+                            name="Project"
+                          >
+                            {projects.map((item) => (
+                              <MenuItem value={item.Title} key={uuidv4()}>
+                                {item.Title}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <Add
+                          className={classes.pointer}
+                          onClick={() => {
+                            setDialogOpen(true);
+                            setDialogVariant(DIALOG_VARIANT.PROJECT);
+                          }}
+                        />
+                      </div>
+                      <div
+                        className={classnames(
+                          classes.fullWidth,
+                          classes.marginBottom3
+                        )}
+                      >
+                        <div className={classes.flex}>
+                          <Typography
+                            className={classnames(
+                              classes.marginRight,
+                              classes.fontWeightBold
+                            )}
+                          >
+                            Inspirations
+                          </Typography>
+                          <Add
+                            className={classes.pointer}
+                            onClick={() => {
+                              setDialogOpen(true);
+                              setDialogVariant(DIALOG_VARIANT.INSPIRATION);
+                            }}
+                          />
+                        </div>
+                        {itemData.Inspirations &&
+                          itemData.Inspirations.map((item) => (
+                            <Typography key={uuidv4()}>
+                              <Link href="#">{item.Title}</Link>
+                            </Typography>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {itemData.Variant === VARIANTS.INSPIRATION && getImageRefs()}
+                {itemData.Variant === VARIANTS.IDEA && itemData.Completed && (
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
                     <div className={classes.flex}>
                       <Typography
                         className={classnames(
@@ -271,194 +398,83 @@ const BarOpen = ({
                           classes.fontWeightBold
                         )}
                       >
-                        Tags
+                        Completed works
                       </Typography>
                       <Add
                         className={classes.pointer}
                         onClick={() => {
                           setDialogOpen(true);
-                          setDialogVariant(DIALOG_VARIANT.TAG);
+                          setDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
                         }}
                       />
                     </div>
-                    <Typography
-                      className={classnames(
-                        classes.text,
-                        classes.lightGrey,
-                        classes.date
-                      )}
-                    >
-                      {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
-                    </Typography>
-                  </div>
-                  <div
-                    className={classnames(
-                      classes.fullWidth,
-                      classes.marginBottom3
-                    )}
-                  >
-                    {itemData.Tags &&
-                      itemData.Tags.map((item, index) => (
-                        <Chip
-                          label={item}
-                          onClick={() => null}
-                          lastTag={index + 1 === itemData.Tags.length}
+                    {itemData.CompletedWorks &&
+                      itemData.CompletedWorks.map((item) => (
+                        <Image
+                          variant={IMAGE_TYPE.COMPLETED_WORK}
+                          src={item}
                           key={uuidv4()}
                         />
                       ))}
                   </div>
-                  <div
-                    className={classnames(
-                      classes.selectContainer,
-                      classes.marginBottom3
-                    )}
-                  >
-                    <FormControl fullWidth className={classes.marginRight}>
-                      <InputLabel
-                        id="projectSelect"
-                        classes={{
-                          root: classes.paddingLeft,
-                          focused: classes.displayNone,
-                        }}
-                        disableAnimation
-                      >
-                        Project
-                      </InputLabel>
-                      <Select
-                        labelId="projectSelect"
-                        value={formik.values.Project}
-                        onChange={formik.handleChange}
-                        variant="outlined"
-                      >
-                        {projects.map((item) => (
-                          <MenuItem value={item.Title} key={uuidv4()}>
-                            {item.Title}
-                          </MenuItem>
+                )}
+                <div className={classes.bottomContainer}>
+                  {itemData.Variant === VARIANTS.IDEA && getImageRefs()}
+                  {itemData.Variant !== VARIANTS.IDEA && (
+                    <div>
+                      <Typography className={classes.fontWeightBold}>
+                        Linked ideas
+                      </Typography>
+                      {itemData.Ideas &&
+                        itemData.Ideas.map((item) => (
+                          <Typography key={uuidv4()}>
+                            <Link href="#">{item.Title}</Link>
+                          </Typography>
                         ))}
-                      </Select>
-                    </FormControl>
-                    <Add
-                      className={classes.pointer}
-                      onClick={() => {
-                        setDialogOpen(true);
-                        setDialogVariant(DIALOG_VARIANT.PROJECT);
-                      }}
-                    />
-                  </div>
-                  <div
-                    className={classnames(
-                      classes.fullWidth,
-                      classes.marginBottom3
-                    )}
-                  >
-                    <div className={classes.flex}>
-                      <Typography
-                        className={classnames(
-                          classes.marginRight,
-                          classes.fontWeightBold
-                        )}
-                      >
-                        Inspirations
-                      </Typography>
-                      <Add
-                        className={classes.pointer}
-                        onClick={() => {
-                          setDialogOpen(true);
-                          setDialogVariant(DIALOG_VARIANT.INSPIRATION);
-                        }}
-                      />
                     </div>
-                    {itemData.Inspirations &&
-                      itemData.Inspirations.map((item) => (
-                        <Typography key={uuidv4()}>
-                          <Link href="#">{item.Title}</Link>
-                        </Typography>
-                      ))}
+                  )}
+                  <div className={classes.buttonContainer}>
+                    {itemData.Variant === VARIANTS.IDEA && !isNewItem && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classnames(
+                          classes.button,
+                          classes.marginRight
+                        )}
+                        onClick={() => null}
+                      >
+                        Complete
+                      </Button>
+                    )}
+                    {isNewItem && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classnames(
+                          classes.button,
+                          classes.marginRight
+                        )}
+                        onClick={() => dispatch(removeNewItem({ index }))}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      type="submit"
+                    >
+                      Save
+                    </Button>
                   </div>
                 </div>
-              )}
-            </div>
-            {itemData.Variant === VARIANTS.INSPIRATION && getImageRefs()}
-            {itemData.Variant === VARIANTS.IDEA && itemData.Completed && (
-              <div
-                className={classnames(classes.fullWidth, classes.marginBottom3)}
-              >
-                <div className={classes.flex}>
-                  <Typography
-                    className={classnames(
-                      classes.marginRight,
-                      classes.fontWeightBold
-                    )}
-                  >
-                    Completed works
-                  </Typography>
-                  <Add
-                    className={classes.pointer}
-                    onClick={() => {
-                      setDialogOpen(true);
-                      setDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
-                    }}
-                  />
-                </div>
-                {itemData.CompletedWorks &&
-                  itemData.CompletedWorks.map((item) => (
-                    <Image
-                      variant={IMAGE_TYPE.COMPLETED_WORK}
-                      src={item}
-                      key={uuidv4()}
-                    />
-                  ))}
-              </div>
-            )}
-            <div className={classes.bottomContainer}>
-              {itemData.Variant === VARIANTS.IDEA && getImageRefs()}
-              {itemData.Variant !== VARIANTS.IDEA && (
-                <div>
-                  <Typography className={classes.fontWeightBold}>
-                    Linked ideas
-                  </Typography>
-                  {itemData.Ideas &&
-                    itemData.Ideas.map((item) => (
-                      <Typography key={uuidv4()}>
-                        <Link href="#">{item.Title}</Link>
-                      </Typography>
-                    ))}
-                </div>
-              )}
-              <div className={classes.buttonContainer}>
-                {itemData.Variant === VARIANTS.IDEA && !isNewItem && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classnames(classes.button, classes.marginRight)}
-                    onClick={() => null}
-                  >
-                    Complete
-                  </Button>
-                )}
-                {isNewItem && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classnames(classes.button, classes.marginRight)}
-                    onClick={() => dispatch(removeNewItem({ index }))}
-                  >
-                    Remove
-                  </Button>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  type="submit"
-                >
-                  Save
-                </Button>
-              </div>
-            </div>
-          </Grid>
-        </Grid>
-      </form>
+              </Grid>
+            </Grid>
+          </Form>
+        )}
+      </Formik>
       <AddDialog
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}
