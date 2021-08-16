@@ -27,12 +27,15 @@ const useStyles = makeStyles((theme) => ({
     borderBottomLeftRadius: "4px",
     borderBottomRightRadius: "4px",
   },
-  firstItem: {
+  flex: {
     display: "flex",
   },
   text: {
     fontSize: "16px",
     fontWeight: "500",
+  },
+  lighterGrey: {
+    color: theme.palette.grey[400],
   },
   descriptionText: {
     fontSize: "16px",
@@ -56,9 +59,12 @@ const useStyles = makeStyles((theme) => ({
   lastTag: {
     marginRight: "0px",
   },
+  marginRight: {
+    marginRight: theme.spacing(),
+  },
 }));
 
-const BarClosed = ({ itemData, setOpen, isLast, isFirst }) => {
+const BarClosed = ({ itemData, setOpen, isLast, isFirst, isNewItem }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -70,10 +76,23 @@ const BarClosed = ({ itemData, setOpen, isLast, isFirst }) => {
       })}
       onClick={() => setOpen(true)}
     >
-      <Grid item className={classes.firstItem}>
+      <Grid item className={classes.flex}>
         <ChevronDown className={classes.icon} />
         <div>
-          <Typography className={classes.text}>{itemData.Title}</Typography>
+          <div className={classes.flex}>
+            <Typography
+              className={classnames(classes.text, classes.marginRight)}
+            >
+              {itemData.Title}
+            </Typography>
+            {isNewItem && (
+              <Typography
+                className={classnames(classes.text, classes.lighterGrey)}
+              >
+                (UNSAVED)
+              </Typography>
+            )}
+          </div>
           <Typography
             className={classnames(classes.descriptionText, classes.lightGrey)}
           >

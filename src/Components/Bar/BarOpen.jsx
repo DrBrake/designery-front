@@ -126,6 +126,9 @@ const useStyles = makeStyles((theme) => ({
   displayNone: {
     display: "none",
   },
+  lighterGrey: {
+    color: theme.palette.grey[400],
+  },
 }));
 
 const BarOpen = ({
@@ -245,6 +248,16 @@ const BarOpen = ({
                 />
               </Grid>
               <Grid item xs={12}>
+                {isNewItem && (
+                  <Typography
+                    className={classnames(
+                      classes.lighterGrey,
+                      classes.marginBottom2
+                    )}
+                  >
+                    (UNSAVED)
+                  </Typography>
+                )}
                 <div className={classes.flex}>
                   <div className={classes.column}>
                     <TextField

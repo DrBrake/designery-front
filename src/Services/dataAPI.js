@@ -13,7 +13,6 @@ export const dataAPI = createApi({
         method: "POST",
         body: body,
       }),
-      transformResponse: (response) => response.data,
     }),
     postTag: builder.mutation({
       query: (body) => ({
@@ -21,7 +20,6 @@ export const dataAPI = createApi({
         method: "POST",
         body: body,
       }),
-      transformResponse: (response) => response.data,
     }),
   }),
 });

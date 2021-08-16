@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: `${theme.breakpoints.values.xl}px`,
     margin: "auto",
   },
+  newItemContainer: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const List = () => {
@@ -26,18 +29,20 @@ const List = () => {
   const newItems = useSelector(selectNewItems);
   return (
     <div className={classes.container}>
-      {newItems &&
-        newItems.map((item, index) => (
-          <Bar
-            itemData={item}
-            isFirst={index === 0}
-            isLast={index + 1 === newItems.length}
-            key={uuidv4()}
-            projects={data.projects}
-            isNewItem
-            index={index}
-          />
-        ))}
+      <div className={classes.newItemContainer}>
+        {newItems &&
+          newItems.map((item, index) => (
+            <Bar
+              itemData={item}
+              isFirst={index === 0}
+              isLast={index + 1 === newItems.length}
+              key={uuidv4()}
+              projects={handleData.projects}
+              isNewItem
+              index={index}
+            />
+          ))}
+      </div>
       {isLoading && <Typography>Loading</Typography>}
       {error && <Typography>Error</Typography>}
       {handleData && handleData.length > 0 && !isLoading && (
@@ -47,9 +52,9 @@ const List = () => {
             <Bar
               itemData={item}
               isFirst={index === 0}
-              isLast={index + 1 === data.length}
+              isLast={index + 1 === handleData.length}
               key={uuidv4()}
-              projects={data.projects}
+              projects={handleData.projects}
             />
           ))}
         </>
