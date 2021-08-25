@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import classnames from "classnames";
-import { Dialog, Typography, TextField, Button } from "@material-ui/core";
+import { Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
+import Dialog from "./Dialog";
 import { DIALOG_VARIANT } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,8 +57,8 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
   };
   return (
     <Dialog
-      open={dialogOpen}
-      onClose={() => setDialogOpen(false)}
+      dialogOpen={dialogOpen}
+      setDialogOpen={setDialogOpen}
       classes={{
         paper: classes.dialogPadding,
       }}

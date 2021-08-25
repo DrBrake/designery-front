@@ -26,6 +26,7 @@ import {
 import Chip from "../Chip";
 import Image from "../Image";
 import AddDialog from "../AddDialog";
+import PromptDialog from "../PromptDialog";
 import RichTextEditor from "../RichTextEditor";
 import { Close, Add } from "../Icons";
 import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
@@ -143,8 +144,10 @@ const BarOpen = ({
   isNewItem,
   index,
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogVariant, setDialogVariant] = useState("");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addDialogVariant, setAddDialogVariant] = useState("");
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
@@ -180,8 +183,8 @@ const BarOpen = ({
           <Add
             className={classes.pointer}
             onClick={() => {
-              setDialogOpen(true);
-              setDialogVariant(DIALOG_VARIANT.DRAFT);
+              setAddDialogOpen(true);
+              setAddDialogVariant(DIALOG_VARIANT.DRAFT);
             }}
           />
         </div>
@@ -198,8 +201,8 @@ const BarOpen = ({
           <Add
             className={classes.pointer}
             onClick={() => {
-              setDialogOpen(true);
-              setDialogVariant(DIALOG_VARIANT.IMAGE_REF);
+              setAddDialogOpen(true);
+              setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
             }}
           />
         </div>
@@ -301,8 +304,8 @@ const BarOpen = ({
                           <Add
                             className={classes.pointer}
                             onClick={() => {
-                              setDialogOpen(true);
-                              setDialogVariant(DIALOG_VARIANT.TAG);
+                              setAddDialogOpen(true);
+                              setAddDialogVariant(DIALOG_VARIANT.TAG);
                             }}
                           />
                         </div>
@@ -366,8 +369,8 @@ const BarOpen = ({
                         <Add
                           className={classes.pointer}
                           onClick={() => {
-                            setDialogOpen(true);
-                            setDialogVariant(DIALOG_VARIANT.PROJECT);
+                            setAddDialogOpen(true);
+                            setAddDialogVariant(DIALOG_VARIANT.PROJECT);
                           }}
                         />
                       </div>
@@ -389,8 +392,8 @@ const BarOpen = ({
                           <Add
                             className={classes.pointer}
                             onClick={() => {
-                              setDialogOpen(true);
-                              setDialogVariant(DIALOG_VARIANT.INSPIRATION);
+                              setAddDialogOpen(true);
+                              setAddDialogVariant(DIALOG_VARIANT.INSPIRATION);
                             }}
                           />
                         </div>
@@ -424,8 +427,8 @@ const BarOpen = ({
                       <Add
                         className={classes.pointer}
                         onClick={() => {
-                          setDialogOpen(true);
-                          setDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
+                          setAddDialogOpen(true);
+                          setAddDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
                         }}
                       />
                     </div>
@@ -457,30 +460,26 @@ const BarOpen = ({
                   <div className={classes.buttonContainer}>
                     {!itemData.Completed && (
                       <Button
-                        variant="contained"
+                        variant="text"
                         color="primary"
                         className={classnames(
                           classes.button,
                           classes.marginRight
                         )}
-                        onClick={() =>
-                          isNewItem
-                            ? dispatch(removeNewItem({ index }))
-                            : removeItem(itemData)
-                        }
+                        onClick={() => setRemoveDialogOpen(true)}
                       >
                         Remove
                       </Button>
                     )}
                     {itemData.Variant === VARIANTS.IDEA && !isNewItem && (
                       <Button
-                        variant="contained"
+                        variant="text"
                         color="primary"
                         className={classnames(
                           classes.button,
                           classes.marginRight
                         )}
-                        onClick={() => null}
+                        onClick={() => setCompleteDialogOpen(true)}
                       >
                         Complete
                       </Button>
@@ -501,9 +500,24 @@ const BarOpen = ({
         )}
       </Formik>
       <AddDialog
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        variant={dialogVariant}
+        dialogOpen={addDialogOpen}
+        setDialogOpen={setAddDialogOpen}
+        variant={addDialogVariant}
+      />
+      <PromptDialog
+        dialogOpen={removeDialogOpen}
+        setDialogOpen={setRemoveDialogOpen}
+        onSave={() => {
+          isNewItem ? dispatch(removeNewItem({ index })) : removeItem(itemData);
+        }}
+        title={`Are you sure you want to remove this ${itemData.Variant}?`}
+        saveButtonText="Remove"
+      />
+      <PromptDialog
+        dialogOpen={completeDialogOpen}
+        setDialogOpen={setCompleteDialogOpen}
+        title="Are you sure you want to set this as completed?"
+        saveButtonText="Complete"
       />
     </>
   );
