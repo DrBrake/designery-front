@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
@@ -19,7 +19,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
-import { usePostItemMutation } from "../../Services/dataAPI";
+import {
+  usePostItemMutation,
+  useRemoveItemMutation,
+} from "../../Services/dataAPI";
 import Chip from "../Chip";
 import Image from "../Image";
 import AddDialog from "../AddDialog";
@@ -142,7 +145,8 @@ const BarOpen = ({
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogVariant, setDialogVariant] = useState("");
-  const [postItem] = usePostItemMutation();
+  const [postItem, { isSuccess }] = usePostItemMutation();
+  const [removeItem] = useRemoveItemMutation();
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -154,6 +158,10 @@ const BarOpen = ({
     );
     return tempValues;
   };
+
+  useEffect(() => {
+    if (isSuccess && isNewItem) dispatch(removeNewItem({ index }));
+  }, [isSuccess]);
 
   const getImageRefs = () =>
     (itemData.Variant === VARIANTS.IDEA ||
@@ -447,6 +455,23 @@ const BarOpen = ({
                     </div>
                   )}
                   <div className={classes.buttonContainer}>
+                    {!itemData.Completed && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classnames(
+                          classes.button,
+                          classes.marginRight
+                        )}
+                        onClick={() =>
+                          isNewItem
+                            ? dispatch(removeNewItem({ index }))
+                            : removeItem(itemData)
+                        }
+                      >
+                        Remove
+                      </Button>
+                    )}
                     {itemData.Variant === VARIANTS.IDEA && !isNewItem && (
                       <Button
                         variant="contained"
@@ -458,19 +483,6 @@ const BarOpen = ({
                         onClick={() => null}
                       >
                         Complete
-                      </Button>
-                    )}
-                    {isNewItem && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={classnames(
-                          classes.button,
-                          classes.marginRight
-                        )}
-                        onClick={() => dispatch(removeNewItem({ index }))}
-                      >
-                        Remove
                       </Button>
                     )}
                     <Button

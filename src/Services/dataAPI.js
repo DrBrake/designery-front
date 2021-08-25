@@ -6,6 +6,7 @@ export const dataAPI = createApi({
   endpoints: (builder) => ({
     getData: builder.query({
       query: () => "/",
+      providesTags: () => ["Items"],
     }),
     postItem: builder.mutation({
       query: (body) => ({
@@ -13,6 +14,14 @@ export const dataAPI = createApi({
         method: "POST",
         body: body,
       }),
+      invalidatesTags: ["Items"],
+    }),
+    removeItem: builder.mutation({
+      query: (body) => ({
+        url: `/item/${body.Variant}/${body._id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Items"],
     }),
     postTag: builder.mutation({
       query: (body) => ({
@@ -27,5 +36,6 @@ export const dataAPI = createApi({
 export const {
   useGetDataQuery,
   usePostItemMutation,
+  useRemoveItemMutation,
   usePostTagMutation,
 } = dataAPI;
