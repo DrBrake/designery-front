@@ -6,8 +6,10 @@ import Dialog from "./Dialog";
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    marginBottom: theme.spacing(2),
-    fontSize: "24px",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(3),
   },
   buttonContainer: {
     display: "flex",

@@ -7,15 +7,19 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(4),
     overflowX: "hidden",
     maxWidth: "100%",
+    minWidth: "500px",
   },
 }));
 
-const Dialog = ({ children, dialogOpen, setDialogOpen }) => {
+const Dialog = ({ children, dialogOpen, setDialogOpen, onClose }) => {
   const classes = useStyles();
   return (
     <MuiDialog
       open={dialogOpen}
-      onClose={() => setDialogOpen(false)}
+      onClose={() => {
+        if (onClose) onClose();
+        setDialogOpen(false);
+      }}
       classes={{
         paper: classes.dialogPadding,
       }}

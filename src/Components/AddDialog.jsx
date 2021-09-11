@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import classnames from "classnames";
+import { FieldArray, Field } from "formik";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Dialog from "./Dialog";
+import { Add, Remove } from "./Icons";
 import { DIALOG_VARIANT } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
-  dialogPadding: {
-    padding: theme.spacing(4),
-  },
   textAlignCenter: {
     textAlign: "center",
   },
@@ -41,9 +40,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
-  const [url, setUrl] = useState("");
+const AddDialog = ({
+  dialogOpen,
+  setDialogOpen,
+  variant,
+  values,
+  name,
+  handleChange,
+}) => {
   const classes = useStyles();
+
   const getTitle = () => {
     if (variant === DIALOG_VARIANT.IMAGE_REF) return "Add image reference";
     else if (variant === DIALOG_VARIANT.TAG) return "Add a tag";
@@ -55,14 +61,9 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
     }
     return "";
   };
+
   return (
-    <Dialog
-      dialogOpen={dialogOpen}
-      setDialogOpen={setDialogOpen}
-      classes={{
-        paper: classes.dialogPadding,
-      }}
-    >
+    <Dialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
       <Typography
         className={classnames(
           classes.fontWeightBold,
@@ -74,30 +75,69 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
       </Typography>
       {variant === DIALOG_VARIANT.IMAGE_REF ||
       variant === DIALOG_VARIANT.DRAFT ||
-      variant === DIALOG_VARIANT.COMPLETED_WORK ? (
-        <div className={classnames(classes.alignCenter, classes.marginBottom2)}>
-          <TextField
-            placeholder="Image URL or local file"
-            variant="outlined"
-            fullWidth
-            className={classes.marginRight}
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <Button
-            variant="text"
-            color="primary"
-            className={classes.button}
-            onClick={() => null}
-          >
-            Browse
-          </Button>
-        </div>
+      variant === DIALOG_VARIANT.COMPLETED_WORK ||
+      variant === DIALOG_VARIANT.TAG ||
+      variant === DIALOG_VARIANT.INSPIRATION ? (
+        <FieldArray
+          name={name}
+          render={(arrayHelpers) => (
+            <>
+              {values.map((item, index) => (
+                <div
+                  key={index}
+                  className={classnames(
+                    classes.alignCenter,
+                    classes.marginBottom2
+                  )}
+                >
+                  {index === 0 ? (
+                    <Add
+                      onClick={() => arrayHelpers.insert(index, "")}
+                      className={classes.marginRight}
+                    />
+                  ) : (
+                    <Remove
+                      onClick={() => arrayHelpers.remove(index)}
+                      className={classes.marginRight}
+                    />
+                  )}
+                  <Field
+                    placeholder={
+                      variant === DIALOG_VARIANT.IMAGE_REF ||
+                      variant === DIALOG_VARIANT.DRAFT ||
+                      variant === DIALOG_VARIANT.COMPLETED_WORK
+                        ? "Image URL or local file"
+                        : `Type existing or new ${variant}`
+                    }
+                    variant="outlined"
+                    fullWidth
+                    className={classes.marginRight}
+                    name={`${name}.${index}`}
+                    component={TextField}
+                  />
+                  {(variant === DIALOG_VARIANT.IMAGE_REF ||
+                    variant === DIALOG_VARIANT.DRAFT ||
+                    variant === DIALOG_VARIANT.COMPLETED_WORK) && (
+                    <Button
+                      variant="text"
+                      color="primary"
+                      className={classes.button}
+                      onClick={() => null}
+                    >
+                      Browse
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+        />
       ) : (
         <TextField
           variant="outlined"
           fullWidth
           className={classes.marginBottom2}
+          onChange={handleChange}
         />
       )}
       <div className={classes.buttonContainer}>
@@ -105,7 +145,7 @@ const AddDialog = ({ dialogOpen, setDialogOpen, variant }) => {
           variant="contained"
           color="primary"
           className={classes.button}
-          onClick={() => null}
+          onClick={() => setDialogOpen(false)}
         >
           Save
         </Button>

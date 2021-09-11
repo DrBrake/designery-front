@@ -26,6 +26,9 @@ const List = () => {
   const { data, error, isLoading } = useGetDataQuery();
   const handleData = handleDataForList(data);
 
+  // isLoading gets stuck to true with hot reload sometimes
+  const loadingProd = isLoading && process.env.NODE_ENV === "production";
+
   const newItems = useSelector(selectNewItems);
   return (
     <div className={classes.container}>
@@ -43,9 +46,9 @@ const List = () => {
             />
           ))}
       </div>
-      {isLoading && <Typography>Loading</Typography>}
+      {loadingProd && <Typography>Loading</Typography>}
       {error && <Typography>Error</Typography>}
-      {handleData && handleData.length > 0 && !isLoading && (
+      {handleData && handleData.length > 0 && !loadingProd && (
         <>
           <Sort />
           {handleData.map((item, index) => (
@@ -60,11 +63,9 @@ const List = () => {
         </>
       )}
       {handleData?.length === 0 &&
-        !isLoading &&
+        !loadingProd &&
         // eslint-disable-next-line prettier/prettier
-        newItems?.length === 0 && (
-          <Typography>No data yet</Typography>
-        )}
+        newItems?.length === 0 && <Typography>No data yet</Typography>}
     </div>
   );
 };
