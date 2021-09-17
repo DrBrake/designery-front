@@ -33,7 +33,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.spacing(1),
   },
   buttonContainer: {
-    alignSelf: "flex-end",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  iconContainer: {
+    alignSelf: "center",
+    flex: 1,
   },
   pointer: {
     cursor: "pointer",
@@ -50,6 +55,18 @@ const AddDialog = ({
 }) => {
   const classes = useStyles();
 
+  const addMultiple =
+    variant === DIALOG_VARIANT.IMAGE_REF ||
+    variant === DIALOG_VARIANT.DRAFT ||
+    variant === DIALOG_VARIANT.COMPLETED_WORK ||
+    variant === DIALOG_VARIANT.TAG ||
+    variant === DIALOG_VARIANT.INSPIRATION;
+
+  const imageVariant =
+    variant === DIALOG_VARIANT.IMAGE_REF ||
+    variant === DIALOG_VARIANT.DRAFT ||
+    variant === DIALOG_VARIANT.COMPLETED_WORK;
+
   const getTitle = () => {
     if (variant === DIALOG_VARIANT.IMAGE_REF) return "Add image reference";
     else if (variant === DIALOG_VARIANT.TAG) return "Add a tag";
@@ -62,6 +79,27 @@ const AddDialog = ({
     return "";
   };
 
+  const getButtons = (arrayHelpers) => (
+    <div className={classes.buttonContainer}>
+      {addMultiple && arrayHelpers && (
+        <div className={classes.iconContainer}>
+          <Add
+            onClick={() => arrayHelpers.push("")}
+            className={classnames(classes.marginRight, classes.cursor)}
+          />
+        </div>
+      )}
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        onClick={() => setDialogOpen(false)}
+      >
+        Save
+      </Button>
+    </div>
+  );
+
   return (
     <Dialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
       <Typography
@@ -73,11 +111,7 @@ const AddDialog = ({
       >
         {getTitle()}
       </Typography>
-      {variant === DIALOG_VARIANT.IMAGE_REF ||
-      variant === DIALOG_VARIANT.DRAFT ||
-      variant === DIALOG_VARIANT.COMPLETED_WORK ||
-      variant === DIALOG_VARIANT.TAG ||
-      variant === DIALOG_VARIANT.INSPIRATION ? (
+      {addMultiple ? (
         <FieldArray
           name={name}
           render={(arrayHelpers) => (
@@ -90,45 +124,26 @@ const AddDialog = ({
                     classes.marginBottom2
                   )}
                 >
-                  {index === 0 ? (
-                    <Add
-                      onClick={() => arrayHelpers.insert(index, "")}
-                      className={classes.marginRight}
-                    />
-                  ) : (
-                    <Remove
-                      onClick={() => arrayHelpers.remove(index)}
-                      className={classes.marginRight}
-                    />
-                  )}
+                  <Remove
+                    onClick={() => arrayHelpers.remove(index)}
+                    className={classnames(classes.marginRight, classes.cursor)}
+                  />
                   <Field
                     placeholder={
-                      variant === DIALOG_VARIANT.IMAGE_REF ||
-                      variant === DIALOG_VARIANT.DRAFT ||
-                      variant === DIALOG_VARIANT.COMPLETED_WORK
-                        ? "Image URL or local file"
+                      imageVariant
+                        ? "Image URL"
                         : `Type existing or new ${variant}`
                     }
                     variant="outlined"
                     fullWidth
                     className={classes.marginRight}
                     name={`${name}.${index}`}
-                    component={TextField}
+                    as={TextField}
+                    onChange={handleChange}
                   />
-                  {(variant === DIALOG_VARIANT.IMAGE_REF ||
-                    variant === DIALOG_VARIANT.DRAFT ||
-                    variant === DIALOG_VARIANT.COMPLETED_WORK) && (
-                    <Button
-                      variant="text"
-                      color="primary"
-                      className={classes.button}
-                      onClick={() => null}
-                    >
-                      Browse
-                    </Button>
-                  )}
                 </div>
               ))}
+              {getButtons(arrayHelpers)}
             </>
           )}
         />
@@ -140,16 +155,7 @@ const AddDialog = ({
           onChange={handleChange}
         />
       )}
-      <div className={classes.buttonContainer}>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => setDialogOpen(false)}
-        >
-          Save
-        </Button>
-      </div>
+      {!addMultiple && getButtons()}
     </Dialog>
   );
 };

@@ -7,7 +7,7 @@ import { useGetDataQuery } from "../Services/dataAPI";
 import { handleDataForList } from "../utils";
 
 import Sort from "../Components/Sort";
-import Image from "../Components/Image";
+import Image from "../Components/Image/Image";
 import { IMAGE_TYPE } from "../constants";
 
 const useStyles = makeStyles((theme) => ({

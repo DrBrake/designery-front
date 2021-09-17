@@ -24,12 +24,14 @@ import {
   useRemoveItemMutation,
 } from "../../Services/dataAPI";
 import Chip from "../Chip";
-import Image from "../Image";
+import Image from "../Image/Image";
 import AddDialog from "../AddDialog";
 import PromptDialog from "../PromptDialog";
 import RichTextEditor from "../RichTextEditor";
+import ImageDragAndDrop from "../Image/ImageDragAndDrop";
 import { Close, Add } from "../Icons";
 import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
+import { isURL } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -161,6 +163,7 @@ const BarOpen = ({
     tempValues.Description = convertToRaw(
       tempValues.Description.getCurrentContent()
     );
+    tempValues.ImageRefs.concat(tempValues.NewImageRefs);
     return tempValues;
   };
 
@@ -196,7 +199,7 @@ const BarOpen = ({
         {values.Drafts &&
           values.Drafts.map(
             (item) =>
-              item !== "" && (
+              isURL(item) && (
                 <Image variant={IMAGE_TYPE.DRAFT} src={item} key={uuidv4()} />
               )
           )}
@@ -210,8 +213,8 @@ const BarOpen = ({
             className={classes.pointer}
             onClick={() => {
               setAddDialogOpen(true);
-              if (values.ImageRefs.length === 0) {
-                setFieldValue("ImageRefs", [""]);
+              if (values.NewImageRefs.length === 0) {
+                setFieldValue("NewImageRefs", [""]);
               }
               setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
             }}
@@ -220,15 +223,23 @@ const BarOpen = ({
         {values.ImageRefs &&
           values.ImageRefs.map(
             (item) =>
-              item !== "" && (
+              isURL(item) && (
                 <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
               )
           )}
+        {values.NewImageRefs &&
+          values.NewImageRefs.map(
+            (item) =>
+              isURL(item) && (
+                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+              )
+          )}
+        <ImageDragAndDrop />
       </div>
     );
 
   const getValuesByVariant = (values, variant) => {
-    if (variant === DIALOG_VARIANT.IMAGE_REF) return values.ImageRefs;
+    if (variant === DIALOG_VARIANT.IMAGE_REF) return values.NewImageRefs;
     else if (variant === DIALOG_VARIANT.TAG) return values.Tags;
     else if (variant === DIALOG_VARIANT.PROJECT) return projects;
     else if (variant === DIALOG_VARIANT.INSPIRATION) return values.Inspirations;
@@ -240,7 +251,7 @@ const BarOpen = ({
   };
 
   const getNameByVariant = (variant) => {
-    if (variant === DIALOG_VARIANT.IMAGE_REF) return "ImageRefs";
+    if (variant === DIALOG_VARIANT.IMAGE_REF) return "NewImageRefs";
     else if (variant === DIALOG_VARIANT.TAG) return "Tags";
     else if (variant === DIALOG_VARIANT.PROJECT) return "Project";
     else if (variant === DIALOG_VARIANT.INSPIRATION) return "Inspirations";
@@ -259,6 +270,7 @@ const BarOpen = ({
           ? EditorState.createWithContent(convertFromRaw(itemData.Description))
           : EditorState.createEmpty(),
         ImageRefs: itemData.ImageRefs || [],
+        NewImageRefs: [],
         Drafts: itemData.Drafts || [],
         CompletedWorks: itemData.CompletedWorks || [],
         Completed: itemData.Completed || false,
@@ -486,7 +498,7 @@ const BarOpen = ({
                   {values.CompletedWorks &&
                     values.CompletedWorks.map(
                       (item) =>
-                        item !== "" && (
+                        isURL(item) && (
                           <Image
                             variant={IMAGE_TYPE.COMPLETED_WORK}
                             src={item}
