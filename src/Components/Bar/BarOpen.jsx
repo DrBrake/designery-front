@@ -36,7 +36,6 @@ import { isURL } from "../../utils";
 const useStyles = makeStyles((theme) => ({
   container: {
     border: `1px solid ${theme.palette.primary.dark}`,
-    // eslint-disable-next-line prettier/prettier
     padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(
       1
     )}px ${theme.spacing(5)}px`,
@@ -120,10 +119,11 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContainer: {
     alignSelf: "flex-end",
+    flex: "1",
   },
   bottomContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    flexFlow: "column",
   },
   fontWeightBold: {
     fontWeight: "bold",
@@ -220,21 +220,23 @@ const BarOpen = ({
             }}
           />
         </div>
-        {values.ImageRefs &&
-          values.ImageRefs.map(
-            (item) =>
-              isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
-              )
-          )}
-        {values.NewImageRefs &&
-          values.NewImageRefs.map(
-            (item) =>
-              isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
-              )
-          )}
-        <ImageDragAndDrop />
+        <div className={classes.flex}>
+          {values.ImageRefs &&
+            values.ImageRefs.map(
+              (item) =>
+                isURL(item) && (
+                  <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+                )
+            )}
+          {values.NewImageRefs &&
+            values.NewImageRefs.map(
+              (item) =>
+                isURL(item) && (
+                  <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+                )
+            )}
+          <ImageDragAndDrop />
+        </div>
       </div>
     );
 

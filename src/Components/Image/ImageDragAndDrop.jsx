@@ -1,9 +1,13 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import classnames from "classnames";
+import { Typography } from "@material-ui/core";
 
 import usePrevious from "../../Hooks/usePrevious";
+import { readDataURLAsync } from "../../utils";
+import { IMAGE_TYPE } from "../../constants";
 
+import Image from "./Image";
+import { Add } from "../Icons";
 import useImageStyles from "./ImageStyles";
 
 const ImageDragAndDrop = () => {
@@ -59,37 +63,28 @@ const ImageDragAndDrop = () => {
       data?.fileList &&
       prevData?.fileList.length !== data?.fileList.length
     ) {
-      let tempImages = [];
       const latestImages = data.fileList.slice(
         prevData.fileList.length,
         data.fileList.length + 1
       );
-      latestImages.map((item) => {
-        let image = new Image();
-        image.src = item.preview;
 
-        let reader = new FileReader();
-        reader.readAsDataURL(item);
-        reader.onloadend = () => {
-          console.log("onloadend", item);
-          tempImages.push({
-            name: item.name,
-            file: reader.result,
-            width: image.width,
-            height: image.height,
-            id: uuidv4(),
-          });
-        };
-      });
-      console.log("tempImages", tempImages);
-      setImages(images.concat(tempImages));
+      const handleImages = async () => {
+        const newImages = await Promise.all(
+          latestImages.map((item) => {
+            return readDataURLAsync(item);
+          })
+        );
+        setImages(images.concat(newImages));
+      };
+
+      handleImages();
     }
   }, [data]);
 
   return (
     <>
       {images.map((item) => (
-        <img src={item.file} key={item.id} />
+        <Image src={item.file} key={item.id} variant={IMAGE_TYPE.BAR} />
       ))}
       <div
         onDrop={handleDrop}
@@ -97,7 +92,8 @@ const ImageDragAndDrop = () => {
         onDragOver={handleDragOver}
         className={classnames(classes.barImageRef, classes.dragAndDrop)}
       >
-        DRAG AND DROP
+        <Add fontSize="large" />
+        <Typography>Drag and drop</Typography>
       </div>
     </>
   );

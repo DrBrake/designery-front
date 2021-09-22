@@ -8,6 +8,7 @@ const useImageStyles = makeStyles((theme) => ({
   barImageRef: {
     width: 240,
     height: 240,
+    marginRight: theme.spacing(1),
   },
   completedWork: {
     maxHeight: 280,
@@ -26,7 +27,12 @@ const useImageStyles = makeStyles((theme) => ({
     },
   },
   dragAndDrop: {
-    background: "lightgrey",
+    background: theme.palette.grey["100"],
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: theme.palette.grey["400"],
+    flexFlow: "column",
   },
 }));
 

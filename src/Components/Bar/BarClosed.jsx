@@ -13,8 +13,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     cursor: "pointer",
     border: `1px solid ${theme.palette.primary.dark}`,
-    // eslint-disable-next-line prettier/prettier
-    padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(1)}px ${theme.spacing(5)}px`,
+    padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(
+      1
+    )}px ${theme.spacing(5)}px`,
     borderBottomWidth: "0px",
     minHeight: "105px",
   },

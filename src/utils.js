@@ -1,4 +1,5 @@
 import { createBrowserHistory } from "history";
+import { v4 as uuidv4 } from "uuid";
 
 export const browserHistory = createBrowserHistory();
 
@@ -47,4 +48,22 @@ export const isURL = (url) => {
     return url.match(regex);
   }
   return false;
+};
+
+export const readDataURLAsync = (file) => {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.onload = () => {
+      return resolve({
+        name: file.name,
+        file: reader.result,
+        id: uuidv4(),
+      });
+    };
+    try {
+      reader.readAsDataURL(file);
+    } catch (err) {
+      return reject(err);
+    }
+  });
 };

@@ -62,10 +62,9 @@ const List = () => {
           ))}
         </>
       )}
-      {handleData?.length === 0 &&
-        !loadingProd &&
-        // eslint-disable-next-line prettier/prettier
-        newItems?.length === 0 && <Typography>No data yet</Typography>}
+      {handleData?.length === 0 && !loadingProd && newItems?.length === 0 && (
+        <Typography>No data yet</Typography>
+      )}
     </div>
   );
 };
