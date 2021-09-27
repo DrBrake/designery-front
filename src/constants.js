@@ -20,7 +20,6 @@ export const ROUTES = {
 export const DIALOG_VARIANT = {
   IMAGE_REF: "imageReference",
   TAG: "tag",
-  PROJECT: "project",
   INSPIRATION: "inspiration",
   COMPLETED_WORK: "completedWork",
   DRAFT: "draft",

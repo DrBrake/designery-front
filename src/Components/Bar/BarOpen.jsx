@@ -25,8 +25,9 @@ import {
 } from "../../Services/dataAPI";
 import Chip from "../Chip";
 import Image from "../Image/Image";
-import AddDialog from "../AddDialog";
-import PromptDialog from "../PromptDialog";
+import AddImageDialog from "../Dialogs/AddImageDialog";
+import PromptDialog from "../Dialogs/PromptDialog";
+import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
 import RichTextEditor from "../RichTextEditor";
 import ImageDragAndDrop from "../Image/ImageDragAndDrop";
 import { Close, Add } from "../Icons";
@@ -120,6 +121,8 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     alignSelf: "flex-end",
     flex: "1",
+    display: "flex",
+    alignItems: "center",
   },
   bottomContainer: {
     display: "flex",
@@ -137,6 +140,12 @@ const useStyles = makeStyles((theme) => ({
   lighterGrey: {
     color: theme.palette.grey[400],
   },
+  verticalDivider: {
+    height: theme.spacing(3),
+    width: "1px",
+    background: theme.palette.grey["500"],
+    marginRight: theme.spacing(2),
+  },
 }));
 
 const BarOpen = ({
@@ -150,6 +159,10 @@ const BarOpen = ({
 }) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addDialogVariant, setAddDialogVariant] = useState("");
+  const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
+  const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
+    ""
+  );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
@@ -240,28 +253,40 @@ const BarOpen = ({
       </div>
     );
 
-  const getValuesByVariant = (values, variant) => {
-    if (variant === DIALOG_VARIANT.IMAGE_REF) return values.NewImageRefs;
-    else if (variant === DIALOG_VARIANT.TAG) return values.Tags;
-    else if (variant === DIALOG_VARIANT.PROJECT) return projects;
-    else if (variant === DIALOG_VARIANT.INSPIRATION) return values.Inspirations;
-    else if (variant === DIALOG_VARIANT.DRAFT) return values.Drafts;
-    else if (variant === DIALOG_VARIANT.COMPLETED_WORK) {
-      return values.CompletedWorks;
+  const getDialogOptions = (values, dialogVariant) => {
+    if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
+      return {
+        title: "Add image reference",
+        name: "NewImageRefs",
+        values: values.NewImageRefs,
+      };
+    } else if (dialogVariant === DIALOG_VARIANT.TAG) {
+      return {
+        title: "Add a tag",
+        name: "NewTags",
+        values: values.Tags,
+        newValues: values.NewTags,
+        dialogVariant: dialogVariant,
+      };
+    } else if (dialogVariant === DIALOG_VARIANT.INSPIRATION) {
+      return {
+        title: "Add a inspiration",
+        name: "NewInspirations",
+        values: values.Inspirations,
+        newValues: values.NewInspirations,
+        dialogVariant: dialogVariant,
+        dataVariant: VARIANTS.INSPIRATION,
+      };
+    } else if (dialogVariant === DIALOG_VARIANT.DRAFT) {
+      return { title: "Add a draft", name: "Drafts", values: values.Drafts };
+    } else if (dialogVariant === DIALOG_VARIANT.COMPLETED_WORK) {
+      return {
+        title: "Add a completed work",
+        name: "CompletedWorks",
+        values: values.CompletedWorks,
+      };
     }
-    return [];
-  };
-
-  const getNameByVariant = (variant) => {
-    if (variant === DIALOG_VARIANT.IMAGE_REF) return "NewImageRefs";
-    else if (variant === DIALOG_VARIANT.TAG) return "Tags";
-    else if (variant === DIALOG_VARIANT.PROJECT) return "Project";
-    else if (variant === DIALOG_VARIANT.INSPIRATION) return "Inspirations";
-    else if (variant === DIALOG_VARIANT.DRAFT) return "Drafts";
-    else if (variant === DIALOG_VARIANT.COMPLETED_WORK) {
-      return "CompletedWorks";
-    }
-    return "";
+    return { title: "", name: "", values: [], newValues: [] };
   };
 
   return (
@@ -277,8 +302,10 @@ const BarOpen = ({
         CompletedWorks: itemData.CompletedWorks || [],
         Completed: itemData.Completed || false,
         Tags: itemData.Tags || [],
+        NewTags: [],
         Project: itemData.Project || "",
         Inspirations: itemData.Inspirations || [],
+        NewInspirations: [],
         DateCreated: itemData.DateCreated || dayjs().format(),
         Variant: itemData.Variant || "",
       }}
@@ -353,11 +380,8 @@ const BarOpen = ({
                         <Add
                           className={classes.pointer}
                           onClick={() => {
-                            setAddDialogOpen(true);
-                            if (values.Tags.length === 0) {
-                              setFieldValue("Tags", [""]);
-                            }
-                            setAddDialogVariant(DIALOG_VARIANT.TAG);
+                            setAutocompleteDialogOpen(true);
+                            setAutocompleteDialogVariant(DIALOG_VARIANT.TAG);
                           }}
                         />
                       </div>
@@ -380,55 +404,55 @@ const BarOpen = ({
                       {values.Tags &&
                         values.Tags.map(
                           (item, index) =>
+                            item &&
                             item !== "" && (
                               <Chip
-                                label={item}
+                                label={item.Title}
                                 onClick={() => null}
                                 lastTag={index + 1 === values.Tags.length}
-                                key={uuidv4()}
+                                key={item._id}
+                              />
+                            )
+                        )}
+                      {values.NewTags &&
+                        values.NewTags.map(
+                          (item, index) =>
+                            item &&
+                            item !== "" && (
+                              <Chip
+                                label={item.Title}
+                                onClick={() => null}
+                                lastTag={index + 1 === values.NewTags.length}
+                                key={item._id}
                               />
                             )
                         )}
                     </div>
-                    <div
-                      className={classnames(
-                        classes.selectContainer,
-                        classes.marginBottom3
-                      )}
-                    >
-                      <FormControl fullWidth className={classes.marginRight}>
-                        <InputLabel
-                          id="projectSelect"
-                          classes={{
-                            root: classes.paddingLeft,
-                            focused: classes.displayNone,
-                          }}
-                          disableAnimation
-                        >
-                          Project
-                        </InputLabel>
-                        <Select
-                          labelId="projectSelect"
-                          value={values.Project}
-                          onChange={handleChange}
-                          variant="outlined"
-                          name="Project"
-                        >
-                          {projects.map((item) => (
-                            <MenuItem value={item.Title} key={uuidv4()}>
-                              {item.Title}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Add
-                        className={classes.pointer}
-                        onClick={() => {
-                          setAddDialogOpen(true);
-                          setAddDialogVariant(DIALOG_VARIANT.PROJECT);
+                    <FormControl fullWidth className={classes.marginBottom3}>
+                      <InputLabel
+                        id="projectSelect"
+                        classes={{
+                          root: classes.paddingLeft,
+                          focused: classes.displayNone,
                         }}
-                      />
-                    </div>
+                        disableAnimation
+                      >
+                        Project
+                      </InputLabel>
+                      <Select
+                        labelId="projectSelect"
+                        value={values.Project}
+                        onChange={handleChange}
+                        variant="outlined"
+                        name="Project"
+                      >
+                        {projects.map((item) => (
+                          <MenuItem value={item.Title} key={uuidv4()}>
+                            {item.Title}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                     <div
                       className={classnames(
                         classes.fullWidth,
@@ -447,17 +471,27 @@ const BarOpen = ({
                         <Add
                           className={classes.pointer}
                           onClick={() => {
-                            setAddDialogOpen(true);
-                            if (values.Inspirations.length === 0) {
-                              setFieldValue("Inspirations", [""]);
-                            }
-                            setAddDialogVariant(DIALOG_VARIANT.INSPIRATION);
+                            setAutocompleteDialogOpen(true);
+                            setAutocompleteDialogVariant(
+                              DIALOG_VARIANT.INSPIRATION
+                            );
                           }}
                         />
                       </div>
                       {values.Inspirations &&
                         values.Inspirations.map(
                           (item) =>
+                            item &&
+                            item !== "" && (
+                              <Typography key={uuidv4()}>
+                                <Link href="#">{item.Title}</Link>
+                              </Typography>
+                            )
+                        )}
+                      {values.NewInspirations &&
+                        values.NewInspirations.map(
+                          (item) =>
+                            item &&
                             item !== "" && (
                               <Typography key={uuidv4()}>
                                 <Link href="#">{item.Title}</Link>
@@ -553,6 +587,15 @@ const BarOpen = ({
                       Complete
                     </Button>
                   )}
+                  <div className={classes.verticalDivider} />
+                  <Button
+                    variant="text"
+                    color="primary"
+                    className={classnames(classes.button, classes.marginRight)}
+                    onClick={() => setOpen(false)}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     variant="contained"
                     color="primary"
@@ -565,14 +608,23 @@ const BarOpen = ({
               </div>
             </Grid>
           </Grid>
-          <AddDialog
-            dialogOpen={addDialogOpen}
-            setDialogOpen={setAddDialogOpen}
-            variant={addDialogVariant}
-            values={getValuesByVariant(values, addDialogVariant)}
-            name={getNameByVariant(addDialogVariant)}
-            handleChange={handleChange}
-          />
+          {addDialogOpen && (
+            <AddImageDialog
+              dialogOpen={addDialogOpen}
+              setDialogOpen={setAddDialogOpen}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+              {...getDialogOptions(values, addDialogVariant)}
+            />
+          )}
+          {autocompleteDialogOpen && (
+            <AutocompleteDialog
+              dialogOpen={autocompleteDialogOpen}
+              setDialogOpen={setAutocompleteDialogOpen}
+              setFieldValue={setFieldValue}
+              {...getDialogOptions(values, autocompleteDialogVariant)}
+            />
+          )}
           <PromptDialog
             dialogOpen={removeDialogOpen}
             setDialogOpen={setRemoveDialogOpen}

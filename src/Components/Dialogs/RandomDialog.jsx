@@ -5,11 +5,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
 import { convertFromRaw } from "draft-js";
 
-import { IMAGE_TYPE, RANDOM_DIALOG_TYPE } from "../constants";
-import { getRandomBetween, getTwoRandomUniqueValuesFromArray } from "../utils";
-import Chip from "../Components/Chip";
-import Dialog from "../Components/Dialog";
-import Image from "../Components/Image/Image";
+import { IMAGE_TYPE, RANDOM_DIALOG_TYPE } from "../../constants";
+import {
+  getRandomBetween,
+  getTwoRandomUniqueValuesFromArray,
+} from "../../utils";
+import Chip from "../Chip";
+import Dialog from "./Dialog";
+import Image from "../Image/Image";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -73,9 +76,9 @@ const RandomDialog = ({ randomDialogType, setRandomDialogType, data }) => {
                 {item.Tags &&
                   item.Tags.map((tag, tagIndex) => (
                     <Chip
-                      label={tag}
+                      label={tag.Title}
                       lastTag={tagIndex + 1 === item.Tags.length}
-                      key={uuidv4()}
+                      key={tag._id}
                     />
                   ))}
               </div>

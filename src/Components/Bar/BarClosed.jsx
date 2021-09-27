@@ -1,7 +1,6 @@
 import React from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
-import { v4 as uuidv4 } from "uuid";
 import { convertFromRaw } from "draft-js";
 import { Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -111,9 +110,9 @@ const BarClosed = ({ itemData, setOpen, isLast, isFirst, isNewItem }) => {
         {itemData.Tags &&
           itemData.Tags.map((item, index) => (
             <Chip
-              label={item}
+              label={item.Title}
               isLast={index + 1 === itemData.Tags.length}
-              key={uuidv4()}
+              key={item._id}
             />
           ))}
       </Grid>

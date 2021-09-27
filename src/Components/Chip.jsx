@@ -22,12 +22,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chip = ({ label, lastTag, onClick }) => {
+const Chip = ({ label, lastTag, onClick, onDelete }) => {
   const classes = useStyles();
   return (
     <MuiChip
       label={label}
       onClick={onClick}
+      onDelete={onDelete}
       className={classnames(classes.text, classes.container, {
         [classes.lastTag]: lastTag,
       })}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertToRaw } from "draft-js";
-import { v4 as uuidv4 } from "uuid";
 import { withRouter } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +12,7 @@ import { useGetDataQuery } from "../Services/dataAPI";
 
 import { ROUTES, RANDOM_DIALOG_TYPE, VARIANTS } from "../constants";
 import Chip from "../Components/Chip";
-import RandomDialog from "../Components/RandomDialog";
+import RandomDialog from "../Components/Dialogs/RandomDialog";
 import {
   Add,
   Filter,
@@ -292,7 +291,7 @@ const Navigation = ({ children, history, location }) => {
           {data &&
             data.tags &&
             data.tags.map((item) => (
-              <Chip label={item} onClick={() => null} key={uuidv4()} />
+              <Chip label={item.Title} onClick={() => null} key={item._id} />
             ))}
         </Paper>
       </Popper>
