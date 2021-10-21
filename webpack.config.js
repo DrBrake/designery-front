@@ -4,7 +4,7 @@ const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   output: {
     filename: "[name].bundle.js",
@@ -15,8 +15,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js?|jsx)$/,
-        exclude: /(node_modules|bower_component)/,
+        test: /\.(ts|js)x?$/,
+        exclude: /node_modules/,
         loader: "babel-loader",
       },
       {

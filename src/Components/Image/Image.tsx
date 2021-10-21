@@ -1,10 +1,16 @@
-import React from "react";
+import React, { FC } from "react";
 import classnames from "classnames";
 
 import useImageStyles from "./ImageStyles";
 import { IMAGE_TYPE } from "../../constants";
 
-const Image = ({ src, onClick, variant }) => {
+interface Props {
+  src: string;
+  onClick?: () => void;
+  variant: string;
+}
+
+const Image: FC<Props> = ({ src, onClick, variant }) => {
   const classes = useImageStyles();
   return (
     <img

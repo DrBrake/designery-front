@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertToRaw } from "draft-js";
-import { withRouter } from "react-router";
+import { withRouter, RouteComponentProps } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 import { addNewItem, selectNewItems } from "../Reducers/appSlice";
 import { useGetDataQuery } from "../Services/dataAPI";
 
 import { ROUTES, RANDOM_DIALOG_TYPE, VARIANTS } from "../constants";
-import Chip from "../Components/Chip";
-import RandomDialog from "../Components/Dialogs/RandomDialog";
+import Chip from "./Chip";
+import RandomDialog from "./Dialogs/RandomDialog";
 import {
   Add,
   Filter,
@@ -24,81 +25,87 @@ import {
   Close,
 } from "./Icons";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    boxShadow: `0 3px 8px 0 rgba(0, 0, 0, 0.16)`,
-    marginBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(5),
-    paddingRight: theme.spacing(5),
-    height: theme.spacing(9),
-  },
-  icon: {
-    cursor: "pointer",
-    marginRight: theme.spacing(5),
-    display: "flex",
-    borderRadius: theme.spacing(1),
-    padding: theme.spacing(1),
-  },
-  paper: {
-    padding: theme.spacing(3),
-    marginTop: -theme.spacing(1),
-  },
-  text: {
-    fontWeight: "bold",
-    alignSelf: "center",
-  },
-  flex: {
-    display: "flex",
-  },
-  openIcon: {
-    boxShadow: `0 0 6px 0 rgba(0, 0, 0, 0.16)`,
-  },
-  marginRight2: {
-    marginRight: theme.spacing(2),
-  },
-  marginBottom2: {
-    marginBottom: theme.spacing(2),
-  },
-  marginBottom3: {
-    marginBottom: theme.spacing(3),
-  },
-  pointer: {
-    cursor: "pointer",
-  },
-  marginBottom1: {
-    marginBottom: theme.spacing(1),
-  },
-  fontWeightBold: {
-    fontWeight: "bold",
-  },
-  highlightColor: {
-    color: theme.palette.secondary.main,
-  },
-  fullWidth: {
-    width: "100%",
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: "100%",
-    opacity: 0,
-    zIndex: 0,
-    cursor: "initial",
-  },
-  disabledColor: {
-    color: theme.palette.grey["400"],
-  },
-}));
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    container: {
+      boxShadow: `0 3px 8px 0 rgba(0, 0, 0, 0.16)`,
+      marginBottom: theme.spacing(6),
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
+      height: theme.spacing(9),
+    },
+    icon: {
+      cursor: "pointer",
+      marginRight: theme.spacing(5),
+      display: "flex",
+      borderRadius: theme.spacing(1),
+      padding: theme.spacing(1),
+    },
+    paper: {
+      padding: theme.spacing(3),
+      marginTop: -theme.spacing(1),
+    },
+    text: {
+      fontWeight: "bold",
+      alignSelf: "center",
+    },
+    flex: {
+      display: "flex",
+    },
+    openIcon: {
+      boxShadow: `0 0 6px 0 rgba(0, 0, 0, 0.16)`,
+    },
+    marginRight2: {
+      marginRight: theme.spacing(2),
+    },
+    marginBottom2: {
+      marginBottom: theme.spacing(2),
+    },
+    marginBottom3: {
+      marginBottom: theme.spacing(3),
+    },
+    pointer: {
+      cursor: "pointer",
+    },
+    marginBottom1: {
+      marginBottom: theme.spacing(1),
+    },
+    fontWeightBold: {
+      fontWeight: "bold",
+    },
+    highlightColor: {
+      color: theme.palette.secondary.main,
+    },
+    fullWidth: {
+      width: "100%",
+    },
+    overlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      height: "100%",
+      width: "100%",
+      opacity: 0,
+      zIndex: 0,
+      cursor: "initial",
+    },
+    disabledColor: {
+      color: theme.palette.grey["400"],
+    },
+  })
+);
 
-const Navigation = ({ children, history, location }) => {
+const Navigation: FC<RouteComponentProps> = ({
+  children,
+  history,
+  location,
+}) => {
   const [addOpen, setAddOpen] = useState(false);
   const [randomOpen, setRandomOpen] = useState(false);
-  const [randomDialogType, setRandomDialogType] = useState(null);
+  const [randomDialogType, setRandomDialogType] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -133,6 +140,7 @@ const Navigation = ({ children, history, location }) => {
                   Inspirations: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.IDEA,
+                  TempID: uuidv4(),
                 })
               )
             }
@@ -149,10 +157,15 @@ const Navigation = ({ children, history, location }) => {
               dispatch(
                 addNewItem({
                   Title: `New inspiration #${newItems.length + 1}`,
+                  Description: convertToRaw(
+                    EditorState.createEmpty().getCurrentContent()
+                  ),
                   ImageRefs: [],
                   Ideas: [],
+                  Tags: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.INSPIRATION,
+                  TempID: uuidv4(),
                 })
               )
             }
@@ -173,8 +186,10 @@ const Navigation = ({ children, history, location }) => {
                     EditorState.createEmpty().getCurrentContent()
                   ),
                   Ideas: [],
+                  Tags: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.PROJECT,
+                  TempID: uuidv4(),
                 })
               )
             }
@@ -187,10 +202,10 @@ const Navigation = ({ children, history, location }) => {
   );
 
   const getRandomPopper = () => {
-    const enoughInspirations = data?.inspirations?.length > 1;
-    const enoughIdeas = data?.ideas?.length > 1;
+    const enoughInspirations = data && data.inspirations?.length > 1;
+    const enoughIdeas = data && data.ideas?.length > 1;
     const enoughBoth =
-      data?.ideas?.length > 0 && data?.inspirations?.length > 0;
+      data && data.ideas?.length > 0 && data.inspirations?.length > 0;
     return (
       <>
         <div className={classes.overlay} onClick={() => setRandomOpen(false)} />
@@ -399,7 +414,8 @@ const Navigation = ({ children, history, location }) => {
       {children}
       <RandomDialog
         randomDialogType={randomDialogType}
-        setRandomDialogType={setRandomDialogType}
+        randomDialogOpen={randomOpen}
+        setRandomDialogOpen={setRandomOpen}
         data={data}
       />
     </>

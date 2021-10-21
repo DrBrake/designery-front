@@ -1,28 +1,28 @@
 import React from "react";
 import SvgIcon from "@material-ui/core/SvgIcon";
 
-export const Add = (props) => (
+export const Add = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
     <path d="M0 0h24v24H0z" fill="none" />
   </SvgIcon>
 );
 
-export const Remove = (props) => (
+export const Remove = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M6 19h12v2H6v-2z" />
   </SvgIcon>
 );
 
-export const Filter = (props) => (
+export const Filter = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
     <path d="M0 0h24v24H0z" fill="none" />
   </SvgIcon>
 );
 
-export const Archive = (props) => (
+export const Archive = ({ ...props }) => (
   <SvgIcon width="26" height="22.958" viewBox="0 0 26 22.958" {...props}>
     <path
       d="M1.625,23.568a1.631,1.631,0,0,0,1.625,1.64h19.5a1.631,1.631,0,0,0,1.625-1.64V8.809H1.625ZM9.75,12.7a.614.614,0,0,1,.609-.615h5.281a.614.614,0,0,1,.609.615v.41a.614.614,0,0,1-.609.615H10.359a.614.614,0,0,1-.609-.615ZM24.375,2.25H1.625A1.631,1.631,0,0,0,0,3.89V6.35a.819.819,0,0,0,.813.82H25.188A.819.819,0,0,0,26,6.35V3.89A1.631,1.631,0,0,0,24.375,2.25Z"
@@ -31,28 +31,28 @@ export const Archive = (props) => (
   </SvgIcon>
 );
 
-export const Search = (props) => (
+export const Search = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0z" fill="none" />
     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
   </SvgIcon>
 );
 
-export const ChevronUp = (props) => (
+export const ChevronUp = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0z" fill="none" />
     <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
   </SvgIcon>
 );
 
-export const ChevronDown = (props) => (
+export const ChevronDown = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0z" fill="none" />
     <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
   </SvgIcon>
 );
 
-export const Random = (props) => (
+export const Random = ({ ...props }) => (
   <SvgIcon width="26" height="27.131" viewBox="0 0 26 27.131" {...props}>
     <g id="layer1" transform="translate(285.311 -169.118)">
       <path
@@ -64,7 +64,7 @@ export const Random = (props) => (
   </SvgIcon>
 );
 
-export const GridOn = (props) => (
+export const GridOn = ({ ...props }) => (
   <SvgIcon width="28" height="28" viewBox="0 0 28 28" {...props}>
     <path id="Path_4" data-name="Path 4" d="M0,0H24V24H0Z" fill="none" />
     <path
@@ -75,62 +75,62 @@ export const GridOn = (props) => (
   </SvgIcon>
 );
 
-export const SmallChevronDown = (props) => (
+export const SmallChevronDown = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path id="Path_2" data-name="Path 2" d="M0,0H24V24H0Z" fill="none" />
     <path id="Path_3" data-name="Path 3" d="M7,10l5,5,5-5Z" />
   </SvgIcon>
 );
 
-export const Close = (props) => (
+export const Close = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
   </SvgIcon>
 );
 
-export const BulletList = (props) => (
+export const BulletList = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z" />
   </SvgIcon>
 );
 
-export const NumberedList = (props) => (
+export const NumberedList = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M18 17h2v.5h-1v1h1v.5h-2v1h3v-4h-3v1zm1-9h1V4h-2v1h1v3zm-1 3h1.8L18 13.1v.9h3v-1h-1.8l1.8-2.1V10h-3v1zM2 5h14v2H2V5zm0 12h14v2H2v-2zm0-6h14v2H2v-2z" />
   </SvgIcon>
 );
 
-export const Bold = (props) => (
+export const Bold = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" />
   </SvgIcon>
 );
 
-export const Italic = (props) => (
+export const Italic = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z" />
   </SvgIcon>
 );
 
-export const ArrowUp = (props) => (
+export const ArrowUp = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
   </SvgIcon>
 );
 
-export const ArrowDown = (props) => (
+export const ArrowDown = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" />
   </SvgIcon>
 );
 
-export const Edit = (props) => (
+export const Edit = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M3,21l3.75,0L17.81,9.94l-3.75-3.75L3,17.25L3,21z M5,18.08l9.06-9.06l0.92,0.92L5.92,19L5,19L5,18.08z" />
     <path d="M18.37,3.29c-0.39-0.39-1.02-0.39-1.41,0l-1.83,1.83l3.75,3.75l1.83-1.83c0.39-0.39,0.39-1.02,0-1.41L18.37,3.29z" />

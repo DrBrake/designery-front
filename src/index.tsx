@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC } from "react";
 import ReactDOM from "react-dom";
-import App from "./App.js";
+import App from "./App";
 import { AppContainer } from "react-hot-loader";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Provider } from "react-redux";
@@ -8,9 +8,11 @@ import { Provider } from "react-redux";
 import store from "./store";
 import theme from "./theme";
 
-const render = (Component) => {
+const createStore = store();
+
+const render = (Component: FC) => {
   ReactDOM.render(
-    <Provider store={store()}>
+    <Provider store={createStore}>
       <ThemeProvider theme={theme}>
         <AppContainer>
           <Component />
@@ -24,7 +26,7 @@ const render = (Component) => {
 render(App);
 
 if (module.hot) {
-  module.hot.accept("./App.js", () => {
+  module.hot.accept("./App.tsx", () => {
     render(App);
   });
 }

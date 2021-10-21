@@ -1,15 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+import {
+  Idea,
+  Inspiration,
+  Project,
+  Tag,
+  ItemResponse,
+} from "../Types/dataTypes";
+
 export const dataAPI = createApi({
   reducerPath: "dataAPI",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8081" }),
+  tagTypes: ["Items"],
   endpoints: (builder) => ({
-    getData: builder.query({
+    getData: builder.query<ItemResponse, void>({
       query: () => "/",
-      providesTags: () => ["Items"],
+      providesTags: ["Items"],
     }),
     postItem: builder.mutation({
-      query: (body) => ({
+      query: (body: Idea | Project | Inspiration) => ({
         url: `/item/${body.Variant}`,
         method: "POST",
         body: body,
@@ -17,18 +26,25 @@ export const dataAPI = createApi({
       invalidatesTags: ["Items"],
     }),
     removeItem: builder.mutation({
-      query: (body) => ({
+      query: (body: Idea | Project | Inspiration) => ({
         url: `/item/${body.Variant}/${body._id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Items"],
     }),
     postTag: builder.mutation({
-      query: (body) => ({
+      query: (body: Tag) => ({
         url: "/item/tag",
         method: "POST",
         body: body,
       }),
+    }),
+    removeTag: builder.mutation({
+      query: (body: Tag) => ({
+        url: `/item/tag/${body._id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Items"],
     }),
   }),
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, DragEvent } from "react";
 import classnames from "classnames";
 import { Typography } from "@material-ui/core";
 
@@ -10,13 +10,24 @@ import Image from "./Image";
 import { Add } from "../Icons";
 import useImageStyles from "./ImageStyles";
 
+interface State {
+  inDropZone: boolean;
+  fileList: Array<File>;
+}
+
+interface ImageFile {
+  file: string;
+  name: string;
+  id: string;
+}
+
 const ImageDragAndDrop = () => {
-  const state = {
+  const state: State = {
     inDropZone: false,
     fileList: [],
   };
 
-  const imageFileReducer = (state, action) => {
+  const imageFileReducer = (state: State, action: any) => {
     switch (action.type) {
       case "AddToDropZone":
         return { ...state, inDropZone: action.inDropZone };
@@ -28,27 +39,28 @@ const ImageDragAndDrop = () => {
   };
 
   const [data, dispatch] = useReducer(imageFileReducer, state);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageFile[]>([]);
   const classes = useImageStyles();
   const prevData = usePrevious(data);
 
-  const handleDragEnter = (e) => {
+  const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch({ type: "AddToDropZone", inDropZone: true });
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
     dispatch({ type: "AddToDropZone", inDropZone: true });
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    // @ts-ignore
     let files = [...e.dataTransfer.files];
 
     files.map((item, index) => {
-      item[`image_${index}`] = URL.createObjectURL(item);
+      item[`image`] = URL.createObjectURL(item);
     });
 
     if (files) {
@@ -74,7 +86,7 @@ const ImageDragAndDrop = () => {
             return readDataURLAsync(item);
           })
         );
-        setImages(images.concat(newImages));
+        setImages(images.concat(newImages as ImageFile[]));
       };
 
       handleImages();

@@ -8,4 +8,6 @@ const rootReducer = combineReducers({
   [dataAPI.reducerPath]: dataAPI.reducer,
 });
 
+export type RootState = ReturnType<typeof rootReducer>;
+
 export default rootReducer;

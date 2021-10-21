@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 
 import BarOpen from "./BarOpen";
 import BarClosed from "./BarClosed";
 
-const Bar = ({ itemData, isLast, isFirst, isNewItem, projects, index }) => {
+import { Project, Item } from "../../Types/dataTypes";
+
+interface Props {
+  itemData: Item;
+  isLast: boolean;
+  isFirst: boolean;
+  isNewItem: boolean;
+  projects: Project[];
+  index: number;
+}
+
+const Bar: FC<Props> = ({
+  itemData,
+  isLast,
+  isFirst,
+  isNewItem,
+  projects,
+  index,
+}) => {
   const [open, setOpen] = useState(false);
   return open ? (
     <BarOpen

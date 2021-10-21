@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC, ChangeEvent } from "react";
 import classnames from "classnames";
 import { FieldArray, Field } from "formik";
 import { Typography, TextField, Button } from "@material-ui/core";
@@ -6,6 +6,17 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Dialog from "./Dialog";
 import { Add, Remove } from "../Icons";
+import { Idea, Inspiration, Project, Tag } from "../../Types/dataTypes";
+
+interface Props {
+  dialogOpen: boolean;
+  setDialogOpen: (value: boolean) => void;
+  values: Array<Idea | Inspiration | Project | Tag | string> | undefined;
+  name: string;
+  handleChange: (e: ChangeEvent<any>) => void;
+  setFieldValue: (field: string, value: any) => void;
+  title: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   textAlignCenter: {
@@ -51,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddDialog = ({
+const AddDialog: FC<Props> = ({
   dialogOpen,
   setDialogOpen,
   values,
@@ -69,7 +80,7 @@ const AddDialog = ({
       onClose={() => {
         setFieldValue(
           name,
-          values.filter((value) => value !== "")
+          values?.filter((value) => value !== "")
         );
       }}
     >
@@ -86,7 +97,7 @@ const AddDialog = ({
         name={name}
         render={(arrayHelpers) => (
           <>
-            {values.map((item, index) => (
+            {values?.map((item, index) => (
               <div
                 key={index}
                 className={classnames(
@@ -94,7 +105,7 @@ const AddDialog = ({
                   classes.marginBottom2
                 )}
               >
-                {values.length > 1 && (
+                {values?.length > 1 && (
                   <Remove
                     onClick={() => arrayHelpers.remove(index)}
                     className={classnames(classes.marginRight, classes.pointer)}

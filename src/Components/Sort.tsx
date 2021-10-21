@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import { Select, MenuItem } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 
 import { ArrowDown, ArrowUp } from "./Icons";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    marginBottom: theme.spacing(2),
-  },
-  select: {
-    marginRight: theme.spacing(2),
-    minWidth: "100px",
-    "&:before, &:after": {
-      content: "initial",
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    container: {
+      marginBottom: theme.spacing(2),
     },
-  },
-  pointer: {
-    cursor: "pointer",
-  },
-}));
+    select: {
+      marginRight: theme.spacing(2),
+      minWidth: "100px",
+      "&:before, &:after": {
+        content: "initial",
+      },
+    },
+    pointer: {
+      cursor: "pointer",
+    },
+  })
+);
 
 const Sort = () => {
   const [direction, setDirection] = useState("asc");

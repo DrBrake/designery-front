@@ -8,7 +8,7 @@ module.exports = merge(baseConfig, {
   entry: [
     "react-hot-loader/patch",
     "webpack-hot-middleware/client",
-    "./src/index.js",
+    "./src/index.tsx",
   ],
   resolve: {
     alias: {

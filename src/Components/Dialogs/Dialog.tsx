@@ -1,6 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import { Dialog as MuiDialog } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+
+interface Props {
+  dialogOpen: boolean;
+  setDialogOpen: (value: boolean) => void;
+  onClose?: () => void;
+}
 
 const useStyles = makeStyles((theme) => ({
   dialogPadding: {
@@ -11,7 +17,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Dialog = ({ children, dialogOpen, setDialogOpen, onClose }) => {
+const Dialog: FC<Props> = ({
+  children,
+  dialogOpen,
+  setDialogOpen,
+  onClose,
+}) => {
   const classes = useStyles();
   return (
     <MuiDialog

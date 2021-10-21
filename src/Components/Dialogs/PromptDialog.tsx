@@ -1,8 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 import { Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Dialog from "./Dialog";
+
+interface Props {
+  dialogOpen: boolean;
+  setDialogOpen: (value: boolean) => void;
+  title: string;
+  onSave?: () => void;
+  onCancel?: () => void;
+  saveButtonText?: string;
+  cancelButtonText?: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -21,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PromptDialog = ({
+const PromptDialog: FC<Props> = ({
   dialogOpen,
   setDialogOpen,
   title,

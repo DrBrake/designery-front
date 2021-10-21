@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { Editor, RichUtils } from "draft-js";
+import React, { useRef, FC } from "react";
+import { Editor, EditorState, RichUtils } from "draft-js";
 import { IconButton, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
@@ -48,11 +48,21 @@ const BLOCK_BUTTONS = [
   },
 ];
 
-const RichTextEditor = ({ placeholder, editorState, setFieldValue }) => {
-  const classes = useStyles();
-  const editor = useRef(null);
+interface Props {
+  placeholder: string;
+  editorState: EditorState;
+  setFieldValue: (value: EditorState) => void;
+}
 
-  const handleKeyCommand = (command, editorState) => {
+const RichTextEditor: FC<Props> = ({
+  placeholder,
+  editorState,
+  setFieldValue,
+}) => {
+  const classes = useStyles();
+  const editor = useRef<Editor>(null);
+
+  const handleKeyCommand = (command: string, editorState: EditorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setFieldValue(newState);
@@ -62,7 +72,7 @@ const RichTextEditor = ({ placeholder, editorState, setFieldValue }) => {
   };
 
   return (
-    <div className={classes.container} onClick={() => editor.current.focus()}>
+    <div className={classes.container} onClick={() => editor?.current?.focus()}>
       {INLINE_BUTTONS.map((item) => (
         <IconButton
           onMouseDown={(e) => {

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
 
-import { selectNewItems } from "../Reducers/appSlice";
+import { selectNewItems, selectData } from "../Reducers/appSlice";
 import { useGetDataQuery } from "../Services/dataAPI";
 import { handleDataForList } from "../utils";
 
@@ -23,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
 
 const List = () => {
   const classes = useStyles();
-  const { data, error, isLoading } = useGetDataQuery();
+  const { error, isLoading } = useGetDataQuery();
+  const data = useSelector(selectData);
   const handleData = handleDataForList(data);
 
   // isLoading gets stuck to true with hot reload sometimes
@@ -40,7 +41,7 @@ const List = () => {
               isFirst={index === 0}
               isLast={index + 1 === newItems.length}
               key={uuidv4()}
-              projects={data.projects}
+              projects={data?.projects}
               isNewItem
               index={index}
             />
@@ -56,8 +57,10 @@ const List = () => {
               itemData={item}
               isFirst={index === 0}
               isLast={index + 1 === handleData.length}
+              isNewItem={false}
               key={uuidv4()}
-              projects={data.projects}
+              projects={data?.projects}
+              index={index}
             />
           ))}
         </>

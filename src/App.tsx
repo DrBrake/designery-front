@@ -13,16 +13,8 @@ const App = () => (
     <Navigation>
       <ScrollToTop>
         <Switch>
-          <Route
-            exact
-            path={ROUTES.ROOT}
-            render={(props) => <List {...props} />}
-          />
-          <Route
-            exact
-            path={ROUTES.GRID}
-            render={(props) => <Grid {...props} />}
-          />
+          <Route exact path={ROUTES.ROOT} render={(props) => <List />} />
+          <Route exact path={ROUTES.GRID} render={(props) => <Grid />} />
         </Switch>
       </ScrollToTop>
     </Navigation>

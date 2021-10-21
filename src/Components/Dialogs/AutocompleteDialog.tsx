@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import classnames from "classnames";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
@@ -43,13 +43,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const filter = createFilterOptions();
+interface BaseItem {
+  _id?: string;
+  Title: string;
+  TempID?: string;
+  inputValue?: string;
+}
 
-const AutocompleteDialog = ({
+interface Props {
+  dialogOpen: boolean;
+  setDialogOpen: (value: boolean) => void;
+  dialogVariant?: string;
+  values?: Array<BaseItem>;
+  setFieldValue: (name: string, value: any) => void;
+  name: string;
+  newValues?: Array<BaseItem>;
+  title: string;
+}
+
+const filter = createFilterOptions<BaseItem>();
+
+const AutocompleteDialog: FC<Props> = ({
   dialogOpen,
   setDialogOpen,
   dialogVariant,
-  dataVariant,
   values,
   setFieldValue,
   name,
@@ -57,7 +74,7 @@ const AutocompleteDialog = ({
   title,
 }) => {
   const classes = useStyles();
-  const [tempNewValues, setTempNewValues] = useState([]);
+  const [tempNewValues, setTempNewValues] = useState<BaseItem[]>([]);
   const [postItem] = usePostItemMutation();
   const [postTag] = usePostTagMutation();
 
@@ -80,16 +97,16 @@ const AutocompleteDialog = ({
         onChange={(event, newValue) => {
           if (typeof newValue === "string") {
             setTempNewValues(
-              tempNewValues.concat([{ Title: newValue, tempID: uuidv4() }])
+              tempNewValues.concat([{ Title: newValue, TempID: uuidv4() }])
             );
           } else if (newValue && newValue.inputValue) {
             // Create a new value from the user input
             setTempNewValues(
               tempNewValues.concat([
-                { Title: newValue.inputValue, tempID: uuidv4() },
+                { Title: newValue.inputValue, TempID: uuidv4() },
               ])
             );
-          } else {
+          } else if (newValue) {
             setTempNewValues(tempNewValues.concat([newValue]));
           }
         }}
@@ -104,7 +121,8 @@ const AutocompleteDialog = ({
           }
           return filtered;
         }}
-        options={values.concat(newValues).concat(tempNewValues)}
+        // options={values?.concat(newValues).concat(tempNewValues)}
+        options={[...(values || []), ...(newValues || []), ...tempNewValues]}
         renderOption={(option) => option?.Title || ""}
         getOptionLabel={(option) => {
           if (option) {
@@ -125,7 +143,6 @@ const AutocompleteDialog = ({
           <TextField
             variant="outlined"
             placeholder={`Type existing or new ${dialogVariant}`}
-            fullWidth
             className={classnames(classes.marginRight, classes.marginBottom2)}
             {...params}
           />
@@ -137,33 +154,33 @@ const AutocompleteDialog = ({
             item && (
               <Chip
                 label={item.Title}
-                key={item.tempID}
+                key={item.TempID}
                 onDelete={() =>
                   setTempNewValues(
                     tempNewValues.filter(
-                      (newVal) => newVal.tempID !== item.tempID
+                      (newVal) => newVal.TempID !== item.TempID
                     )
                   )
                 }
               />
             )
         )}
-        {newValues.map(
+        {newValues?.map(
           (item) =>
             item && (
               <Chip
                 label={item.Title}
-                key={item.tempID}
+                key={item.TempID}
                 onDelete={() =>
                   setFieldValue(
                     name,
-                    newValues.filter((newVal) => newVal.tempID !== item.tempID)
+                    newValues?.filter((newVal) => newVal.TempID !== item.TempID)
                   )
                 }
               />
             )
         )}
-        {values.map(
+        {values?.map(
           (item) => item && <Chip label={item.Title} key={item._id} />
         )}
       </div>
@@ -173,7 +190,7 @@ const AutocompleteDialog = ({
           color="primary"
           className={classes.button}
           onClick={() => {
-            setFieldValue(name, newValues.concat(tempNewValues));
+            setFieldValue(name, newValues?.concat(tempNewValues));
             setDialogOpen(false);
           }}
         >
