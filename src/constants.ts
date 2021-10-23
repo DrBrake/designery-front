@@ -30,3 +30,5 @@ export const RANDOM_DIALOG_TYPE = {
   IDEAS: "ideas",
   BOTH: "both",
 } as const;
+
+export const BASE_URL = "http://localhost:8081";

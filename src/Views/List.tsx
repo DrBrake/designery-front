@@ -1,6 +1,6 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
-import { v4 as uuidv4 } from "uuid";
+import classnames from "classnames";
+import { Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
 
@@ -19,6 +19,18 @@ const useStyles = makeStyles((theme) => ({
   newItemContainer: {
     marginBottom: theme.spacing(2),
   },
+  button: {
+    minWidth: theme.spacing(17),
+    borderRadius: theme.spacing(1),
+  },
+  marginRight: {
+    marginRight: theme.spacing(2),
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const List = () => {
@@ -34,18 +46,39 @@ const List = () => {
   return (
     <div className={classes.container}>
       <div className={classes.newItemContainer}>
-        {newItems &&
-          newItems.map((item, index) => (
-            <Bar
-              itemData={item}
-              isFirst={index === 0}
-              isLast={index + 1 === newItems.length}
-              key={uuidv4()}
-              projects={data?.projects}
-              isNewItem
-              index={index}
-            />
-          ))}
+        {newItems && newItems.length > 0 && (
+          <>
+            <div className={classes.buttonContainer}>
+              <Button
+                variant="text"
+                color="primary"
+                className={classnames(classes.button, classes.marginRight)}
+                onClick={() => {}}
+              >
+                Remove All
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={() => {}}
+              >
+                Save All
+              </Button>
+            </div>
+            {newItems.map((item, index) => (
+              <Bar
+                itemData={item}
+                isFirst={index === 0}
+                isLast={index + 1 === newItems.length}
+                key={item.TempID}
+                projects={data?.projects}
+                isNewItem
+                index={index}
+              />
+            ))}
+          </>
+        )}
       </div>
       {loadingProd && <Typography>Loading</Typography>}
       {error && <Typography>Error</Typography>}
@@ -58,7 +91,7 @@ const List = () => {
               isFirst={index === 0}
               isLast={index + 1 === handleData.length}
               isNewItem={false}
-              key={uuidv4()}
+              key={item._id}
               projects={data?.projects}
               index={index}
             />

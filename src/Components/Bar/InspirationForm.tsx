@@ -5,7 +5,6 @@ import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { v4 as uuidv4 } from "uuid";
 import { Formik, Form } from "formik";
 import { Typography, Grid, TextField, Button } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
@@ -19,70 +18,12 @@ import PromptDialog from "../Dialogs/PromptDialog";
 import ImageDragAndDrop from "../Image/ImageDragAndDrop";
 import RichTextEditor from "../RichTextEditor";
 import Chip from "../Chip";
+import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
 import { Close, Add } from "../Icons";
-import { IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
+import { IMAGE_TYPE, DIALOG_VARIANT, BASE_URL } from "../../constants";
 import { isURL } from "../../utils";
 import { Inspiration, Idea, Tag } from "../../Types/dataTypes";
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    icon: {
-      cursor: "pointer",
-      marginRight: theme.spacing(6),
-      marginTop: theme.spacing(1),
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      marginRight: theme.spacing(5),
-    },
-    marginBottom2: {
-      marginBottom: theme.spacing(2),
-    },
-    marginBottom3: {
-      marginBottom: theme.spacing(3),
-    },
-    marginRight: {
-      marginRight: theme.spacing(2),
-    },
-    flex: {
-      display: "flex",
-    },
-    button: {
-      minWidth: theme.spacing(17),
-      borderRadius: theme.spacing(1),
-    },
-    buttonContainer: {
-      alignSelf: "flex-end",
-      flex: "1",
-      display: "flex",
-      alignItems: "center",
-    },
-    bottomContainer: {
-      display: "flex",
-      flexFlow: "column",
-    },
-    fontWeightBold: {
-      fontWeight: "bold",
-    },
-    pointer: {
-      cursor: "pointer",
-    },
-    lighterGrey: {
-      color: theme.palette.grey[400],
-    },
-    verticalDivider: {
-      height: theme.spacing(3),
-      width: "1px",
-      background: theme.palette.grey["500"],
-      marginRight: theme.spacing(2),
-    },
-    fullWidth: {
-      width: "100%",
-    },
-  })
-);
+import { useFormStyles } from "./FormStyles";
 
 interface Props {
   inspiration: Inspiration;
@@ -92,9 +33,9 @@ interface Props {
 }
 
 interface RawInspiration extends Inspiration {
-  NewImageRefs: Array<string>;
   NewIdeas: Array<Idea>;
   NewTags: Array<Tag>;
+  NewImageRefURLs: Array<string>;
 }
 
 const InspirationForm: FC<Props> = ({
@@ -105,11 +46,15 @@ const InspirationForm: FC<Props> = ({
 }) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addDialogVariant, setAddDialogVariant] = useState("");
+  const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
+  const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
+    ""
+  );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
-  const classes = useStyles();
+  const classes = useFormStyles();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -118,7 +63,6 @@ const InspirationForm: FC<Props> = ({
 
   const handleFieldValues = (values: RawInspiration) => {
     const tempValues = { ...values };
-    tempValues.ImageRefs?.concat(tempValues.NewImageRefs);
     tempValues.Ideas?.concat(tempValues.NewIdeas);
     tempValues.Tags?.concat(tempValues.NewTags);
     return tempValues;
@@ -139,8 +83,8 @@ const InspirationForm: FC<Props> = ({
           className={classes.pointer}
           onClick={() => {
             setAddDialogOpen(true);
-            if (values.NewImageRefs.length === 0) {
-              setFieldValue("NewImageRefs", [""]);
+            if (values.NewImageRefURLs?.length === 0) {
+              setFieldValue("NewImageRefURLs", [""]);
             }
             setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
           }}
@@ -151,17 +95,25 @@ const InspirationForm: FC<Props> = ({
           values.ImageRefs.map(
             (item) =>
               isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+                <Image
+                  variant={IMAGE_TYPE.BAR}
+                  src={`${BASE_URL}/${item}`}
+                  key={uuidv4()}
+                />
               )
           )}
-        {values.NewImageRefs &&
-          values.NewImageRefs.map(
-            (item) =>
-              isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
-              )
-          )}
-        <ImageDragAndDrop />
+        {values.NewImageRefURLs &&
+          values.NewImageRefURLs.map((item) => (
+            <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+          ))}
+        {values.NewImageRefFiles &&
+          values.NewImageRefFiles.map((item) => (
+            <Image variant={IMAGE_TYPE.BAR} src={item.file} key={item.id} />
+          ))}
+        <ImageDragAndDrop
+          setFieldValue={setFieldValue}
+          NewImageRefFiles={values.NewImageRefFiles}
+        />
       </div>
     </div>
   );
@@ -170,10 +122,26 @@ const InspirationForm: FC<Props> = ({
     if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
       return {
         title: "Add image reference",
-        name: "NewImageRefs",
-        values: values.NewImageRefs,
+        name: "NewImageRefURLs",
+        values: values.NewImageRefURLs,
       };
     } else if (dialogVariant === DIALOG_VARIANT.TAG) {
+      return {
+        title: "Add a tag",
+        name: "NewTags",
+        values: values.Tags,
+        newValues: values.NewTags,
+        dialogVariant: dialogVariant,
+      };
+    }
+    return { title: "", name: "", values: [], newValues: [] };
+  };
+
+  const getAutocompleteDialogOptions = (
+    values: RawInspiration,
+    dialogVariant: string
+  ) => {
+    if (dialogVariant === DIALOG_VARIANT.TAG) {
       return {
         title: "Add a tag",
         name: "NewTags",
@@ -189,10 +157,12 @@ const InspirationForm: FC<Props> = ({
     <Formik
       initialValues={
         {
+          _id: inspiration._id || null,
           Title: inspiration.Title || "",
           Description: inspiration.Description,
           ImageRefs: inspiration.ImageRefs || [],
-          NewImageRefs: [],
+          NewImageRefFiles: [],
+          NewImageRefURLs: [],
           Tags: inspiration.Tags || [],
           NewTags: [],
           Ideas: inspiration.Ideas || [],
@@ -261,36 +231,69 @@ const InspirationForm: FC<Props> = ({
                     }
                   />
                 </div>
-              </div>
-              <div
-                className={classnames(classes.fullWidth, classes.marginBottom3)}
-              >
-                {values.Tags &&
-                  values.Tags.map(
-                    (item, index) =>
-                      item &&
-                      item.Title !== "" && (
-                        <Chip
-                          label={item.Title}
-                          onClick={() => null}
-                          lastTag={index + 1 === values.Tags?.length}
-                          key={item._id}
-                        />
-                      )
-                  )}
-                {values.NewTags &&
-                  values.NewTags.map(
-                    (item, index) =>
-                      item &&
-                      item.Title !== "" && (
-                        <Chip
-                          label={item.Title}
-                          onClick={() => null}
-                          lastTag={index + 1 === values.NewTags.length}
-                          key={item._id}
-                        />
-                      )
-                  )}
+                <div className={classes.fullWidth}>
+                  <div className={classes.spaceBetween}>
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Tags
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setAutocompleteDialogOpen(true);
+                          setAutocompleteDialogVariant(DIALOG_VARIANT.TAG);
+                        }}
+                      />
+                    </div>
+                    <Typography
+                      className={classnames(
+                        classes.text,
+                        classes.lightGrey,
+                        classes.date
+                      )}
+                    >
+                      {dayjs(values.DateCreated).format("DD.MM.YYYY")}
+                    </Typography>
+                  </div>
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
+                    {values.Tags &&
+                      values.Tags.map(
+                        (item, index) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Chip
+                              label={item.Title}
+                              onClick={() => null}
+                              lastTag={index + 1 === values.Tags?.length}
+                              key={item._id}
+                            />
+                          )
+                      )}
+                    {values.NewTags &&
+                      values.NewTags.map(
+                        (item, index) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Chip
+                              label={item.Title}
+                              onClick={() => null}
+                              lastTag={index + 1 === values.NewTags.length}
+                              key={item._id}
+                            />
+                          )
+                      )}
+                  </div>
+                </div>
               </div>
               {getImageRefs(values, setFieldValue)}
               <div className={classes.bottomContainer}>
@@ -331,6 +334,17 @@ const InspirationForm: FC<Props> = ({
               handleChange={handleChange}
               setFieldValue={setFieldValue}
               {...getDialogOptions(values, addDialogVariant)}
+            />
+          )}
+          {autocompleteDialogOpen && (
+            <AutocompleteDialog
+              dialogOpen={autocompleteDialogOpen}
+              setDialogOpen={setAutocompleteDialogOpen}
+              setFieldValue={setFieldValue}
+              {...getAutocompleteDialogOptions(
+                values,
+                autocompleteDialogVariant
+              )}
             />
           )}
           <PromptDialog

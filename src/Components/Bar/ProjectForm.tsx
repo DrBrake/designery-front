@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { Typography, Grid, TextField, Button } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
@@ -15,62 +14,11 @@ import {
 import PromptDialog from "../Dialogs/PromptDialog";
 import RichTextEditor from "../RichTextEditor";
 import Chip from "../Chip";
-import { Close } from "../Icons";
+import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
+import { Close, Add } from "../Icons";
 import { Project, Idea, Tag } from "../../Types/dataTypes";
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    icon: {
-      cursor: "pointer",
-      marginRight: theme.spacing(6),
-      marginTop: theme.spacing(1),
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      marginRight: theme.spacing(5),
-    },
-    marginBottom2: {
-      marginBottom: theme.spacing(2),
-    },
-    marginBottom3: {
-      marginBottom: theme.spacing(3),
-    },
-    marginRight: {
-      marginRight: theme.spacing(2),
-    },
-    flex: {
-      display: "flex",
-    },
-    button: {
-      minWidth: theme.spacing(17),
-      borderRadius: theme.spacing(1),
-    },
-    buttonContainer: {
-      alignSelf: "flex-end",
-      flex: "1",
-      display: "flex",
-      alignItems: "center",
-    },
-    bottomContainer: {
-      display: "flex",
-      flexFlow: "column",
-    },
-    lighterGrey: {
-      color: theme.palette.grey[400],
-    },
-    verticalDivider: {
-      height: theme.spacing(3),
-      width: "1px",
-      background: theme.palette.grey["500"],
-      marginRight: theme.spacing(2),
-    },
-    fullWidth: {
-      width: "100%",
-    },
-  })
-);
+import { DIALOG_VARIANT } from "../../constants";
+import { useFormStyles } from "./FormStyles";
 
 interface Props {
   project: Project;
@@ -85,11 +33,15 @@ interface RawProject extends Project {
 }
 
 const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
+  const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
+  const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
+    ""
+  );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
-  const classes = useStyles();
+  const classes = useFormStyles();
   const dispatch = useDispatch();
 
   const handleFieldValues = (values: RawProject) => {
@@ -97,6 +49,22 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     tempValues.Ideas?.concat(tempValues.NewIdeas);
     tempValues.Tags?.concat(tempValues.NewTags);
     return tempValues;
+  };
+
+  const getAutocompleteDialogOptions = (
+    values: RawProject,
+    dialogVariant: string
+  ) => {
+    if (dialogVariant === DIALOG_VARIANT.TAG) {
+      return {
+        title: "Add a tag",
+        name: "NewTags",
+        values: values.Tags,
+        newValues: values.NewTags,
+        dialogVariant: dialogVariant,
+      };
+    }
+    return { title: "", name: "", values: [], newValues: [] };
   };
 
   useEffect(() => {
@@ -107,6 +75,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     <Formik
       initialValues={
         {
+          _id: project._id || null,
           Title: project.Title || "",
           Description: project.Description,
           Ideas: project.Ideas || [],
@@ -177,36 +146,69 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                     }
                   />
                 </div>
-              </div>
-              <div
-                className={classnames(classes.fullWidth, classes.marginBottom3)}
-              >
-                {values.Tags &&
-                  values.Tags.map(
-                    (item, index) =>
-                      item &&
-                      item.Title !== "" && (
-                        <Chip
-                          label={item.Title}
-                          onClick={() => null}
-                          lastTag={index + 1 === values.Tags?.length}
-                          key={item._id}
-                        />
-                      )
-                  )}
-                {values.NewTags &&
-                  values.NewTags.map(
-                    (item, index) =>
-                      item &&
-                      item.Title !== "" && (
-                        <Chip
-                          label={item.Title}
-                          onClick={() => null}
-                          lastTag={index + 1 === values.NewTags.length}
-                          key={item._id}
-                        />
-                      )
-                  )}
+                <div className={classes.fullWidth}>
+                  <div className={classes.spaceBetween}>
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Tags
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setAutocompleteDialogOpen(true);
+                          setAutocompleteDialogVariant(DIALOG_VARIANT.TAG);
+                        }}
+                      />
+                    </div>
+                    <Typography
+                      className={classnames(
+                        classes.text,
+                        classes.lightGrey,
+                        classes.date
+                      )}
+                    >
+                      {dayjs(values.DateCreated).format("DD.MM.YYYY")}
+                    </Typography>
+                  </div>
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
+                    {values.Tags &&
+                      values.Tags.map(
+                        (item, index) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Chip
+                              label={item.Title}
+                              onClick={() => null}
+                              lastTag={index + 1 === values.Tags?.length}
+                              key={item._id}
+                            />
+                          )
+                      )}
+                    {values.NewTags &&
+                      values.NewTags.map(
+                        (item, index) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Chip
+                              label={item.Title}
+                              onClick={() => null}
+                              lastTag={index + 1 === values.NewTags.length}
+                              key={item._id}
+                            />
+                          )
+                      )}
+                  </div>
+                </div>
               </div>
               <div className={classes.bottomContainer}>
                 <div className={classes.buttonContainer}>
@@ -239,6 +241,17 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
               </div>
             </Grid>
           </Grid>
+          {autocompleteDialogOpen && (
+            <AutocompleteDialog
+              dialogOpen={autocompleteDialogOpen}
+              setDialogOpen={setAutocompleteDialogOpen}
+              setFieldValue={setFieldValue}
+              {...getAutocompleteDialogOptions(
+                values,
+                autocompleteDialogVariant
+              )}
+            />
+          )}
           <PromptDialog
             dialogOpen={removeDialogOpen}
             setDialogOpen={setRemoveDialogOpen}

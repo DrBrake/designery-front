@@ -7,10 +7,11 @@ import {
   Tag,
   ItemResponse,
 } from "../Types/dataTypes";
+import { BASE_URL } from "../constants";
 
 export const dataAPI = createApi({
   reducerPath: "dataAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8081" }),
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   tagTypes: ["Items"],
   endpoints: (builder) => ({
     getData: builder.query<ItemResponse, void>({

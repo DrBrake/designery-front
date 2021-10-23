@@ -102,6 +102,7 @@ const Navigation: FC<RouteComponentProps> = ({
 }) => {
   const [addOpen, setAddOpen] = useState(false);
   const [randomOpen, setRandomOpen] = useState(false);
+  const [randomDialogOpen, setRandomDialogOpen] = useState(false);
   const [randomDialogType, setRandomDialogType] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -226,6 +227,7 @@ const Navigation: FC<RouteComponentProps> = ({
               })}
               onClick={() => {
                 if (enoughInspirations) {
+                  setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS);
                 }
               }}
@@ -239,6 +241,7 @@ const Navigation: FC<RouteComponentProps> = ({
               })}
               onClick={() => {
                 if (enoughIdeas) {
+                  setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS);
                 }
               }}
@@ -252,6 +255,7 @@ const Navigation: FC<RouteComponentProps> = ({
               })}
               onClick={() => {
                 if (enoughBoth) {
+                  setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH);
                 }
               }}
@@ -414,8 +418,8 @@ const Navigation: FC<RouteComponentProps> = ({
       {children}
       <RandomDialog
         randomDialogType={randomDialogType}
-        randomDialogOpen={randomOpen}
-        setRandomDialogOpen={setRandomOpen}
+        randomDialogOpen={randomDialogOpen}
+        setRandomDialogOpen={setRandomDialogOpen}
         data={data}
       />
     </>

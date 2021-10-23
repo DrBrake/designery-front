@@ -15,7 +15,6 @@ import {
   Button,
   MenuItem,
 } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
@@ -34,87 +33,7 @@ import { Close, Add } from "../Icons";
 import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
 import { isURL } from "../../utils";
 import { Project, Idea, Tag, Inspiration } from "../../Types/dataTypes";
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    text: {
-      fontSize: "16px",
-      fontWeight: "bold",
-    },
-    lightGrey: {
-      color: theme.palette.primary.dark,
-    },
-    icon: {
-      cursor: "pointer",
-      marginRight: theme.spacing(6),
-      marginTop: theme.spacing(1),
-    },
-    date: {
-      textAlign: "right",
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      marginRight: theme.spacing(5),
-    },
-    marginBottom2: {
-      marginBottom: theme.spacing(2),
-    },
-    marginBottom3: {
-      marginBottom: theme.spacing(3),
-    },
-    marginRight: {
-      marginRight: theme.spacing(2),
-    },
-    paddingLeft: {
-      paddingLeft: theme.spacing(2),
-    },
-    flex: {
-      display: "flex",
-    },
-    spaceBetween: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: theme.spacing(3),
-    },
-    fullWidth: {
-      width: "100%",
-    },
-    button: {
-      minWidth: theme.spacing(17),
-      borderRadius: theme.spacing(1),
-    },
-    buttonContainer: {
-      alignSelf: "flex-end",
-      flex: "1",
-      display: "flex",
-      alignItems: "center",
-    },
-    bottomContainer: {
-      display: "flex",
-      flexFlow: "column",
-    },
-    fontWeightBold: {
-      fontWeight: "bold",
-    },
-    pointer: {
-      cursor: "pointer",
-    },
-    displayNone: {
-      display: "none",
-    },
-    lighterGrey: {
-      color: theme.palette.grey[400],
-    },
-    verticalDivider: {
-      height: theme.spacing(3),
-      width: "1px",
-      background: theme.palette.grey["500"],
-      marginRight: theme.spacing(2),
-    },
-  })
-);
+import { useFormStyles } from "./FormStyles";
 
 interface Props {
   idea: Idea;
@@ -125,7 +44,7 @@ interface Props {
 }
 
 interface RawIdea extends Idea {
-  NewImageRefs: Array<string>;
+  NewImageRefURLs: Array<string>;
   NewTags: Array<Tag>;
   NewInspirations: Array<Inspiration>;
 }
@@ -142,7 +61,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
-  const classes = useStyles();
+  const classes = useFormStyles();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -151,7 +70,6 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
 
   const handleFieldValues = (values: RawIdea) => {
     const tempValues = { ...values };
-    tempValues.ImageRefs?.concat(tempValues.NewImageRefs);
     tempValues.Tags?.concat(tempValues.NewTags);
     tempValues.Inspirations?.concat(tempValues.NewInspirations);
     return tempValues;
@@ -196,8 +114,8 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
           className={classes.pointer}
           onClick={() => {
             setAddDialogOpen(true);
-            if (values.NewImageRefs.length === 0) {
-              setFieldValue("NewImageRefs", [""]);
+            if (values.NewImageRefURLs.length === 0) {
+              setFieldValue("NewImageRefURLs", [""]);
             }
             setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
           }}
@@ -208,17 +126,24 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
           values.ImageRefs.map(
             (item) =>
               isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+                <Image variant={IMAGE_TYPE.BAR} src={item} key={item} />
               )
           )}
-        {values.NewImageRefs &&
-          values.NewImageRefs.map(
+        {values.NewImageRefURLs &&
+          values.NewImageRefURLs.map(
             (item) =>
               isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
+                <Image variant={IMAGE_TYPE.BAR} src={item} key={item} />
               )
           )}
-        <ImageDragAndDrop />
+        {values.NewImageRefFiles &&
+          values.NewImageRefFiles.map((item) => (
+            <Image variant={IMAGE_TYPE.BAR} src={item.file} key={item.id} />
+          ))}
+        <ImageDragAndDrop
+          setFieldValue={setFieldValue}
+          NewImageRefFiles={values.NewImageRefFiles}
+        />
       </div>
     </div>
   );
@@ -252,8 +177,8 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
     if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
       return {
         title: "Add image reference",
-        name: "NewImageRefs",
-        values: values.NewImageRefs,
+        name: "NewImageRefURLs",
+        values: values.NewImageRefURLs,
       };
     } else if (dialogVariant === DIALOG_VARIANT.DRAFT) {
       return { title: "Add a draft", name: "Drafts", values: values.Drafts };
@@ -271,10 +196,12 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
     <Formik
       initialValues={
         {
+          _id: idea._id || null,
           Title: idea.Title || "",
           Description: idea.Description,
           ImageRefs: idea.ImageRefs || [],
-          NewImageRefs: [],
+          NewImageRefFiles: [],
+          NewImageRefURLs: [],
           Drafts: idea.Drafts || [],
           CompletedWorks: idea.CompletedWorks || [],
           Completed: idea.Completed || false,

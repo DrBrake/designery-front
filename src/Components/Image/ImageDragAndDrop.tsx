@@ -1,27 +1,25 @@
-import React, { useEffect, useReducer, useState, DragEvent } from "react";
+import React, { useEffect, useReducer, DragEvent, FC } from "react";
 import classnames from "classnames";
 import { Typography } from "@material-ui/core";
 
 import usePrevious from "../../Hooks/usePrevious";
 import { readDataURLAsync } from "../../utils";
-import { IMAGE_TYPE } from "../../constants";
 
-import Image from "./Image";
 import { Add } from "../Icons";
 import useImageStyles from "./ImageStyles";
+import { ImageFile } from "../../Types/dataTypes";
 
 interface State {
   inDropZone: boolean;
   fileList: Array<File>;
 }
 
-interface ImageFile {
-  file: string;
-  name: string;
-  id: string;
+interface Props {
+  setFieldValue: (name: string, value: any) => void;
+  NewImageRefFiles?: Array<ImageFile>;
 }
 
-const ImageDragAndDrop = () => {
+const ImageDragAndDrop: FC<Props> = ({ setFieldValue, NewImageRefFiles }) => {
   const state: State = {
     inDropZone: false,
     fileList: [],
@@ -39,7 +37,6 @@ const ImageDragAndDrop = () => {
   };
 
   const [data, dispatch] = useReducer(imageFileReducer, state);
-  const [images, setImages] = useState<ImageFile[]>([]);
   const classes = useImageStyles();
   const prevData = usePrevious(data);
 
@@ -60,7 +57,7 @@ const ImageDragAndDrop = () => {
     let files = [...e.dataTransfer.files];
 
     files.map((item, index) => {
-      item[`image`] = URL.createObjectURL(item);
+      item["image"] = URL.createObjectURL(item);
     });
 
     if (files) {
@@ -81,12 +78,17 @@ const ImageDragAndDrop = () => {
       );
 
       const handleImages = async () => {
-        const newImages = await Promise.all(
-          latestImages.map((item) => {
-            return readDataURLAsync(item);
-          })
-        );
-        setImages(images.concat(newImages as ImageFile[]));
+        try {
+          const newImages = await Promise.all(
+            latestImages.map((item) => {
+              return readDataURLAsync(item);
+            })
+          );
+          setFieldValue(
+            "NewImageRefFiles",
+            NewImageRefFiles?.concat(newImages as ImageFile[])
+          );
+        } catch (err) {}
       };
 
       handleImages();
@@ -94,20 +96,15 @@ const ImageDragAndDrop = () => {
   }, [data]);
 
   return (
-    <>
-      {images.map((item) => (
-        <Image src={item.file} key={item.id} variant={IMAGE_TYPE.BAR} />
-      ))}
-      <div
-        onDrop={handleDrop}
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        className={classnames(classes.barImageRef, classes.dragAndDrop)}
-      >
-        <Add fontSize="large" />
-        <Typography>Drag and drop</Typography>
-      </div>
-    </>
+    <div
+      onDrop={handleDrop}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      className={classnames(classes.barImageRef, classes.dragAndDrop)}
+    >
+      <Add fontSize="large" />
+      <Typography>Drag and drop</Typography>
+    </div>
   );
 };
 

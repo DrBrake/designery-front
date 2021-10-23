@@ -16,6 +16,7 @@ export interface Item {
 
 export interface Idea extends Item {
   ImageRefs?: Array<string>;
+  NewImageRefFiles?: Array<ImageFile>;
   Drafts?: Array<string>;
   CompletedWorks?: Array<string>;
   Completed?: boolean;
@@ -26,6 +27,7 @@ export interface Idea extends Item {
 
 export interface Inspiration extends Item {
   ImageRefs?: Array<string>;
+  NewImageRefFiles?: Array<ImageFile>;
   Ideas?: Array<Idea>;
   Variant: AllVariants["INSPIRATION"];
 }
@@ -46,4 +48,10 @@ export interface ItemResponse {
   projects: Array<Project>;
   inspirations: Array<Inspiration>;
   tags: Array<Tag>;
+}
+
+export interface ImageFile {
+  file: string;
+  name: string;
+  id: string;
 }
