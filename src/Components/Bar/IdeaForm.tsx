@@ -44,9 +44,9 @@ interface Props {
 }
 
 interface RawIdea extends Idea {
-  NewImageRefURLs: Array<string>;
-  NewTags: Array<Tag>;
-  NewInspirations: Array<Inspiration>;
+  NewImageRefURLs?: Array<string>;
+  NewTags?: Array<Tag>;
+  NewInspirations?: Array<Inspiration>;
 }
 
 const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
@@ -70,9 +70,16 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
 
   const handleFieldValues = (values: RawIdea) => {
     const tempValues = { ...values };
-    tempValues.Tags?.concat(tempValues.NewTags);
-    tempValues.Inspirations?.concat(tempValues.NewInspirations);
-    return tempValues;
+    tempValues.ImageRefs?.concat(tempValues.NewImageRefURLs!);
+    tempValues.Description = convertToRaw(
+      tempValues.Description.getCurrentContent()
+    );
+    tempValues.Tags?.concat(tempValues.NewTags!);
+    tempValues.Inspirations?.concat(tempValues.NewInspirations!);
+    delete tempValues.NewImageRefURLs;
+    delete tempValues.NewTags;
+    delete tempValues.NewInspirations;
+    return tempValues as Idea;
   };
 
   const getImageRefs = (
@@ -114,7 +121,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
           className={classes.pointer}
           onClick={() => {
             setAddDialogOpen(true);
-            if (values.NewImageRefURLs.length === 0) {
+            if (values.NewImageRefURLs?.length === 0) {
               setFieldValue("NewImageRefURLs", [""]);
             }
             setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
@@ -198,7 +205,9 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
         {
           _id: idea._id || null,
           Title: idea.Title || "",
-          Description: idea.Description,
+          Description: idea.Description
+            ? EditorState.createWithContent(convertFromRaw(idea.Description))
+            : EditorState.createEmpty(),
           ImageRefs: idea.ImageRefs || [],
           NewImageRefFiles: [],
           NewImageRefURLs: [],
@@ -259,18 +268,9 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                   />
                   <RichTextEditor
                     placeholder="Description"
-                    editorState={
-                      values.Description
-                        ? EditorState.createWithContent(
-                            convertFromRaw(values.Description)
-                          )
-                        : EditorState.createEmpty()
-                    }
+                    editorState={values.Description}
                     setFieldValue={(value) =>
-                      setFieldValue(
-                        "Description",
-                        convertToRaw(value.getCurrentContent())
-                      )
+                      setFieldValue("Description", value)
                     }
                   />
                 </div>
@@ -330,7 +330,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                             <Chip
                               label={item.Title}
                               onClick={() => null}
-                              lastTag={index + 1 === values.NewTags.length}
+                              lastTag={index + 1 === values.NewTags?.length}
                               key={item._id}
                             />
                           )

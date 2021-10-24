@@ -72,11 +72,7 @@ const RichTextEditor: FC<Props> = ({
   };
 
   return (
-    <div
-      className={classes.container}
-      onClick={() => editor?.current?.focus()}
-      onBlur={() => setFieldValue(editorState)}
-    >
+    <div className={classes.container} onClick={() => editor?.current?.focus()}>
       {INLINE_BUTTONS.map((item) => (
         <IconButton
           onMouseDown={(e) => {
