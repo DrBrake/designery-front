@@ -63,8 +63,12 @@ const InspirationForm: FC<Props> = ({
 
   const handleFieldValues = (values: RawInspiration) => {
     const tempValues = { ...values };
-    tempValues.Ideas?.concat(tempValues.NewIdeas!);
-    tempValues.Tags?.concat(tempValues.NewTags!);
+    tempValues.ImageRefs = tempValues.ImageRefs?.concat(
+      values.NewImageRefURLs!
+    );
+    tempValues.Ideas = tempValues.Ideas?.concat(values.NewIdeas!);
+    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
+    delete tempValues.NewImageRefURLs;
     delete tempValues.NewIdeas;
     delete tempValues.NewTags;
     return tempValues as Inspiration;

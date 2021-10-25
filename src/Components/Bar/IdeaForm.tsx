@@ -70,9 +70,13 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
 
   const handleFieldValues = (values: RawIdea) => {
     const tempValues = { ...values };
-    tempValues.ImageRefs?.concat(tempValues.NewImageRefURLs!);
-    tempValues.Tags?.concat(tempValues.NewTags!);
-    tempValues.Inspirations?.concat(tempValues.NewInspirations!);
+    tempValues.ImageRefs = tempValues.ImageRefs?.concat(
+      values.NewImageRefURLs!
+    );
+    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
+    tempValues.Inspirations = tempValues.Inspirations?.concat(
+      values.NewInspirations!
+    );
     delete tempValues.NewImageRefURLs;
     delete tempValues.NewTags;
     delete tempValues.NewInspirations;

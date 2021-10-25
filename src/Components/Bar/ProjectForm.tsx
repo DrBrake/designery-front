@@ -46,11 +46,11 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
 
   const handleFieldValues = (values: RawProject) => {
     const tempValues = { ...values };
-    tempValues.Ideas?.concat(tempValues.NewIdeas!);
-    tempValues.Tags?.concat(tempValues.NewTags!);
+    tempValues.Ideas = tempValues.Ideas?.concat(values.NewIdeas!);
+    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
     delete tempValues.NewIdeas;
     delete tempValues.NewTags;
-    return tempValues;
+    return tempValues as Project;
   };
 
   const getAutocompleteDialogOptions = (
