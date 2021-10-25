@@ -28,8 +28,8 @@ interface Props {
 }
 
 interface RawProject extends Project {
-  NewIdeas: Array<Idea>;
-  NewTags: Array<Tag>;
+  NewIdeas?: Array<Idea>;
+  NewTags?: Array<Tag>;
 }
 
 const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
@@ -46,8 +46,10 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
 
   const handleFieldValues = (values: RawProject) => {
     const tempValues = { ...values };
-    tempValues.Ideas?.concat(tempValues.NewIdeas);
-    tempValues.Tags?.concat(tempValues.NewTags);
+    tempValues.Ideas?.concat(tempValues.NewIdeas!);
+    tempValues.Tags?.concat(tempValues.NewTags!);
+    delete tempValues.NewIdeas;
+    delete tempValues.NewTags;
     return tempValues;
   };
 
@@ -202,7 +204,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                             <Chip
                               label={item.Title}
                               onClick={() => null}
-                              lastTag={index + 1 === values.NewTags.length}
+                              lastTag={index + 1 === values.NewTags?.length}
                               key={item._id}
                             />
                           )

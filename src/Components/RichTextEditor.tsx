@@ -1,4 +1,4 @@
-import React, { useRef, FC } from "react";
+import React, { useRef, useReducer, FC } from "react";
 import { Editor, EditorState, RichUtils } from "draft-js";
 import { IconButton, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -59,25 +59,52 @@ const RichTextEditor: FC<Props> = ({
   editorState,
   setFieldValue,
 }) => {
+  const localEditorState = {
+    editor: editorState,
+  };
+
+  const editorStateReducer = (state: any, action: any) => {
+    switch (action.type) {
+      case "EditorState":
+        return { ...state, editor: action.editor };
+      default:
+        return state;
+    }
+  };
+
+  const [localEditor, setLocalEditor] = useReducer(
+    editorStateReducer,
+    localEditorState
+  );
   const classes = useStyles();
   const editor = useRef<Editor>(null);
 
   const handleKeyCommand = (command: string, editorState: EditorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setFieldValue(newState);
+      setLocalEditor({ type: "EditorState", editor: newState });
       return "handled";
     }
     return "not-handled";
   };
 
   return (
-    <div className={classes.container} onClick={() => editor?.current?.focus()}>
+    <div
+      className={classes.container}
+      onClick={() => editor?.current?.focus()}
+      onBlur={() => setFieldValue(localEditor.editor)}
+    >
       {INLINE_BUTTONS.map((item) => (
         <IconButton
           onMouseDown={(e) => {
             e.preventDefault();
-            setFieldValue(RichUtils.toggleInlineStyle(editorState, item.value));
+            setLocalEditor({
+              type: "EditorState",
+              editor: RichUtils.toggleInlineStyle(
+                localEditor.editor,
+                item.value
+              ),
+            });
           }}
           color="primary"
           size="small"
@@ -91,7 +118,10 @@ const RichTextEditor: FC<Props> = ({
         <IconButton
           onMouseDown={(e) => {
             e.preventDefault();
-            setFieldValue(RichUtils.toggleBlockType(editorState, item.value));
+            setLocalEditor({
+              type: "EditorState",
+              editor: RichUtils.toggleBlockType(localEditor.editor, item.value),
+            });
           }}
           color="primary"
           size="small"
@@ -105,8 +135,10 @@ const RichTextEditor: FC<Props> = ({
       <div>
         <Editor
           ref={editor}
-          editorState={editorState}
-          onChange={(editorState) => setFieldValue(editorState)}
+          editorState={localEditor.editor}
+          onChange={(editorState) =>
+            setLocalEditor({ type: "EditorState", editor: editorState })
+          }
           handleKeyCommand={handleKeyCommand}
           placeholder={placeholder}
         />

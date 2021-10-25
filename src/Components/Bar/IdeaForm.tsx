@@ -71,9 +71,6 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
   const handleFieldValues = (values: RawIdea) => {
     const tempValues = { ...values };
     tempValues.ImageRefs?.concat(tempValues.NewImageRefURLs!);
-    tempValues.Description = convertToRaw(
-      tempValues.Description.getCurrentContent()
-    );
     tempValues.Tags?.concat(tempValues.NewTags!);
     tempValues.Inspirations?.concat(tempValues.NewInspirations!);
     delete tempValues.NewImageRefURLs;
@@ -205,9 +202,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
         {
           _id: idea._id || null,
           Title: idea.Title || "",
-          Description: idea.Description
-            ? EditorState.createWithContent(convertFromRaw(idea.Description))
-            : EditorState.createEmpty(),
+          Description: idea.Description,
           ImageRefs: idea.ImageRefs || [],
           NewImageRefFiles: [],
           NewImageRefURLs: [],
@@ -268,9 +263,18 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                   />
                   <RichTextEditor
                     placeholder="Description"
-                    editorState={values.Description}
+                    editorState={
+                      values.Description
+                        ? EditorState.createWithContent(
+                            convertFromRaw(values.Description)
+                          )
+                        : EditorState.createEmpty()
+                    }
                     setFieldValue={(value) =>
-                      setFieldValue("Description", value)
+                      setFieldValue(
+                        "Description",
+                        convertToRaw(value.getCurrentContent())
+                      )
                     }
                   />
                 </div>

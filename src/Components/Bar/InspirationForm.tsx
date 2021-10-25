@@ -33,9 +33,9 @@ interface Props {
 }
 
 interface RawInspiration extends Inspiration {
-  NewIdeas: Array<Idea>;
-  NewTags: Array<Tag>;
-  NewImageRefURLs: Array<string>;
+  NewIdeas?: Array<Idea>;
+  NewTags?: Array<Tag>;
+  NewImageRefURLs?: Array<string>;
 }
 
 const InspirationForm: FC<Props> = ({
@@ -63,9 +63,11 @@ const InspirationForm: FC<Props> = ({
 
   const handleFieldValues = (values: RawInspiration) => {
     const tempValues = { ...values };
-    tempValues.Ideas?.concat(tempValues.NewIdeas);
-    tempValues.Tags?.concat(tempValues.NewTags);
-    return tempValues;
+    tempValues.Ideas?.concat(tempValues.NewIdeas!);
+    tempValues.Tags?.concat(tempValues.NewTags!);
+    delete tempValues.NewIdeas;
+    delete tempValues.NewTags;
+    return tempValues as Inspiration;
   };
 
   const getImageRefs = (
@@ -287,7 +289,7 @@ const InspirationForm: FC<Props> = ({
                             <Chip
                               label={item.Title}
                               onClick={() => null}
-                              lastTag={index + 1 === values.NewTags.length}
+                              lastTag={index + 1 === values.NewTags?.length}
                               key={item._id}
                             />
                           )
