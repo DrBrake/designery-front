@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import classnames from "classnames";
 import { Dialog as MuiDialog } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -6,6 +7,7 @@ interface Props {
   dialogOpen: boolean;
   setDialogOpen: (value: boolean) => void;
   onClose?: () => void;
+  transparent?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -15,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "500px",
     overflow: "visible",
   },
+  transparent: {
+    background: "transparent",
+    boxShadow: "none",
+  },
 }));
 
 const Dialog: FC<Props> = ({
@@ -22,6 +28,7 @@ const Dialog: FC<Props> = ({
   dialogOpen,
   setDialogOpen,
   onClose,
+  transparent,
 }) => {
   const classes = useStyles();
   return (
@@ -32,7 +39,9 @@ const Dialog: FC<Props> = ({
         setDialogOpen(false);
       }}
       classes={{
-        paper: classes.dialogPadding,
+        paper: classnames(classes.dialogPadding, {
+          [classes.transparent]: transparent,
+        }),
       }}
       transitionDuration={{ enter: 200, exit: 1 }}
     >

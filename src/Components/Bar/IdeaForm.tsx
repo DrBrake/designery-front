@@ -27,10 +27,16 @@ import Image from "../Image/Image";
 import AddImageDialog from "../Dialogs/AddImageDialog";
 import PromptDialog from "../Dialogs/PromptDialog";
 import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
+import ImageDialog from "../Dialogs/ImageDialog";
 import RichTextEditor from "../RichTextEditor";
 import ImageDragAndDrop from "../Image/ImageDragAndDrop";
 import { Close, Add } from "../Icons";
-import { VARIANTS, IMAGE_TYPE, DIALOG_VARIANT } from "../../constants";
+import {
+  VARIANTS,
+  IMAGE_TYPE,
+  DIALOG_VARIANT,
+  BASE_URL,
+} from "../../constants";
 import { isURL } from "../../utils";
 import { Project, Idea, Tag, Inspiration } from "../../Types/dataTypes";
 import { useFormStyles } from "./FormStyles";
@@ -58,15 +64,17 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
   );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
-  const [postItem, { isSuccess }] = usePostItemMutation();
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageDialogImage, setImageDialogImage] = useState("");
+  const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
   const classes = useFormStyles();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isSuccess && isNewItem) dispatch(removeNewItem({ index }));
-  }, [isSuccess]);
+    if (postItemSuccess && isNewItem) dispatch(removeNewItem({ index }));
+  }, [postItemSuccess]);
 
   const handleFieldValues = (values: RawIdea) => {
     const tempValues = { ...values };
@@ -87,7 +95,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
     values: RawIdea,
     setFieldValue: (name: string, value: any) => void
   ) => (
-    <div>
+    <div className={classes.marginBottom3}>
       <div className={classnames(classes.flex, classes.marginBottom2)}>
         <Typography
           className={classnames(classes.marginRight, classes.fontWeightBold)}
@@ -131,22 +139,43 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
       </div>
       <div className={classes.flex}>
         {values.ImageRefs &&
-          values.ImageRefs.map(
-            (item) =>
-              isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={item} />
-              )
-          )}
+          values.ImageRefs.map((item) => (
+            <Image
+              variant={IMAGE_TYPE.BAR}
+              src={`${BASE_URL}/images/${values.Variant}/${item}`}
+              key={item}
+              onClick={() => {
+                setImageDialogOpen(true);
+                setImageDialogImage(item);
+              }}
+            />
+          ))}
         {values.NewImageRefURLs &&
           values.NewImageRefURLs.map(
             (item) =>
               isURL(item) && (
-                <Image variant={IMAGE_TYPE.BAR} src={item} key={item} />
+                <Image
+                  variant={IMAGE_TYPE.BAR}
+                  src={item}
+                  key={item}
+                  onClick={() => {
+                    setImageDialogOpen(true);
+                    setImageDialogImage(item);
+                  }}
+                />
               )
           )}
         {values.NewImageRefFiles &&
           values.NewImageRefFiles.map((item) => (
-            <Image variant={IMAGE_TYPE.BAR} src={item.file} key={item.id} />
+            <Image
+              variant={IMAGE_TYPE.BAR}
+              src={item.file}
+              key={item.id}
+              onClick={() => {
+                setImageDialogOpen(true);
+                setImageDialogImage(item.file);
+              }}
+            />
           ))}
         <ImageDragAndDrop
           setFieldValue={setFieldValue}
@@ -198,6 +227,25 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
       };
     }
     return { title: "", name: "", values: [], newValues: [] };
+  };
+
+  const handleRemoveImage = (
+    image: string,
+    values: RawIdea,
+    setFieldValue: (name: string, value: any) => void
+  ) => {
+    setFieldValue(
+      "ImageRefs",
+      values.ImageRefs?.filter((item) => item !== image)
+    );
+    setFieldValue(
+      "NewImageRefFiles",
+      values.NewImageRefFiles?.filter((item) => item.file !== image)
+    );
+    setFieldValue(
+      "NewImageRefURLs",
+      values.NewImageRefURLs?.filter((item) => item !== image)
+    );
   };
 
   return (
@@ -525,6 +573,18 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                 values,
                 autocompleteDialogVariant
               )}
+            />
+          )}
+          {imageDialogOpen && (
+            <ImageDialog
+              dialogOpen={imageDialogOpen}
+              setDialogOpen={setImageDialogOpen}
+              image={imageDialogImage}
+              variant={values.Variant}
+              onRemove={() => {
+                setImageDialogOpen(false);
+                handleRemoveImage(imageDialogImage, values, setFieldValue);
+              }}
             />
           )}
           <PromptDialog

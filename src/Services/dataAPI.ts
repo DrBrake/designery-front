@@ -55,4 +55,5 @@ export const {
   usePostItemMutation,
   useRemoveItemMutation,
   usePostTagMutation,
+  useRemoveTagMutation,
 } = dataAPI;
