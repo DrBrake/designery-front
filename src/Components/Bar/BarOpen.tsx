@@ -33,14 +33,12 @@ interface Props {
   isLast: boolean;
   isFirst: boolean;
   isNewItem: boolean;
-  projects: Array<Project>;
   index: number;
   setOpen: (value: boolean) => void;
 }
 
 const BarOpen: FC<Props> = ({
   itemData,
-  projects,
   setOpen,
   isLast,
   isFirst,
@@ -53,7 +51,6 @@ const BarOpen: FC<Props> = ({
       return (
         <IdeaForm
           idea={itemData}
-          projects={projects}
           isNewItem={isNewItem}
           setOpen={setOpen}
           index={index}

@@ -49,6 +49,12 @@ export const appSlice = createSlice({
 });
 
 export const selectData = (state: RootState) => state.app.data;
+export const selectIdeas = (state: RootState) => state.app.data.ideas;
+export const selectProjects = (state: RootState) => state.app.data.projects;
+export const selectInspirations = (state: RootState) =>
+  state.app.data.inspirations;
+export const selectTags = (state: RootState) => state.app.data.tags;
+
 export const selectNewItems = (state: RootState) => state.app.newItems;
 export const selectAllImages = (state: RootState) => {
   return handleDataForList(state.app.data).reduce<string[]>((acc, cur) => {

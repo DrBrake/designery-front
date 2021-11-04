@@ -137,7 +137,7 @@ const Navigation: FC<RouteComponentProps> = ({
                   CompletedWorks: [],
                   Completed: false,
                   Tags: [],
-                  Project: "",
+                  Project: undefined,
                   Inspirations: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.IDEA,

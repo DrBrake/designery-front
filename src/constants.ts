@@ -23,6 +23,7 @@ export const DIALOG_VARIANT = {
   INSPIRATION: "inspiration",
   COMPLETED_WORK: "completedWork",
   DRAFT: "draft",
+  IDEA: "idea",
 } as const;
 
 export const RANDOM_DIALOG_TYPE = {

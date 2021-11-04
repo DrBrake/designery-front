@@ -15,9 +15,15 @@ import {
   Button,
   MenuItem,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
+import {
+  removeNewItem,
+  updateNewItem,
+  selectProjects,
+  selectTags,
+  selectInspirations,
+} from "../../Reducers/appSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -38,12 +44,11 @@ import {
   BASE_URL,
 } from "../../constants";
 import { isURL } from "../../utils";
-import { Project, Idea, Tag, Inspiration } from "../../Types/dataTypes";
+import { Idea, Tag, Inspiration } from "../../Types/dataTypes";
 import { useFormStyles } from "./FormStyles";
 
 interface Props {
   idea: Idea;
-  projects: Array<Project>;
   setOpen: (value: boolean) => void;
   isNewItem: boolean;
   index: number;
@@ -55,7 +60,7 @@ interface RawIdea extends Idea {
   NewInspirations?: Array<Inspiration>;
 }
 
-const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
+const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addDialogVariant, setAddDialogVariant] = useState("");
   const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
@@ -68,6 +73,10 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
   const [imageDialogImage, setImageDialogImage] = useState("");
   const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
+
+  const projects = useSelector(selectProjects);
+  const inspirations = useSelector(selectInspirations);
+  const tags = useSelector(selectTags);
 
   const classes = useFormStyles();
   const dispatch = useDispatch();
@@ -193,7 +202,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
       return {
         title: "Add a tag",
         name: "NewTags",
-        values: values.Tags,
+        values: tags,
         newValues: values.NewTags,
         dialogVariant: dialogVariant,
       };
@@ -201,7 +210,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
       return {
         title: "Add a inspiration",
         name: "NewInspirations",
-        values: values.Inspirations,
+        values: inspirations,
         newValues: values.NewInspirations,
         dialogVariant: dialogVariant,
         dataVariant: VARIANTS.INSPIRATION,
@@ -263,7 +272,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
           Completed: idea.Completed || false,
           Tags: idea.Tags || [],
           NewTags: [],
-          Project: idea.Project || "",
+          Project: idea.Project || null,
           Inspirations: idea.Inspirations || [],
           NewInspirations: [],
           DateCreated: idea.DateCreated || dayjs().format(),
@@ -396,7 +405,9 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                     <InputLabel
                       id="projectSelect"
                       classes={{
-                        root: classes.paddingLeft,
+                        root: classnames(classes.paddingLeft, {
+                          [classes.displayNone]: values.Project,
+                        }),
                         focused: classes.displayNone,
                       }}
                       disableAnimation
@@ -405,13 +416,21 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
                     </InputLabel>
                     <Select
                       labelId="projectSelect"
-                      value={values.Project}
-                      onChange={handleChange}
+                      value={values.Project?._id || ""}
+                      onChange={(e) =>
+                        setFieldValue(
+                          "Project",
+                          projects.find((item) => item._id === e.target.value)
+                        )
+                      }
                       variant="outlined"
                       name="Project"
                     >
+                      <MenuItem value="" key="projectNoValue">
+                        None
+                      </MenuItem>
                       {projects.map((item) => (
-                        <MenuItem value={item.Title} key={uuidv4()}>
+                        <MenuItem value={item._id} key={uuidv4()}>
                           {item.Title}
                         </MenuItem>
                       ))}
@@ -603,6 +622,7 @@ const IdeaForm: FC<Props> = ({ idea, projects, setOpen, isNewItem, index }) => {
             setDialogOpen={setCompleteDialogOpen}
             title="Are you sure you want to set this as completed?"
             saveButtonText="Complete"
+            onSave={() => {}}
           />
         </Form>
       )}

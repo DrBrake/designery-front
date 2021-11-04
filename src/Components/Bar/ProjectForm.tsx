@@ -3,7 +3,7 @@ import classnames from "classnames";
 import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
-import { Typography, Grid, TextField, Button } from "@material-ui/core";
+import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
@@ -38,6 +38,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     ""
   );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
@@ -65,6 +66,14 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
         newValues: values.NewTags,
         dialogVariant: dialogVariant,
       };
+    } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
+      return {
+        title: "Add an idea",
+        name: "NewIdeas",
+        values: values.Ideas,
+        newValues: values.NewIdeas,
+        dialogVariant: dialogVariant,
+      };
     }
     return { title: "", name: "", values: [], newValues: [] };
   };
@@ -85,6 +94,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
           Tags: project.Tags || [],
           NewTags: [],
           DateCreated: project.DateCreated || dayjs().format(),
+          Completed: project.Completed || false,
           Variant: project.Variant || "",
         } as RawProject
       }
@@ -210,6 +220,50 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                           )
                       )}
                   </div>
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Linked ideas
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setAutocompleteDialogOpen(true);
+                          setAutocompleteDialogVariant(DIALOG_VARIANT.IDEA);
+                        }}
+                      />
+                    </div>
+                    {values.Ideas &&
+                      values.Ideas.map(
+                        (item) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Typography key={item._id}>
+                              <Link href="#">{item.Title}</Link>
+                            </Typography>
+                          )
+                      )}
+                    {values.NewIdeas &&
+                      values.NewIdeas.map(
+                        (item) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Typography key={item._id}>
+                              <Link href="#">{item.Title}</Link>
+                            </Typography>
+                          )
+                      )}
+                  </div>
                 </div>
               </div>
               <div className={classes.bottomContainer}>
@@ -222,6 +276,19 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                   >
                     Remove
                   </Button>
+                  {!isNewItem && (
+                    <Button
+                      variant="text"
+                      color="primary"
+                      className={classnames(
+                        classes.button,
+                        classes.marginRight
+                      )}
+                      onClick={() => setCompleteDialogOpen(true)}
+                    >
+                      Complete
+                    </Button>
+                  )}
                   <div className={classes.verticalDivider} />
                   <Button
                     variant="text"
@@ -264,6 +331,13 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
             }}
             title={`Are you sure you want to remove this ${values.Variant}?`}
             saveButtonText="Remove"
+          />
+          <PromptDialog
+            dialogOpen={completeDialogOpen}
+            setDialogOpen={setCompleteDialogOpen}
+            title="Are you sure you want to set this as completed?"
+            saveButtonText="Complete"
+            onSave={() => {}}
           />
         </Form>
       )}

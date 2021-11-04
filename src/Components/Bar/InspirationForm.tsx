@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { v4 as uuidv4 } from "uuid";
 import { Formik, Form } from "formik";
-import { Typography, Grid, TextField, Button } from "@material-ui/core";
+import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 
 import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
@@ -155,6 +155,14 @@ const InspirationForm: FC<Props> = ({
         newValues: values.NewTags,
         dialogVariant: dialogVariant,
       };
+    } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
+      return {
+        title: "Add an idea",
+        name: "NewIdeas",
+        values: values.Ideas,
+        newValues: values.NewIdeas,
+        dialogVariant: dialogVariant,
+      };
     }
     return { title: "", name: "", values: [], newValues: [] };
   };
@@ -296,6 +304,50 @@ const InspirationForm: FC<Props> = ({
                               lastTag={index + 1 === values.NewTags?.length}
                               key={item._id}
                             />
+                          )
+                      )}
+                  </div>
+                  <div
+                    className={classnames(
+                      classes.fullWidth,
+                      classes.marginBottom3
+                    )}
+                  >
+                    <div className={classes.flex}>
+                      <Typography
+                        className={classnames(
+                          classes.marginRight,
+                          classes.fontWeightBold
+                        )}
+                      >
+                        Linked ideas
+                      </Typography>
+                      <Add
+                        className={classes.pointer}
+                        onClick={() => {
+                          setAutocompleteDialogOpen(true);
+                          setAutocompleteDialogVariant(DIALOG_VARIANT.IDEA);
+                        }}
+                      />
+                    </div>
+                    {values.Ideas &&
+                      values.Ideas.map(
+                        (item) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Typography key={item._id}>
+                              <Link href="#">{item.Title}</Link>
+                            </Typography>
+                          )
+                      )}
+                    {values.NewIdeas &&
+                      values.NewIdeas.map(
+                        (item) =>
+                          item &&
+                          item.Title !== "" && (
+                            <Typography key={item._id}>
+                              <Link href="#">{item.Title}</Link>
+                            </Typography>
                           )
                       )}
                   </div>

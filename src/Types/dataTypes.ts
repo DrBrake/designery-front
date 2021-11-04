@@ -4,14 +4,17 @@ import { VARIANTS } from "../constants";
 
 type AllVariants = typeof VARIANTS;
 
-export interface Item {
+export interface BaseItem {
   _id?: string;
   Title: string;
+  TempID?: string;
+}
+
+export interface Item extends BaseItem {
   Description: RawDraftContentState;
   DateCreated: string;
   Tags: Array<Tag>;
   Variant: AllVariants[keyof AllVariants];
-  TempID?: string;
 }
 
 export interface Idea extends Item {
@@ -20,7 +23,7 @@ export interface Idea extends Item {
   Drafts?: Array<string>;
   CompletedWorks?: Array<string>;
   Completed?: boolean;
-  Project?: string;
+  Project?: Project;
   Inspirations?: Array<Inspiration>;
   Variant: AllVariants["IDEA"];
 }
@@ -34,14 +37,11 @@ export interface Inspiration extends Item {
 
 export interface Project extends Item {
   Ideas?: Array<Idea>;
+  Completed?: boolean;
   Variant: AllVariants["PROJECT"];
 }
 
-export interface Tag {
-  _id?: string;
-  Title: string;
-  TempID?: string;
-}
+export interface Tag extends BaseItem {}
 
 export interface ItemResponse {
   ideas: Array<Idea>;

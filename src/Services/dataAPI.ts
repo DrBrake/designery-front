@@ -1,12 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import {
-  Idea,
-  Inspiration,
-  Project,
-  Tag,
-  ItemResponse,
-} from "../Types/dataTypes";
+import { Idea, Inspiration, Project, ItemResponse } from "../Types/dataTypes";
 import { BASE_URL } from "../constants";
 
 export const dataAPI = createApi({
@@ -33,20 +27,6 @@ export const dataAPI = createApi({
       }),
       invalidatesTags: ["Items"],
     }),
-    postTag: builder.mutation({
-      query: (body: Tag) => ({
-        url: "/item/tag",
-        method: "POST",
-        body: body,
-      }),
-    }),
-    removeTag: builder.mutation({
-      query: (body: Tag) => ({
-        url: `/item/tag/${body._id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Items"],
-    }),
   }),
 });
 
@@ -54,6 +34,4 @@ export const {
   useGetDataQuery,
   usePostItemMutation,
   useRemoveItemMutation,
-  usePostTagMutation,
-  useRemoveTagMutation,
 } = dataAPI;

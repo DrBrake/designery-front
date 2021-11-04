@@ -72,7 +72,6 @@ const List = () => {
                 isFirst={index === 0}
                 isLast={index + 1 === newItems.length}
                 key={item.TempID}
-                projects={data?.projects}
                 isNewItem
                 index={index}
               />
@@ -92,7 +91,6 @@ const List = () => {
               isLast={index + 1 === handleData.length}
               isNewItem={false}
               key={item._id}
-              projects={data?.projects}
               index={index}
             />
           ))}

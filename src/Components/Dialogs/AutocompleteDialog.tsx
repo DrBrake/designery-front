@@ -5,13 +5,9 @@ import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  usePostTagMutation,
-  usePostItemMutation,
-} from "../../Services/dataAPI";
-
 import Dialog from "./Dialog";
 import Chip from "../Chip";
+import { BaseItem } from "../../Types/dataTypes";
 
 const useStyles = makeStyles((theme) => ({
   textAlignCenter: {
@@ -43,10 +39,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface BaseItem {
-  _id?: string;
-  Title: string;
-  TempID?: string;
+interface AutocompleteItem extends BaseItem {
+  Variant?: string;
   inputValue?: string;
 }
 
@@ -54,14 +48,14 @@ interface Props {
   dialogOpen: boolean;
   setDialogOpen: (value: boolean) => void;
   dialogVariant?: string;
-  values?: Array<BaseItem>;
+  values?: Array<AutocompleteItem>;
   setFieldValue: (name: string, value: any) => void;
   name: string;
-  newValues?: Array<BaseItem>;
+  newValues?: Array<AutocompleteItem>;
   title: string;
 }
 
-const filter = createFilterOptions<BaseItem>();
+const filter = createFilterOptions<AutocompleteItem>();
 
 const AutocompleteDialog: FC<Props> = ({
   dialogOpen,
@@ -74,9 +68,7 @@ const AutocompleteDialog: FC<Props> = ({
   title,
 }) => {
   const classes = useStyles();
-  const [tempNewValues, setTempNewValues] = useState<BaseItem[]>([]);
-  const [postItem] = usePostItemMutation();
-  const [postTag] = usePostTagMutation();
+  const [tempNewValues, setTempNewValues] = useState<AutocompleteItem[]>([]);
 
   return (
     <Dialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
@@ -97,13 +89,19 @@ const AutocompleteDialog: FC<Props> = ({
         onChange={(event, newValue) => {
           if (typeof newValue === "string") {
             setTempNewValues(
-              tempNewValues.concat([{ Title: newValue, TempID: uuidv4() }])
+              tempNewValues.concat([
+                { Title: newValue, Variant: dialogVariant, TempID: uuidv4() },
+              ])
             );
           } else if (newValue && newValue.inputValue) {
             // Create a new value from the user input
             setTempNewValues(
               tempNewValues.concat([
-                { Title: newValue.inputValue, TempID: uuidv4() },
+                {
+                  Title: newValue.inputValue,
+                  Variant: dialogVariant,
+                  TempID: uuidv4(),
+                },
               ])
             );
           } else if (newValue) {
@@ -116,12 +114,12 @@ const AutocompleteDialog: FC<Props> = ({
           if (params.inputValue !== "") {
             filtered.push({
               inputValue: params.inputValue,
+              Variant: dialogVariant,
               Title: `Add "${params.inputValue}"`,
             });
           }
           return filtered;
         }}
-        // options={values?.concat(newValues).concat(tempNewValues)}
         options={[...(values || []), ...(newValues || []), ...tempNewValues]}
         renderOption={(option) => option?.Title || ""}
         getOptionLabel={(option) => {
@@ -179,9 +177,6 @@ const AutocompleteDialog: FC<Props> = ({
                 }
               />
             )
-        )}
-        {values?.map(
-          (item) => item && <Chip label={item.Title} key={item._id} />
         )}
       </div>
       <div className={classes.buttonContainer}>
