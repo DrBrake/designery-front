@@ -4,9 +4,14 @@ import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
+import {
+  removeNewItem,
+  updateNewItem,
+  selectTags,
+  selectIdeas,
+} from "../../Reducers/appSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -16,7 +21,7 @@ import RichTextEditor from "../RichTextEditor";
 import Chip from "../Chip";
 import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
 import { Close, Add } from "../Icons";
-import { Project, Idea, Tag } from "../../Types/dataTypes";
+import { Project } from "../../Types/dataTypes";
 import { DIALOG_VARIANT } from "../../constants";
 import { useFormStyles } from "./FormStyles";
 
@@ -25,11 +30,6 @@ interface Props {
   isNewItem: boolean;
   index: number;
   setOpen: (value: boolean) => void;
-}
-
-interface RawProject extends Project {
-  NewIdeas?: Array<Idea>;
-  NewTags?: Array<Tag>;
 }
 
 const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
@@ -45,37 +45,31 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
   const classes = useFormStyles();
   const dispatch = useDispatch();
 
-  const handleFieldValues = (values: RawProject) => {
-    const tempValues = { ...values };
-    tempValues.Ideas = tempValues.Ideas?.concat(values.NewIdeas!);
-    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
-    delete tempValues.NewIdeas;
-    delete tempValues.NewTags;
-    return tempValues as Project;
-  };
+  const ideas = useSelector(selectIdeas);
+  const tags = useSelector(selectTags);
 
   const getAutocompleteDialogOptions = (
-    values: RawProject,
+    values: Project,
     dialogVariant: string
   ) => {
     if (dialogVariant === DIALOG_VARIANT.TAG) {
       return {
         title: "Add a tag",
-        name: "NewTags",
-        values: values.Tags,
-        newValues: values.NewTags,
+        name: "Tags",
+        values: tags,
+        itemValues: values.Tags,
         dialogVariant: dialogVariant,
       };
     } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
       return {
         title: "Add an idea",
-        name: "NewIdeas",
-        values: values.Ideas,
-        newValues: values.NewIdeas,
+        name: "Ideas",
+        values: ideas,
+        itemValues: values.Ideas,
         dialogVariant: dialogVariant,
       };
     }
-    return { title: "", name: "", values: [], newValues: [] };
+    return { title: "", name: "", values: [], itemValues: [] };
   };
 
   useEffect(() => {
@@ -90,15 +84,13 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
           Title: project.Title || "",
           Description: project.Description,
           Ideas: project.Ideas || [],
-          NewIdeas: [],
           Tags: project.Tags || [],
-          NewTags: [],
           DateCreated: project.DateCreated || dayjs().format(),
           Completed: project.Completed || false,
           Variant: project.Variant || "",
-        } as RawProject
+        } as Project
       }
-      onSubmit={(values) => postItem(handleFieldValues(values))}
+      onSubmit={(values) => postItem(values)}
     >
       {({ values, handleChange, setFieldValue }) => (
         <Form>
@@ -112,7 +104,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                     dispatch(
                       updateNewItem({
                         index,
-                        values: handleFieldValues(values),
+                        values: values,
                       })
                     );
                 }}
@@ -206,19 +198,6 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                             />
                           )
                       )}
-                    {values.NewTags &&
-                      values.NewTags.map(
-                        (item, index) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Chip
-                              label={item.Title}
-                              onClick={() => null}
-                              lastTag={index + 1 === values.NewTags?.length}
-                              key={item._id}
-                            />
-                          )
-                      )}
                   </div>
                   <div
                     className={classnames(
@@ -245,16 +224,6 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                     </div>
                     {values.Ideas &&
                       values.Ideas.map(
-                        (item) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Typography key={item._id}>
-                              <Link href="#">{item.Title}</Link>
-                            </Typography>
-                          )
-                      )}
-                    {values.NewIdeas &&
-                      values.NewIdeas.map(
                         (item) =>
                           item &&
                           item.Title !== "" && (

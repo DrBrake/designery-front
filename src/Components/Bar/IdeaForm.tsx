@@ -44,7 +44,7 @@ import {
   BASE_URL,
 } from "../../constants";
 import { isURL } from "../../utils";
-import { Idea, Tag, Inspiration } from "../../Types/dataTypes";
+import { Idea, ImageFile } from "../../Types/dataTypes";
 import { useFormStyles } from "./FormStyles";
 
 interface Props {
@@ -52,12 +52,6 @@ interface Props {
   setOpen: (value: boolean) => void;
   isNewItem: boolean;
   index: number;
-}
-
-interface RawIdea extends Idea {
-  NewImageRefURLs?: Array<string>;
-  NewTags?: Array<Tag>;
-  NewInspirations?: Array<Inspiration>;
 }
 
 const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
@@ -85,176 +79,127 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     if (postItemSuccess && isNewItem) dispatch(removeNewItem({ index }));
   }, [postItemSuccess]);
 
-  const handleFieldValues = (values: RawIdea) => {
-    const tempValues = { ...values };
-    tempValues.ImageRefs = tempValues.ImageRefs?.concat(
-      values.NewImageRefURLs!
+  const getImageRefs = (
+    values: Idea,
+    setFieldValue: (name: string, value: any) => void
+  ) => {
+    const getSrc = (image: string | ImageFile): string => {
+      if (typeof image === "string") {
+        if (isURL(image)) return image;
+        else return `${BASE_URL}/images/${values.Variant}/${image}`;
+      } else if (image.file) {
+        return image.file;
+      }
+      return "";
+    };
+    return (
+      <div className={classes.marginBottom3}>
+        <div className={classnames(classes.flex, classes.marginBottom2)}>
+          <Typography
+            className={classnames(classes.marginRight, classes.fontWeightBold)}
+          >
+            Drafts
+          </Typography>
+          <Add
+            className={classes.pointer}
+            onClick={() => {
+              setAddDialogOpen(true);
+              setAddDialogVariant(DIALOG_VARIANT.DRAFT);
+            }}
+          />
+        </div>
+        {values.Drafts &&
+          values.Drafts.map((item) => (
+            <Image
+              variant={IMAGE_TYPE.DRAFT}
+              src={`${BASE_URL}/images/drafts/${item}`}
+              key={uuidv4()}
+            />
+          ))}
+        <div className={classes.flex}>
+          <Typography
+            className={classnames(classes.marginRight, classes.fontWeightBold)}
+          >
+            Image references
+          </Typography>
+          <Add
+            className={classes.pointer}
+            onClick={() => {
+              setAddDialogOpen(true);
+              setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
+            }}
+          />
+        </div>
+        <div className={classes.flex}>
+          {values.ImageRefs &&
+            values.ImageRefs.map((item) => (
+              <Image
+                variant={IMAGE_TYPE.BAR}
+                src={getSrc(item)}
+                key={typeof item === "string" ? item : item.id}
+                onClick={() => {
+                  setImageDialogOpen(true);
+                  setImageDialogImage(
+                    typeof item === "string" ? item : item.file
+                  );
+                }}
+              />
+            ))}
+          <ImageDragAndDrop
+            setFieldValue={setFieldValue}
+            ImageRefs={values.ImageRefs}
+          />
+        </div>
+      </div>
     );
-    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
-    tempValues.Inspirations = tempValues.Inspirations?.concat(
-      values.NewInspirations!
-    );
-    delete tempValues.NewImageRefURLs;
-    delete tempValues.NewTags;
-    delete tempValues.NewInspirations;
-    return tempValues as Idea;
   };
 
-  const getImageRefs = (
-    values: RawIdea,
-    setFieldValue: (name: string, value: any) => void
-  ) => (
-    <div className={classes.marginBottom3}>
-      <div className={classnames(classes.flex, classes.marginBottom2)}>
-        <Typography
-          className={classnames(classes.marginRight, classes.fontWeightBold)}
-        >
-          Drafts
-        </Typography>
-        <Add
-          className={classes.pointer}
-          onClick={() => {
-            setAddDialogOpen(true);
-            if (values.Drafts?.length === 0) {
-              setFieldValue("Drafts", [""]);
-            }
-            setAddDialogVariant(DIALOG_VARIANT.DRAFT);
-          }}
-        />
-      </div>
-      {values.Drafts &&
-        values.Drafts.map(
-          (item) =>
-            isURL(item) && (
-              <Image variant={IMAGE_TYPE.DRAFT} src={item} key={uuidv4()} />
-            )
-        )}
-      <div className={classes.flex}>
-        <Typography
-          className={classnames(classes.marginRight, classes.fontWeightBold)}
-        >
-          Image references
-        </Typography>
-        <Add
-          className={classes.pointer}
-          onClick={() => {
-            setAddDialogOpen(true);
-            if (values.NewImageRefURLs?.length === 0) {
-              setFieldValue("NewImageRefURLs", [""]);
-            }
-            setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
-          }}
-        />
-      </div>
-      <div className={classes.flex}>
-        {values.ImageRefs &&
-          values.ImageRefs.map((item) => (
-            <Image
-              variant={IMAGE_TYPE.BAR}
-              src={`${BASE_URL}/images/${values.Variant}/${item}`}
-              key={item}
-              onClick={() => {
-                setImageDialogOpen(true);
-                setImageDialogImage(item);
-              }}
-            />
-          ))}
-        {values.NewImageRefURLs &&
-          values.NewImageRefURLs.map(
-            (item) =>
-              isURL(item) && (
-                <Image
-                  variant={IMAGE_TYPE.BAR}
-                  src={item}
-                  key={item}
-                  onClick={() => {
-                    setImageDialogOpen(true);
-                    setImageDialogImage(item);
-                  }}
-                />
-              )
-          )}
-        {values.NewImageRefFiles &&
-          values.NewImageRefFiles.map((item) => (
-            <Image
-              variant={IMAGE_TYPE.BAR}
-              src={item.file}
-              key={item.id}
-              onClick={() => {
-                setImageDialogOpen(true);
-                setImageDialogImage(item.file);
-              }}
-            />
-          ))}
-        <ImageDragAndDrop
-          setFieldValue={setFieldValue}
-          NewImageRefFiles={values.NewImageRefFiles}
-        />
-      </div>
-    </div>
-  );
-
   const getAutocompleteDialogOptions = (
-    values: RawIdea,
+    values: Idea,
     dialogVariant: string
   ) => {
     if (dialogVariant === DIALOG_VARIANT.TAG) {
       return {
         title: "Add a tag",
-        name: "NewTags",
+        name: "Tags",
         values: tags,
-        newValues: values.NewTags,
+        itemValues: values.Tags,
         dialogVariant: dialogVariant,
       };
     } else if (dialogVariant === DIALOG_VARIANT.INSPIRATION) {
       return {
         title: "Add a inspiration",
-        name: "NewInspirations",
+        name: "Inspirations",
         values: inspirations,
-        newValues: values.NewInspirations,
+        itemValues: values.Inspirations,
         dialogVariant: dialogVariant,
         dataVariant: VARIANTS.INSPIRATION,
       };
     }
-    return { title: "", name: "", values: [], newValues: [] };
+    return { title: "", name: "", values: [], itemValues: [] };
   };
 
-  const getAddDialogOptions = (values: RawIdea, dialogVariant: string) => {
+  const getAddDialogOptions = (values: Idea, dialogVariant: string) => {
     if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
       return {
         title: "Add image reference",
-        name: "NewImageRefURLs",
-        values: values.NewImageRefURLs,
+        name: "ImageRefs",
+        itemValues: values.ImageRefs,
       };
     } else if (dialogVariant === DIALOG_VARIANT.DRAFT) {
-      return { title: "Add a draft", name: "Drafts", values: values.Drafts };
+      return {
+        title: "Add a draft",
+        name: "Drafts",
+        itemValues: values.Drafts,
+      };
     } else if (dialogVariant === DIALOG_VARIANT.COMPLETED_WORK) {
       return {
         title: "Add a completed work",
         name: "CompletedWorks",
-        values: values.CompletedWorks,
+        itemValues: values.CompletedWorks,
       };
     }
-    return { title: "", name: "", values: [], newValues: [] };
-  };
-
-  const handleRemoveImage = (
-    image: string,
-    values: RawIdea,
-    setFieldValue: (name: string, value: any) => void
-  ) => {
-    setFieldValue(
-      "ImageRefs",
-      values.ImageRefs?.filter((item) => item !== image)
-    );
-    setFieldValue(
-      "NewImageRefFiles",
-      values.NewImageRefFiles?.filter((item) => item.file !== image)
-    );
-    setFieldValue(
-      "NewImageRefURLs",
-      values.NewImageRefURLs?.filter((item) => item !== image)
-    );
+    return { title: "", name: "", itemValues: [] };
   };
 
   return (
@@ -265,21 +210,17 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
           Title: idea.Title || "",
           Description: idea.Description,
           ImageRefs: idea.ImageRefs || [],
-          NewImageRefFiles: [],
-          NewImageRefURLs: [],
           Drafts: idea.Drafts || [],
           CompletedWorks: idea.CompletedWorks || [],
           Completed: idea.Completed || false,
           Tags: idea.Tags || [],
-          NewTags: [],
           Project: idea.Project || null,
           Inspirations: idea.Inspirations || [],
-          NewInspirations: [],
           DateCreated: idea.DateCreated || dayjs().format(),
           Variant: VARIANTS.IDEA,
-        } as RawIdea
+        } as Idea
       }
-      onSubmit={(values) => postItem(handleFieldValues(values))}
+      onSubmit={(values) => postItem(values)}
     >
       {({ values, handleChange, setFieldValue }) => (
         <Form>
@@ -293,7 +234,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                     dispatch(
                       updateNewItem({
                         index,
-                        values: handleFieldValues(values),
+                        values: values,
                       })
                     );
                 }}
@@ -387,19 +328,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                             />
                           )
                       )}
-                    {values.NewTags &&
-                      values.NewTags.map(
-                        (item, index) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Chip
-                              label={item.Title}
-                              onClick={() => null}
-                              lastTag={index + 1 === values.NewTags?.length}
-                              key={item._id}
-                            />
-                          )
-                      )}
                   </div>
                   <FormControl fullWidth className={classes.marginBottom3}>
                     <InputLabel
@@ -471,16 +399,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                             </Typography>
                           )
                       )}
-                    {values.NewInspirations &&
-                      values.NewInspirations.map(
-                        (item) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Typography key={uuidv4()}>
-                              <Link href="#">{item.Title}</Link>
-                            </Typography>
-                          )
-                      )}
                   </div>
                 </div>
               </div>
@@ -504,24 +422,18 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       className={classes.pointer}
                       onClick={() => {
                         setAddDialogOpen(true);
-                        if (values.CompletedWorks?.length === 0) {
-                          setFieldValue("CompletedWorks", [""]);
-                        }
                         setAddDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
                       }}
                     />
                   </div>
                   {values.CompletedWorks &&
-                    values.CompletedWorks.map(
-                      (item) =>
-                        isURL(item) && (
-                          <Image
-                            variant={IMAGE_TYPE.COMPLETED_WORK}
-                            src={item}
-                            key={uuidv4()}
-                          />
-                        )
-                    )}
+                    values.CompletedWorks.map((item) => (
+                      <Image
+                        variant={IMAGE_TYPE.COMPLETED_WORK}
+                        src={`${BASE_URL}/images/completed/${item}`}
+                        key={uuidv4()}
+                      />
+                    ))}
                 </div>
               )}
               <div className={classes.bottomContainer}>
@@ -578,7 +490,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
             <AddImageDialog
               dialogOpen={addDialogOpen}
               setDialogOpen={setAddDialogOpen}
-              handleChange={handleChange}
               setFieldValue={setFieldValue}
               {...getAddDialogOptions(values, addDialogVariant)}
             />
@@ -602,7 +513,14 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
               variant={values.Variant}
               onRemove={() => {
                 setImageDialogOpen(false);
-                handleRemoveImage(imageDialogImage, values, setFieldValue);
+                setFieldValue(
+                  "ImageRefs",
+                  values.ImageRefs?.filter((item) =>
+                    typeof item === "string"
+                      ? item !== imageDialogImage
+                      : item.file !== imageDialogImage
+                  )
+                );
               }}
             />
           )}

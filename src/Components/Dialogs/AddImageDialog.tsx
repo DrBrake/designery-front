@@ -1,19 +1,19 @@
-import React, { FC, ChangeEvent } from "react";
+import React, { FC } from "react";
 import classnames from "classnames";
-import { FieldArray, Field } from "formik";
+import { FieldArray, Field, Formik, Form } from "formik";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Dialog from "./Dialog";
 import { Add, Remove } from "../Icons";
-import { Idea, Inspiration, Project, Tag } from "../../Types/dataTypes";
+import { ImageFile } from "../../Types/dataTypes";
+import { isURL } from "../../utils";
 
 interface Props {
   dialogOpen: boolean;
   setDialogOpen: (value: boolean) => void;
-  values: Array<Idea | Inspiration | Project | Tag | string> | undefined;
+  itemValues?: Array<string | ImageFile>;
   name: string;
-  handleChange: (e: ChangeEvent<any>) => void;
   setFieldValue: (field: string, value: any) => void;
   title: string;
 }
@@ -62,87 +62,104 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddDialog: FC<Props> = ({
+const AddImageDialog: FC<Props> = ({
   dialogOpen,
   setDialogOpen,
-  values,
+  itemValues,
   name,
-  handleChange,
   setFieldValue,
   title,
 }) => {
   const classes = useStyles();
 
   return (
-    <Dialog
-      dialogOpen={dialogOpen}
-      setDialogOpen={setDialogOpen}
-      onClose={() => {
-        setFieldValue(
-          name,
-          values?.filter((value) => value !== "")
-        );
-      }}
-    >
-      <Typography
-        className={classnames(
-          classes.fontWeightBold,
-          classes.marginBottom3,
-          classes.textAlignCenter
-        )}
+    <Dialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
+      <Formik
+        initialValues={{
+          imageUrls: [""],
+        }}
+        onSubmit={(values) => {
+          setFieldValue(
+            name,
+            itemValues?.concat(
+              values.imageUrls.filter(
+                (item) => item !== "" && isURL(item) && item
+              )
+            )
+          );
+          setDialogOpen(false);
+        }}
       >
-        {title}
-      </Typography>
-      <FieldArray
-        name={name}
-        render={(arrayHelpers) => (
-          <>
-            {values?.map((item, index) => (
-              <div
-                key={index}
-                className={classnames(
-                  classes.alignCenter,
-                  classes.marginBottom2
-                )}
-              >
-                {values?.length > 1 && (
-                  <Remove
-                    onClick={() => arrayHelpers.remove(index)}
-                    className={classnames(classes.marginRight, classes.pointer)}
-                  />
-                )}
-                <Field
-                  placeholder={"Image URL"}
-                  variant="outlined"
-                  fullWidth
-                  className={classes.marginRight}
-                  name={`${name}.${index}`}
-                  as={TextField}
-                  onChange={handleChange}
-                />
-              </div>
-            ))}
-            <div className={classes.iconContainer}>
-              <Add
-                onClick={() => arrayHelpers.push("")}
-                className={classnames(classes.marginRight, classes.pointer)}
-              />
-            </div>
-            <div className={classes.buttonContainer}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={() => setDialogOpen(false)}
-              >
-                Save
-              </Button>
-            </div>
-          </>
+        {({ values, handleChange }) => (
+          <Form>
+            <Typography
+              className={classnames(
+                classes.fontWeightBold,
+                classes.marginBottom3,
+                classes.textAlignCenter
+              )}
+            >
+              {title}
+            </Typography>
+            <FieldArray
+              name="imageUrls"
+              render={(arrayHelpers) => (
+                <>
+                  {values.imageUrls?.map((item, index) => (
+                    <div
+                      key={index}
+                      className={classnames(
+                        classes.alignCenter,
+                        classes.marginBottom2
+                      )}
+                    >
+                      {values.imageUrls?.length > 1 && (
+                        <Remove
+                          onClick={() => arrayHelpers.remove(index)}
+                          className={classnames(
+                            classes.marginRight,
+                            classes.pointer
+                          )}
+                        />
+                      )}
+                      <Field
+                        placeholder={"Image URL"}
+                        variant="outlined"
+                        fullWidth
+                        className={classes.marginRight}
+                        name={`imageUrls.${index}`}
+                        as={TextField}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  ))}
+                  <div className={classes.iconContainer}>
+                    <Add
+                      onClick={() => arrayHelpers.push("")}
+                      className={classnames(
+                        classes.marginRight,
+                        classes.pointer
+                      )}
+                    />
+                  </div>
+                  <div className={classes.buttonContainer}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      type="submit"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </>
+              )}
+            />
+          </Form>
         )}
-      />
+      </Formik>
     </Dialog>
   );
 };
 
-export default AddDialog;
+export default AddImageDialog;

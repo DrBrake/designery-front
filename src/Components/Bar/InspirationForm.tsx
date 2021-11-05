@@ -2,12 +2,16 @@ import React, { useState, useEffect, FC } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
-import { v4 as uuidv4 } from "uuid";
 import { Formik, Form } from "formik";
 import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { removeNewItem, updateNewItem } from "../../Reducers/appSlice";
+import {
+  removeNewItem,
+  updateNewItem,
+  selectIdeas,
+  selectTags,
+} from "../../Reducers/appSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -19,23 +23,18 @@ import ImageDragAndDrop from "../Image/ImageDragAndDrop";
 import RichTextEditor from "../RichTextEditor";
 import Chip from "../Chip";
 import AutocompleteDialog from "../Dialogs/AutocompleteDialog";
+import ImageDialog from "../Dialogs/ImageDialog";
 import { Close, Add } from "../Icons";
 import { IMAGE_TYPE, DIALOG_VARIANT, BASE_URL } from "../../constants";
-import { isURL } from "../../utils";
-import { Inspiration, Idea, Tag } from "../../Types/dataTypes";
+import { Inspiration, ImageFile } from "../../Types/dataTypes";
 import { useFormStyles } from "./FormStyles";
+import { isURL } from "../../utils";
 
 interface Props {
   inspiration: Inspiration;
   isNewItem: boolean;
   index: number;
   setOpen: (value: boolean) => void;
-}
-
-interface RawInspiration extends Inspiration {
-  NewIdeas?: Array<Idea>;
-  NewTags?: Array<Tag>;
-  NewImageRefURLs?: Array<string>;
 }
 
 const InspirationForm: FC<Props> = ({
@@ -50,6 +49,9 @@ const InspirationForm: FC<Props> = ({
   const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
     ""
   );
+
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageDialogImage, setImageDialogImage] = useState("");
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [postItem, { isSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
@@ -57,114 +59,99 @@ const InspirationForm: FC<Props> = ({
   const classes = useFormStyles();
   const dispatch = useDispatch();
 
+  const ideas = useSelector(selectIdeas);
+  const tags = useSelector(selectTags);
+
   useEffect(() => {
     if (isSuccess && isNewItem) dispatch(removeNewItem({ index }));
   }, [isSuccess]);
 
-  const handleFieldValues = (values: RawInspiration) => {
-    const tempValues = { ...values };
-    tempValues.ImageRefs = tempValues.ImageRefs?.concat(
-      values.NewImageRefURLs!
+  const getImageRefs = (
+    values: Inspiration,
+    setFieldValue: (name: string, value: any) => void
+  ) => {
+    const getSrc = (image: string | ImageFile): string => {
+      if (typeof image === "string") {
+        if (isURL(image)) return image;
+        else return `${BASE_URL}/images/${values.Variant}/${image}`;
+      } else if (image.file) {
+        return image.file;
+      }
+      return "";
+    };
+    return (
+      <div className={classes.marginBottom3}>
+        <div className={classes.flex}>
+          <Typography
+            className={classnames(classes.marginRight, classes.fontWeightBold)}
+          >
+            Image references
+          </Typography>
+          <Add
+            className={classes.pointer}
+            onClick={() => {
+              setAddDialogOpen(true);
+              setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
+            }}
+          />
+        </div>
+        <div className={classes.flex}>
+          {values.ImageRefs &&
+            values.ImageRefs.map((item) => (
+              <Image
+                variant={IMAGE_TYPE.BAR}
+                src={getSrc(item)}
+                key={typeof item === "string" ? item : item.id}
+                onClick={() => {
+                  setImageDialogOpen(true);
+                  setImageDialogImage(
+                    typeof item === "string" ? item : item.file
+                  );
+                }}
+              />
+            ))}
+          <ImageDragAndDrop
+            setFieldValue={setFieldValue}
+            ImageRefs={values.ImageRefs}
+          />
+        </div>
+      </div>
     );
-    tempValues.Ideas = tempValues.Ideas?.concat(values.NewIdeas!);
-    tempValues.Tags = tempValues.Tags?.concat(values.NewTags!);
-    delete tempValues.NewImageRefURLs;
-    delete tempValues.NewIdeas;
-    delete tempValues.NewTags;
-    return tempValues as Inspiration;
   };
 
-  const getImageRefs = (
-    values: RawInspiration,
-    setFieldValue: (name: string, value: any) => void
-  ) => (
-    <div className={classes.marginBottom3}>
-      <div className={classes.flex}>
-        <Typography
-          className={classnames(classes.marginRight, classes.fontWeightBold)}
-        >
-          Image references
-        </Typography>
-        <Add
-          className={classes.pointer}
-          onClick={() => {
-            setAddDialogOpen(true);
-            if (values.NewImageRefURLs?.length === 0) {
-              setFieldValue("NewImageRefURLs", [""]);
-            }
-            setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
-          }}
-        />
-      </div>
-      <div className={classes.flex}>
-        {values.ImageRefs &&
-          values.ImageRefs.map(
-            (item) =>
-              isURL(item) && (
-                <Image
-                  variant={IMAGE_TYPE.BAR}
-                  src={`${BASE_URL}/${item}`}
-                  key={uuidv4()}
-                />
-              )
-          )}
-        {values.NewImageRefURLs &&
-          values.NewImageRefURLs.map((item) => (
-            <Image variant={IMAGE_TYPE.BAR} src={item} key={uuidv4()} />
-          ))}
-        {values.NewImageRefFiles &&
-          values.NewImageRefFiles.map((item) => (
-            <Image variant={IMAGE_TYPE.BAR} src={item.file} key={item.id} />
-          ))}
-        <ImageDragAndDrop
-          setFieldValue={setFieldValue}
-          NewImageRefFiles={values.NewImageRefFiles}
-        />
-      </div>
-    </div>
-  );
-
-  const getDialogOptions = (values: RawInspiration, dialogVariant: string) => {
+  const getAddDialogOptions = (values: Inspiration, dialogVariant: string) => {
     if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
       return {
         title: "Add image reference",
-        name: "NewImageRefURLs",
-        values: values.NewImageRefURLs,
-      };
-    } else if (dialogVariant === DIALOG_VARIANT.TAG) {
-      return {
-        title: "Add a tag",
-        name: "NewTags",
-        values: values.Tags,
-        newValues: values.NewTags,
-        dialogVariant: dialogVariant,
+        name: "ImageRefs",
+        itemValues: values.ImageRefs,
       };
     }
-    return { title: "", name: "", values: [], newValues: [] };
+    return { title: "", name: "", itemValues: [] };
   };
 
   const getAutocompleteDialogOptions = (
-    values: RawInspiration,
+    values: Inspiration,
     dialogVariant: string
   ) => {
     if (dialogVariant === DIALOG_VARIANT.TAG) {
       return {
         title: "Add a tag",
-        name: "NewTags",
-        values: values.Tags,
-        newValues: values.NewTags,
+        name: "Tags",
+        values: tags,
+        itemValues: values.Tags,
         dialogVariant: dialogVariant,
       };
     } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
       return {
         title: "Add an idea",
-        name: "NewIdeas",
-        values: values.Ideas,
-        newValues: values.NewIdeas,
+        name: "Ideas",
+        values: ideas,
+        itemValues: values.Ideas,
         dialogVariant: dialogVariant,
       };
     }
-    return { title: "", name: "", values: [], newValues: [] };
+    return { title: "", name: "", values: [], itemValues: [] };
   };
 
   return (
@@ -175,17 +162,13 @@ const InspirationForm: FC<Props> = ({
           Title: inspiration.Title || "",
           Description: inspiration.Description,
           ImageRefs: inspiration.ImageRefs || [],
-          NewImageRefFiles: [],
-          NewImageRefURLs: [],
           Tags: inspiration.Tags || [],
-          NewTags: [],
           Ideas: inspiration.Ideas || [],
-          NewIdeas: [],
           DateCreated: inspiration.DateCreated || dayjs().format(),
           Variant: inspiration.Variant || "",
-        } as RawInspiration
+        } as Inspiration
       }
-      onSubmit={(values) => postItem(handleFieldValues(values))}
+      onSubmit={(values) => postItem(values)}
     >
       {({ values, handleChange, setFieldValue }) => (
         <Form>
@@ -199,7 +182,7 @@ const InspirationForm: FC<Props> = ({
                     dispatch(
                       updateNewItem({
                         index,
-                        values: handleFieldValues(values),
+                        values: values,
                       })
                     );
                 }}
@@ -293,19 +276,6 @@ const InspirationForm: FC<Props> = ({
                             />
                           )
                       )}
-                    {values.NewTags &&
-                      values.NewTags.map(
-                        (item, index) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Chip
-                              label={item.Title}
-                              onClick={() => null}
-                              lastTag={index + 1 === values.NewTags?.length}
-                              key={item._id}
-                            />
-                          )
-                      )}
                   </div>
                   <div
                     className={classnames(
@@ -332,16 +302,6 @@ const InspirationForm: FC<Props> = ({
                     </div>
                     {values.Ideas &&
                       values.Ideas.map(
-                        (item) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Typography key={item._id}>
-                              <Link href="#">{item.Title}</Link>
-                            </Typography>
-                          )
-                      )}
-                    {values.NewIdeas &&
-                      values.NewIdeas.map(
                         (item) =>
                           item &&
                           item.Title !== "" && (
@@ -389,9 +349,8 @@ const InspirationForm: FC<Props> = ({
             <AddImageDialog
               dialogOpen={addDialogOpen}
               setDialogOpen={setAddDialogOpen}
-              handleChange={handleChange}
               setFieldValue={setFieldValue}
-              {...getDialogOptions(values, addDialogVariant)}
+              {...getAddDialogOptions(values, addDialogVariant)}
             />
           )}
           {autocompleteDialogOpen && (
@@ -403,6 +362,25 @@ const InspirationForm: FC<Props> = ({
                 values,
                 autocompleteDialogVariant
               )}
+            />
+          )}
+          {imageDialogOpen && (
+            <ImageDialog
+              dialogOpen={imageDialogOpen}
+              setDialogOpen={setImageDialogOpen}
+              image={imageDialogImage}
+              variant={values.Variant}
+              onRemove={() => {
+                setImageDialogOpen(false);
+                setFieldValue(
+                  "ImageRefs",
+                  values.ImageRefs?.filter((item) =>
+                    typeof item === "string"
+                      ? item !== imageDialogImage
+                      : item.file !== imageDialogImage
+                  )
+                );
+              }}
             />
           )}
           <PromptDialog

@@ -18,8 +18,7 @@ export interface Item extends BaseItem {
 }
 
 export interface Idea extends Item {
-  ImageRefs?: Array<string>;
-  NewImageRefFiles?: Array<ImageFile>;
+  ImageRefs?: Array<string | ImageFile>;
   Drafts?: Array<string>;
   CompletedWorks?: Array<string>;
   Completed?: boolean;
@@ -29,8 +28,7 @@ export interface Idea extends Item {
 }
 
 export interface Inspiration extends Item {
-  ImageRefs?: Array<string>;
-  NewImageRefFiles?: Array<ImageFile>;
+  ImageRefs?: Array<string | ImageFile>;
   Ideas?: Array<Idea>;
   Variant: AllVariants["INSPIRATION"];
 }

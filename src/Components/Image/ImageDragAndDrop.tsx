@@ -16,10 +16,10 @@ interface State {
 
 interface Props {
   setFieldValue: (name: string, value: any) => void;
-  NewImageRefFiles?: Array<ImageFile>;
+  ImageRefs?: Array<string | ImageFile>;
 }
 
-const ImageDragAndDrop: FC<Props> = ({ setFieldValue, NewImageRefFiles }) => {
+const ImageDragAndDrop: FC<Props> = ({ setFieldValue, ImageRefs }) => {
   const state: State = {
     inDropZone: false,
     fileList: [],
@@ -85,8 +85,8 @@ const ImageDragAndDrop: FC<Props> = ({ setFieldValue, NewImageRefFiles }) => {
             })
           );
           setFieldValue(
-            "NewImageRefFiles",
-            NewImageRefFiles?.concat(newImages as ImageFile[])
+            "ImageRefs",
+            ImageRefs?.concat(newImages as ImageFile[])
           );
         } catch (err) {}
       };

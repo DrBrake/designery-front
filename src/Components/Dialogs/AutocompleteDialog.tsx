@@ -51,7 +51,7 @@ interface Props {
   values?: Array<AutocompleteItem>;
   setFieldValue: (name: string, value: any) => void;
   name: string;
-  newValues?: Array<AutocompleteItem>;
+  itemValues?: Array<AutocompleteItem>;
   title: string;
 }
 
@@ -64,7 +64,7 @@ const AutocompleteDialog: FC<Props> = ({
   values,
   setFieldValue,
   name,
-  newValues,
+  itemValues,
   title,
 }) => {
   const classes = useStyles();
@@ -120,7 +120,7 @@ const AutocompleteDialog: FC<Props> = ({
           }
           return filtered;
         }}
-        options={[...(values || []), ...(newValues || []), ...tempNewValues]}
+        options={[...(values || []), ...(itemValues || []), ...tempNewValues]}
         renderOption={(option) => option?.Title || ""}
         getOptionLabel={(option) => {
           if (option) {
@@ -163,7 +163,7 @@ const AutocompleteDialog: FC<Props> = ({
               />
             )
         )}
-        {newValues?.map(
+        {itemValues?.map(
           (item) =>
             item && (
               <Chip
@@ -172,7 +172,9 @@ const AutocompleteDialog: FC<Props> = ({
                 onDelete={() =>
                   setFieldValue(
                     name,
-                    newValues?.filter((newVal) => newVal.TempID !== item.TempID)
+                    itemValues?.filter(
+                      (newVal) => newVal.TempID !== item.TempID
+                    )
                   )
                 }
               />
@@ -185,11 +187,11 @@ const AutocompleteDialog: FC<Props> = ({
           color="primary"
           className={classes.button}
           onClick={() => {
-            setFieldValue(name, newValues?.concat(tempNewValues));
+            setFieldValue(name, itemValues?.concat(tempNewValues));
             setDialogOpen(false);
           }}
         >
-          Save
+          Add
         </Button>
       </div>
     </Dialog>
