@@ -39,7 +39,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
   );
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
-  const [postItem, { isSuccess }] = usePostItemMutation();
+  const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
   const classes = useFormStyles();
@@ -73,8 +73,13 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
   };
 
   useEffect(() => {
-    if (isSuccess && isNewItem) dispatch(removeNewItem({ index }));
-  }, [isSuccess]);
+    if (postItemSuccess) {
+      setOpen(false);
+      if (isNewItem) {
+        dispatch(removeNewItem({ index }));
+      }
+    }
+  }, [postItemSuccess]);
 
   return (
     <Formik

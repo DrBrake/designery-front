@@ -53,7 +53,7 @@ const InspirationForm: FC<Props> = ({
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [imageDialogImage, setImageDialogImage] = useState("");
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-  const [postItem, { isSuccess }] = usePostItemMutation();
+  const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
   const classes = useFormStyles();
@@ -63,8 +63,13 @@ const InspirationForm: FC<Props> = ({
   const tags = useSelector(selectTags);
 
   useEffect(() => {
-    if (isSuccess && isNewItem) dispatch(removeNewItem({ index }));
-  }, [isSuccess]);
+    if (postItemSuccess) {
+      setOpen(false);
+      if (isNewItem) {
+        dispatch(removeNewItem({ index }));
+      }
+    }
+  }, [postItemSuccess]);
 
   const getImageRefs = (
     values: Inspiration,

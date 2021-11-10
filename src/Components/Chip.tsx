@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import classnames from "classnames";
-import MuiChip from "@material-ui/core/Chip";
+import { Chip as MuiChip } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 
 interface Props {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) =>
       color: theme.palette.primary.light,
       background: "white",
       border: `1px solid ${theme.palette.primary.dark}`,
-      pointerEvents: "none",
+      pointerEvents: (props: any) => (props.clickable ? "auto" : "none"),
     },
     text: {
       fontSize: "16px",
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const Chip: FC<Props> = ({ label, lastTag, onClick, onDelete }) => {
-  const classes = useStyles();
+  const classes = useStyles({ clickable: !!onClick || !!onDelete });
   return (
     <MuiChip
       label={label}

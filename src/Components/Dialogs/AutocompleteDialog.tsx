@@ -153,13 +153,13 @@ const AutocompleteDialog: FC<Props> = ({
               <Chip
                 label={item.Title}
                 key={item.TempID}
-                onDelete={() =>
+                onDelete={() => {
                   setTempNewValues(
                     tempNewValues.filter(
                       (newVal) => newVal.TempID !== item.TempID
                     )
-                  )
-                }
+                  );
+                }}
               />
             )
         )}
@@ -169,14 +169,14 @@ const AutocompleteDialog: FC<Props> = ({
               <Chip
                 label={item.Title}
                 key={item.TempID}
-                onDelete={() =>
+                onDelete={() => {
                   setFieldValue(
                     name,
                     itemValues?.filter(
                       (newVal) => newVal.TempID !== item.TempID
                     )
-                  )
-                }
+                  );
+                }}
               />
             )
         )}

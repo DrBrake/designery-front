@@ -76,7 +76,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (postItemSuccess && isNewItem) dispatch(removeNewItem({ index }));
+    if (postItemSuccess) {
+      setOpen(false);
+      if (isNewItem) {
+        dispatch(removeNewItem({ index }));
+      }
+    }
   }, [postItemSuccess]);
 
   const getImageRefs = (
@@ -322,7 +327,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                           item.Title !== "" && (
                             <Chip
                               label={item.Title}
-                              onClick={() => null}
                               lastTag={index + 1 === values.Tags?.length}
                               key={item._id}
                             />
