@@ -172,9 +172,7 @@ const AutocompleteDialog: FC<Props> = ({
                 onDelete={() => {
                   setFieldValue(
                     name,
-                    itemValues?.filter(
-                      (newVal) => newVal.TempID !== item.TempID
-                    )
+                    itemValues?.filter((newVal) => newVal._id !== item._id)
                   );
                 }}
               />
