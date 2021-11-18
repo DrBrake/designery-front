@@ -53,3 +53,6 @@ export interface ImageFile {
   name: string;
   id: string;
 }
+
+export type SortDir = "asc" | "desc";
+export type SortValue = "Title" | "DateCreated";

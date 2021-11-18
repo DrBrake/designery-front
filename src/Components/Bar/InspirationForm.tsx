@@ -305,16 +305,26 @@ const InspirationForm: FC<Props> = ({
                         }}
                       />
                     </div>
-                    {values.Ideas &&
-                      values.Ideas.map(
-                        (item) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Typography key={item._id}>
-                              <Link href="#">{item.Title}</Link>
-                            </Typography>
-                          )
-                      )}
+                    <div className={classes.flex}>
+                      {values.Ideas &&
+                        values.Ideas.map(
+                          (item) =>
+                            item &&
+                            item.Title !== "" && (
+                              <>
+                                <Typography
+                                  key={item._id}
+                                  className={classes.marginRight}
+                                >
+                                  <Link href="#">{item.Title}</Link>
+                                </Typography>
+                                {index + 1 < values.Ideas!.length && (
+                                  <div className={classes.verticalDivider} />
+                                )}
+                              </>
+                            )
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>

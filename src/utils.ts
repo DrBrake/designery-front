@@ -1,12 +1,22 @@
 import { createBrowserHistory } from "history";
 import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 
-import { Idea, Inspiration, Project, ItemResponse } from "./Types/dataTypes";
+import {
+  Idea,
+  Inspiration,
+  Project,
+  ItemResponse,
+  SortDir,
+  SortValue,
+} from "./Types/dataTypes";
 
 export const browserHistory = createBrowserHistory();
 
 export const handleDataForList = (
-  data: ItemResponse | undefined
+  data: ItemResponse | undefined,
+  sortBy?: SortValue,
+  sortDir?: SortDir
 ): Array<Inspiration | Idea | Project> => {
   if (data) {
     const combinedData = [
@@ -14,19 +24,28 @@ export const handleDataForList = (
       ...data.inspirations,
       ...data.projects,
     ];
-    return sortByKey(combinedData, "DateCreated");
+    return sortByKey(combinedData, sortBy || "DateCreated", sortDir || "asc");
   }
   return [];
 };
 
 export const sortByKey = (
   array: Array<Inspiration | Idea | Project>,
-  key: "Title" | "DateCreated"
+  key: SortValue,
+  dir: SortDir
 ) => {
-  return array.sort((a, b) => {
-    if (a[key] < b[key]) return 1;
-    else if (a[key] > b[key]) return -1;
-    return 0;
+  return [...array].sort((a, b) => {
+    const aVal = key === "DateCreated" ? dayjs(a[key]) : a[key];
+    const bVal = key === "DateCreated" ? dayjs(b[key]) : b[key];
+    if (dir === "asc") {
+      if (bVal < aVal) return -1;
+      else if (bVal > aVal) return 1;
+      return 0;
+    } else {
+      if (bVal < aVal) return 1;
+      else if (bVal > aVal) return -1;
+      return 0;
+    }
   });
 };
 

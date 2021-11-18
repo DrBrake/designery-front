@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classnames from "classnames";
 import { Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { selectNewItems, selectData } from "../Reducers/appSlice";
-import { useGetDataQuery } from "../Services/dataAPI";
+import {
+  selectNewItems,
+  selectData,
+  removeAllNewItems,
+} from "../Reducers/appSlice";
+import {
+  useGetDataQuery,
+  usePostMultipleItemsMutation,
+} from "../Services/dataAPI";
 import { handleDataForList } from "../utils";
+import useSort from "../Hooks/useSort";
 
 import Sort from "../Components/Sort";
 import Bar from "../Components/Bar/Bar";
@@ -36,11 +44,24 @@ const useStyles = makeStyles((theme) => ({
 const List = () => {
   const classes = useStyles();
   const { error, isLoading } = useGetDataQuery();
+  const [
+    postMultipleItems,
+    { isSuccess: postMultipleItemsSuccess },
+  ] = usePostMultipleItemsMutation();
   const data = useSelector(selectData);
-  const handleData = handleDataForList(data);
+  const { sort, allSortValues, handleRequestSort } = useSort();
+  const handleData = handleDataForList(data, sort.value, sort.direction);
+
+  const dispatch = useDispatch();
 
   // isLoading gets stuck to true with hot reload sometimes
   const loadingProd = isLoading && process.env.NODE_ENV === "production";
+
+  useEffect(() => {
+    if (postMultipleItemsSuccess) {
+      dispatch(removeAllNewItems());
+    }
+  }, [postMultipleItemsSuccess]);
 
   const newItems = useSelector(selectNewItems);
   return (
@@ -53,7 +74,7 @@ const List = () => {
                 variant="text"
                 color="primary"
                 className={classnames(classes.button, classes.marginRight)}
-                onClick={() => {}}
+                onClick={() => dispatch(removeAllNewItems())}
               >
                 Remove All
               </Button>
@@ -61,7 +82,7 @@ const List = () => {
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                onClick={() => {}}
+                onClick={() => postMultipleItems(newItems)}
               >
                 Save All
               </Button>
@@ -83,7 +104,12 @@ const List = () => {
       {error && <Typography>Error</Typography>}
       {handleData && handleData.length > 0 && !loadingProd && (
         <>
-          <Sort />
+          <Sort
+            handleRequestSort={handleRequestSort}
+            direction={sort.direction}
+            value={sort.value}
+            values={allSortValues}
+          />
           {handleData.map((item, index) => (
             <Bar
               itemData={item}

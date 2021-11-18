@@ -8,17 +8,20 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Chip from "../Chip";
 import { ChevronDown } from "../Icons";
 import { Item } from "../../Types/dataTypes";
+import { VARIANTS } from "../../constants";
+import { useFormStyles } from "./FormStyles";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
       cursor: "pointer",
-      border: `1px solid ${theme.palette.primary.dark}`,
+      border: `1px solid #000000`,
       padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(
         1
       )}px ${theme.spacing(5)}px`,
       borderBottomWidth: "0px",
       minHeight: "105px",
+      position: "relative",
     },
     firstContainer: {
       borderTopLeftRadius: "4px",
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme) =>
     lighterGrey: {
       color: theme.palette.grey[400],
     },
-    descriptionText: {
+    fontSize16: {
       fontSize: "16px",
     },
     lightGrey: {
@@ -83,6 +86,7 @@ const BarClosed: FC<Props> = ({
   isNewItem,
 }) => {
   const classes = useStyles();
+  const formClasses = useFormStyles();
   return (
     <Grid
       container
@@ -93,6 +97,14 @@ const BarClosed: FC<Props> = ({
       })}
       onClick={() => setOpen(true)}
     >
+      <div
+        className={classnames(formClasses.variantColor, {
+          [formClasses.ideaBar]: itemData.Variant === VARIANTS.IDEA,
+          [formClasses.inspirationBar]:
+            itemData.Variant === VARIANTS.INSPIRATION,
+          [formClasses.projectBar]: itemData.Variant === VARIANTS.PROJECT,
+        })}
+      />
       <Grid item className={classes.flex}>
         <ChevronDown className={classes.icon} />
         <div>
@@ -110,18 +122,14 @@ const BarClosed: FC<Props> = ({
               </Typography>
             )}
           </div>
-          <Typography
-            className={classnames(classes.descriptionText, classes.lightGrey)}
-          >
+          <Typography className={classes.fontSize16}>
             {itemData.Description &&
               convertFromRaw(itemData.Description).getPlainText()}
           </Typography>
         </div>
       </Grid>
       <Grid item>
-        <Typography
-          className={classnames(classes.text, classes.lightGrey, classes.date)}
-        >
+        <Typography className={classnames(classes.fontSize16, classes.date)}>
           {dayjs(itemData.DateCreated).format("DD.MM.YYYY")}
         </Typography>
         {itemData.Tags &&

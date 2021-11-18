@@ -393,16 +393,26 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         }}
                       />
                     </div>
-                    {values.Inspirations &&
-                      values.Inspirations.map(
-                        (item) =>
-                          item &&
-                          item.Title !== "" && (
-                            <Typography key={uuidv4()}>
-                              <Link href="#">{item.Title}</Link>
-                            </Typography>
-                          )
-                      )}
+                    <div className={classes.flex}>
+                      {values.Inspirations &&
+                        values.Inspirations.map(
+                          (item, index) =>
+                            item &&
+                            item.Title !== "" && (
+                              <>
+                                <Typography
+                                  key={item._id}
+                                  className={classes.marginRight}
+                                >
+                                  <Link href="#">{item.Title}</Link>
+                                </Typography>
+                                {index + 1 < values.Inspirations!.length && (
+                                  <div className={classes.verticalDivider} />
+                                )}
+                              </>
+                            )
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>

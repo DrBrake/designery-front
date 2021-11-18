@@ -6,6 +6,7 @@ import IdeaForm from "./IdeaForm";
 import ProjectForm from "./ProjectForm";
 import InspirationForm from "./InspirationForm";
 import { VARIANTS } from "../../constants";
+import { useFormStyles } from "./FormStyles";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) =>
         1
       )}px ${theme.spacing(5)}px`,
       borderBottomWidth: "0px",
+      position: "relative",
     },
     firstContainer: {
       borderTopLeftRadius: "4px",
@@ -46,6 +48,7 @@ const BarOpen: FC<Props> = ({
   index,
 }) => {
   const classes = useStyles();
+  const formClasses = useFormStyles();
   const getContent = () => {
     if (itemData.Variant === VARIANTS.IDEA) {
       return (
@@ -83,6 +86,14 @@ const BarOpen: FC<Props> = ({
         [classes.firstContainer]: isFirst,
       })}
     >
+      <div
+        className={classnames(formClasses.variantColor, {
+          [formClasses.ideaBar]: itemData.Variant === VARIANTS.IDEA,
+          [formClasses.inspirationBar]:
+            itemData.Variant === VARIANTS.INSPIRATION,
+          [formClasses.projectBar]: itemData.Variant === VARIANTS.PROJECT,
+        })}
+      />
       {getContent()}
     </div>
   );

@@ -20,6 +20,14 @@ export const dataAPI = createApi({
       }),
       invalidatesTags: ["Items"],
     }),
+    postMultipleItems: builder.mutation({
+      query: (body: Array<Idea | Project | Inspiration>) => ({
+        url: `/item/multiple`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Items"],
+    }),
     removeItem: builder.mutation({
       query: (body: Idea | Project | Inspiration) => ({
         url: `/item/${body.Variant}/${body._id}`,
@@ -34,4 +42,5 @@ export const {
   useGetDataQuery,
   usePostItemMutation,
   useRemoveItemMutation,
+  usePostMultipleItemsMutation,
 } = dataAPI;

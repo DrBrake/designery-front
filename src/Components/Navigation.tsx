@@ -355,15 +355,13 @@ const Navigation: FC<RouteComponentProps> = ({
         )}
         <Grid item className={classes.flex}>
           {searchOpen ? (
-            <Close
-              className={classes.icon}
-              onClick={() => setSearchOpen(false)}
-            />
+            <div className={classes.icon}>
+              <Close onClick={() => setSearchOpen(false)} />
+            </div>
           ) : (
-            <Search
-              className={classes.icon}
-              onClick={() => setSearchOpen(true)}
-            />
+            <div className={classes.icon}>
+              <Search onClick={() => setSearchOpen(true)} />
+            </div>
           )}
           <div
             className={classnames(classes.icon, {
@@ -382,13 +380,19 @@ const Navigation: FC<RouteComponentProps> = ({
             />
           </div>
           {randomOpen && getRandomPopper()}
-          <GridOn
-            className={classnames(classes.icon, {
-              [classes.highlightColor]: location.pathname.includes(ROUTES.GRID),
-            })}
-            onClick={() => history.push(ROUTES.GRID)}
-          />
-          <Archive className={classes.icon} onClick={() => null} />
+          <div className={classes.icon}>
+            <GridOn
+              className={classnames({
+                [classes.highlightColor]: location.pathname.includes(
+                  ROUTES.GRID
+                ),
+              })}
+              onClick={() => history.push(ROUTES.GRID)}
+            />
+          </div>
+          <div className={classes.icon}>
+            <Archive onClick={() => null} />
+          </div>
           <div
             className={classnames(classes.icon, {
               [classes.openIcon]: filterOpen,

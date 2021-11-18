@@ -78,5 +78,22 @@ export const useFormStyles = makeStyles((theme) =>
       background: theme.palette.grey["500"],
       marginRight: theme.spacing(2),
     },
+    variantColor: {
+      position: "absolute",
+      width: "100px",
+      height: "100%",
+      top: 0,
+      left: 0,
+      zIndex: -1,
+    },
+    ideaBar: {
+      background: "#ff346c",
+    },
+    inspirationBar: {
+      background: "#ff9cfe",
+    },
+    projectBar: {
+      background: "#9c48c3",
+    },
   })
 );

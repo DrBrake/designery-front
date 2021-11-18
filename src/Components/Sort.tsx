@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { FC } from "react";
 import { Select, MenuItem } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 
 import { ArrowDown, ArrowUp } from "./Icons";
+import { SortDir, SortValue } from "../Types/dataTypes";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -15,30 +16,60 @@ const useStyles = makeStyles((theme) =>
       "&:before, &:after": {
         content: "initial",
       },
+      textTransform: "capitalize",
     },
     pointer: {
       cursor: "pointer",
     },
+    menuItem: {
+      textTransform: "capitalize",
+    },
   })
 );
 
-const Sort = () => {
-  const [direction, setDirection] = useState("asc");
+interface Props {
+  direction: SortDir;
+  value: SortValue;
+  values: Array<{ value: SortValue; name: string }>;
+  handleRequestSort: (values: {
+    type: string;
+    value?: SortValue;
+    direction?: SortDir;
+  }) => void;
+}
+
+const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <Select value="name" onChange={() => null} className={classes.select}>
-        <MenuItem value="name">Name</MenuItem>
-        <MenuItem value="date">Date</MenuItem>
+      <Select
+        value={value}
+        onChange={(e) =>
+          handleRequestSort({
+            type: e.target.value as SortValue,
+            value: e.target.value as SortValue,
+          })
+        }
+        className={classes.select}
+      >
+        {values.map((item) => (
+          <MenuItem
+            value={item.value}
+            className={classes.menuItem}
+            key={item.value}
+          >
+            {item.name}
+          </MenuItem>
+        ))}
       </Select>
       {direction === "asc" ? (
         <ArrowDown
-          onClick={() => setDirection("desc")}
+          onClick={() => handleRequestSort({ type: value, direction: "desc" })}
           className={classes.pointer}
         />
       ) : (
         <ArrowUp
-          onClick={() => setDirection("asc")}
+          onClick={() => handleRequestSort({ type: value, direction: "asc" })}
           className={classes.pointer}
         />
       )}

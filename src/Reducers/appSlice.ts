@@ -37,6 +37,9 @@ export const appSlice = createSlice({
     updateNewItem: (state, action) => {
       state.newItems[action.payload.index] = action.payload.values;
     },
+    removeAllNewItems: (state) => {
+      state.newItems = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -60,7 +63,7 @@ export const selectAllImages = (state: RootState) => {
   return handleDataForList(state.app.data).reduce<string[]>((acc, cur) => {
     if (
       (cur.Variant === VARIANTS.IDEA || cur.Variant === VARIANTS.INSPIRATION) &&
-      cur.ImageRefs
+      typeof cur.ImageRefs === "string"
     ) {
       acc.concat(cur.ImageRefs);
     }
@@ -68,5 +71,10 @@ export const selectAllImages = (state: RootState) => {
   }, []);
 };
 
-export const { addNewItem, removeNewItem, updateNewItem } = appSlice.actions;
+export const {
+  addNewItem,
+  removeNewItem,
+  updateNewItem,
+  removeAllNewItems,
+} = appSlice.actions;
 export default appSlice.reducer;
