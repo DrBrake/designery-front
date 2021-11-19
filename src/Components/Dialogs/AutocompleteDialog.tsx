@@ -46,7 +46,7 @@ interface AutocompleteItem extends BaseItem {
 
 interface Props {
   dialogOpen: boolean;
-  setDialogOpen: (value: boolean) => void;
+  setDialogOpen: () => void;
   dialogVariant?: string;
   values?: Array<AutocompleteItem>;
   setFieldValue: (name: string, value: any) => void;
@@ -186,7 +186,7 @@ const AutocompleteDialog: FC<Props> = ({
           className={classes.button}
           onClick={() => {
             setFieldValue(name, itemValues?.concat(tempNewValues));
-            setDialogOpen(false);
+            setDialogOpen();
           }}
         >
           Add

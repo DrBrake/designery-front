@@ -30,10 +30,12 @@ const INLINE_BUTTONS = [
   {
     label: <Bold />,
     value: "BOLD",
+    id: uuidv4(),
   },
   {
     label: <Italic />,
     value: "ITALIC",
+    id: uuidv4(),
   },
 ];
 
@@ -41,10 +43,12 @@ const BLOCK_BUTTONS = [
   {
     label: <BulletList />,
     value: "unordered-list-item",
+    id: uuidv4(),
   },
   {
     label: <NumberedList />,
     value: "ordered-list-item",
+    id: uuidv4(),
   },
 ];
 
@@ -108,7 +112,7 @@ const RichTextEditor: FC<Props> = ({
           }}
           color="primary"
           size="small"
-          key={uuidv4()}
+          key={item.id}
           classes={{ root: classes.marginRight }}
         >
           {item.label}
@@ -125,7 +129,7 @@ const RichTextEditor: FC<Props> = ({
           }}
           color="primary"
           size="small"
-          key={uuidv4()}
+          key={item.id}
           classes={{ root: classes.marginRight }}
         >
           {item.label}

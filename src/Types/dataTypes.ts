@@ -55,4 +55,4 @@ export interface ImageFile {
 }
 
 export type SortDir = "asc" | "desc";
-export type SortValue = "Title" | "DateCreated";
+export type SortValue = "Title" | "DateCreated" | "Random";

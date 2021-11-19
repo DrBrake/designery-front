@@ -11,7 +11,7 @@ import { isURL } from "../../utils";
 
 interface Props {
   dialogOpen: boolean;
-  setDialogOpen: (value: boolean) => void;
+  setDialogOpen: () => void;
   itemValues?: Array<string | ImageFile>;
   name: string;
   setFieldValue: (field: string, value: any) => void;
@@ -87,7 +87,7 @@ const AddImageDialog: FC<Props> = ({
               )
             )
           );
-          setDialogOpen(false);
+          setDialogOpen();
         }}
       >
         {({ values, handleChange }) => (

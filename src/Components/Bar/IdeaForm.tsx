@@ -1,7 +1,6 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
-import { v4 as uuidv4 } from "uuid";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import {
@@ -46,6 +45,7 @@ import {
 import { isURL } from "../../utils";
 import { Idea, ImageFile } from "../../Types/dataTypes";
 import { useFormStyles } from "./FormStyles";
+import useDialogs from "../../Hooks/useDialogs";
 
 interface Props {
   idea: Idea;
@@ -55,16 +55,8 @@ interface Props {
 }
 
 const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [addDialogVariant, setAddDialogVariant] = useState("");
-  const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
-  const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
-    ""
-  );
-  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
-  const [imageDialogOpen, setImageDialogOpen] = useState(false);
-  const [imageDialogImage, setImageDialogImage] = useState("");
+  const { dialogs, setDialogs } = useDialogs();
+
   const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
@@ -108,8 +100,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
           <Add
             className={classes.pointer}
             onClick={() => {
-              setAddDialogOpen(true);
-              setAddDialogVariant(DIALOG_VARIANT.DRAFT);
+              setDialogs({
+                type: "Add",
+                open: true,
+                variant: DIALOG_VARIANT.DRAFT,
+              });
             }}
           />
         </div>
@@ -118,7 +113,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
             <Image
               variant={IMAGE_TYPE.DRAFT}
               src={`${BASE_URL}/images/drafts/${item}`}
-              key={uuidv4()}
+              key={item}
             />
           ))}
         <div className={classes.flex}>
@@ -130,8 +125,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
           <Add
             className={classes.pointer}
             onClick={() => {
-              setAddDialogOpen(true);
-              setAddDialogVariant(DIALOG_VARIANT.IMAGE_REF);
+              setDialogs({
+                type: "Add",
+                open: true,
+                variant: DIALOG_VARIANT.IMAGE_REF,
+              });
             }}
           />
         </div>
@@ -143,10 +141,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                 src={getSrc(item)}
                 key={typeof item === "string" ? item : item.id}
                 onClick={() => {
-                  setImageDialogOpen(true);
-                  setImageDialogImage(
-                    typeof item === "string" ? item : item.file
-                  );
+                  setDialogs({
+                    type: "Image",
+                    open: true,
+                    variant: DIALOG_VARIANT.IMAGE_REF,
+                    image: typeof item === "string" ? item : item.file,
+                  });
                 }}
               />
             ))}
@@ -159,52 +159,21 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     );
   };
 
-  const getAutocompleteDialogOptions = (
-    values: Idea,
-    dialogVariant: string
-  ) => {
-    if (dialogVariant === DIALOG_VARIANT.TAG) {
-      return {
-        title: "Add a tag",
-        name: "Tags",
-        values: tags,
-        itemValues: values.Tags,
-        dialogVariant: dialogVariant,
-      };
-    } else if (dialogVariant === DIALOG_VARIANT.INSPIRATION) {
-      return {
-        title: "Add a inspiration",
-        name: "Inspirations",
-        values: inspirations,
-        itemValues: values.Inspirations,
-        dialogVariant: dialogVariant,
-        dataVariant: VARIANTS.INSPIRATION,
-      };
-    }
-    return { title: "", name: "", values: [], itemValues: [] };
-  };
-
-  const getAddDialogOptions = (values: Idea, dialogVariant: string) => {
+  const getAddDialogValues = (values: Idea, dialogVariant: string) => {
     if (dialogVariant === DIALOG_VARIANT.IMAGE_REF) {
       return {
-        title: "Add image reference",
-        name: "ImageRefs",
         itemValues: values.ImageRefs,
       };
     } else if (dialogVariant === DIALOG_VARIANT.DRAFT) {
       return {
-        title: "Add a draft",
-        name: "Drafts",
         itemValues: values.Drafts,
       };
     } else if (dialogVariant === DIALOG_VARIANT.COMPLETED_WORK) {
       return {
-        title: "Add a completed work",
-        name: "CompletedWorks",
         itemValues: values.CompletedWorks,
       };
     }
-    return { title: "", name: "", itemValues: [] };
+    return { itemValues: [] };
   };
 
   return (
@@ -299,8 +268,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       <Add
                         className={classes.pointer}
                         onClick={() => {
-                          setAutocompleteDialogOpen(true);
-                          setAutocompleteDialogVariant(DIALOG_VARIANT.TAG);
+                          setDialogs({
+                            type: "Autocomplete",
+                            open: true,
+                            variant: DIALOG_VARIANT.TAG,
+                          });
                         }}
                       />
                     </div>
@@ -362,7 +334,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         None
                       </MenuItem>
                       {projects.map((item) => (
-                        <MenuItem value={item._id} key={uuidv4()}>
+                        <MenuItem value={item._id} key={item._id}>
                           {item.Title}
                         </MenuItem>
                       ))}
@@ -386,10 +358,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       <Add
                         className={classes.pointer}
                         onClick={() => {
-                          setAutocompleteDialogOpen(true);
-                          setAutocompleteDialogVariant(
-                            DIALOG_VARIANT.INSPIRATION
-                          );
+                          setDialogs({
+                            type: "Autocomplete",
+                            open: true,
+                            variant: DIALOG_VARIANT.INSPIRATION,
+                          });
                         }}
                       />
                     </div>
@@ -435,8 +408,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                     <Add
                       className={classes.pointer}
                       onClick={() => {
-                        setAddDialogOpen(true);
-                        setAddDialogVariant(DIALOG_VARIANT.COMPLETED_WORK);
+                        setDialogs({
+                          type: "Add",
+                          open: true,
+                          variant: DIALOG_VARIANT.COMPLETED_WORK,
+                        });
                       }}
                     />
                   </div>
@@ -445,7 +421,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       <Image
                         variant={IMAGE_TYPE.COMPLETED_WORK}
                         src={`${BASE_URL}/images/completed/${item}`}
-                        key={uuidv4()}
+                        key={item}
                       />
                     ))}
                 </div>
@@ -461,7 +437,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         classes.button,
                         classes.marginRight
                       )}
-                      onClick={() => setRemoveDialogOpen(true)}
+                      onClick={() =>
+                        setDialogs({
+                          type: "Remove",
+                          open: true,
+                        })
+                      }
                     >
                       Remove
                     </Button>
@@ -474,7 +455,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         classes.button,
                         classes.marginRight
                       )}
-                      onClick={() => setCompleteDialogOpen(true)}
+                      onClick={() =>
+                        setDialogs({
+                          type: "Complete",
+                          open: true,
+                        })
+                      }
                     >
                       Complete
                     </Button>
@@ -500,47 +486,82 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
               </div>
             </Grid>
           </Grid>
-          {addDialogOpen && (
+          {dialogs.Add.open && (
             <AddImageDialog
-              dialogOpen={addDialogOpen}
-              setDialogOpen={setAddDialogOpen}
+              dialogOpen={dialogs.Add.open}
+              setDialogOpen={() =>
+                setDialogs({
+                  type: "Add",
+                  open: false,
+                  variant: null,
+                })
+              }
               setFieldValue={setFieldValue}
-              {...getAddDialogOptions(values, addDialogVariant)}
+              {...dialogs.Add.dialogOptions}
+              {...getAddDialogValues(values, dialogs.Add.variant)}
             />
           )}
-          {autocompleteDialogOpen && (
+          {dialogs.Autocomplete.open && (
             <AutocompleteDialog
-              dialogOpen={autocompleteDialogOpen}
-              setDialogOpen={setAutocompleteDialogOpen}
+              dialogOpen={dialogs.Autocomplete.open}
+              values={
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.TAG
+                  ? tags
+                  : inspirations
+              }
+              itemValues={
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.INSPIRATION
+                  ? values.Tags
+                  : values.Inspirations
+              }
+              setDialogOpen={() =>
+                setDialogs({
+                  type: "Autocomplete",
+                  open: false,
+                  variant: null,
+                })
+              }
               setFieldValue={setFieldValue}
-              {...getAutocompleteDialogOptions(
-                values,
-                autocompleteDialogVariant
-              )}
+              {...dialogs.Autocomplete.dialogOptions}
             />
           )}
-          {imageDialogOpen && (
+          {dialogs.Image.open && (
             <ImageDialog
-              dialogOpen={imageDialogOpen}
-              setDialogOpen={setImageDialogOpen}
-              image={imageDialogImage}
+              dialogOpen={dialogs.Image.open}
+              setDialogOpen={() =>
+                setDialogs({
+                  type: "Image",
+                  open: false,
+                  variant: null,
+                  image: null,
+                })
+              }
+              image={dialogs.Image.image}
               variant={values.Variant}
               onRemove={() => {
-                setImageDialogOpen(false);
+                setDialogs({
+                  type: "Remove",
+                  open: false,
+                });
                 setFieldValue(
                   "ImageRefs",
                   values.ImageRefs?.filter((item) =>
                     typeof item === "string"
-                      ? item !== imageDialogImage
-                      : item.file !== imageDialogImage
+                      ? item !== dialogs.Image.image
+                      : item.file !== dialogs.Image.image
                   )
                 );
               }}
             />
           )}
           <PromptDialog
-            dialogOpen={removeDialogOpen}
-            setDialogOpen={setRemoveDialogOpen}
+            dialogOpen={dialogs.Remove.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Remove",
+                open: false,
+              })
+            }
             onSave={() => {
               isNewItem
                 ? dispatch(removeNewItem({ index }))
@@ -550,8 +571,13 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
             saveButtonText="Remove"
           />
           <PromptDialog
-            dialogOpen={completeDialogOpen}
-            setDialogOpen={setCompleteDialogOpen}
+            dialogOpen={dialogs.Complete.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Complete",
+                open: false,
+              })
+            }
             title="Are you sure you want to set this as completed?"
             saveButtonText="Complete"
             onSave={() => {}}

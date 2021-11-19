@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useEffect, FC } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { Formik, Form } from "formik";
@@ -24,6 +24,7 @@ import { Close, Add } from "../Icons";
 import { Project } from "../../Types/dataTypes";
 import { DIALOG_VARIANT } from "../../constants";
 import { useFormStyles } from "./FormStyles";
+import useDialogs from "../../Hooks/useDialogs";
 
 interface Props {
   project: Project;
@@ -33,12 +34,8 @@ interface Props {
 }
 
 const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
-  const [autocompleteDialogOpen, setAutocompleteDialogOpen] = useState(false);
-  const [autocompleteDialogVariant, setAutocompleteDialogVariant] = useState(
-    ""
-  );
-  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
+  const { dialogs, setDialogs } = useDialogs();
+
   const [postItem, { isSuccess: postItemSuccess }] = usePostItemMutation();
   const [removeItem] = useRemoveItemMutation();
 
@@ -47,30 +44,6 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
 
   const ideas = useSelector(selectIdeas);
   const tags = useSelector(selectTags);
-
-  const getAutocompleteDialogOptions = (
-    values: Project,
-    dialogVariant: string
-  ) => {
-    if (dialogVariant === DIALOG_VARIANT.TAG) {
-      return {
-        title: "Add a tag",
-        name: "Tags",
-        values: tags,
-        itemValues: values.Tags,
-        dialogVariant: dialogVariant,
-      };
-    } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
-      return {
-        title: "Add an idea",
-        name: "Ideas",
-        values: ideas,
-        itemValues: values.Ideas,
-        dialogVariant: dialogVariant,
-      };
-    }
-    return { title: "", name: "", values: [], itemValues: [] };
-  };
 
   useEffect(() => {
     if (postItemSuccess) {
@@ -169,8 +142,11 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                       <Add
                         className={classes.pointer}
                         onClick={() => {
-                          setAutocompleteDialogOpen(true);
-                          setAutocompleteDialogVariant(DIALOG_VARIANT.TAG);
+                          setDialogs({
+                            type: "Autocomplete",
+                            open: true,
+                            variant: DIALOG_VARIANT.TAG,
+                          });
                         }}
                       />
                     </div>
@@ -222,8 +198,11 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                       <Add
                         className={classes.pointer}
                         onClick={() => {
-                          setAutocompleteDialogOpen(true);
-                          setAutocompleteDialogVariant(DIALOG_VARIANT.IDEA);
+                          setDialogs({
+                            type: "Autocomplete",
+                            open: true,
+                            variant: DIALOG_VARIANT.IDEA,
+                          });
                         }}
                       />
                     </div>
@@ -256,7 +235,12 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                     variant="text"
                     color="primary"
                     className={classnames(classes.button, classes.marginRight)}
-                    onClick={() => setRemoveDialogOpen(true)}
+                    onClick={() =>
+                      setDialogs({
+                        type: "Remove",
+                        open: true,
+                      })
+                    }
                   >
                     Remove
                   </Button>
@@ -268,7 +252,12 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                         classes.button,
                         classes.marginRight
                       )}
-                      onClick={() => setCompleteDialogOpen(true)}
+                      onClick={() =>
+                        setDialogs({
+                          type: "Complete",
+                          open: false,
+                        })
+                      }
                     >
                       Complete
                     </Button>
@@ -294,20 +283,38 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
               </div>
             </Grid>
           </Grid>
-          {autocompleteDialogOpen && (
+          {dialogs.Autocomplete.open && (
             <AutocompleteDialog
-              dialogOpen={autocompleteDialogOpen}
-              setDialogOpen={setAutocompleteDialogOpen}
+              dialogOpen={dialogs.Autocomplete.open}
+              values={
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.TAG
+                  ? tags
+                  : ideas
+              }
+              itemValues={
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.IDEA
+                  ? values.Tags
+                  : values.Ideas
+              }
+              setDialogOpen={() =>
+                setDialogs({
+                  type: "Autocomplete",
+                  open: false,
+                  variant: null,
+                })
+              }
               setFieldValue={setFieldValue}
-              {...getAutocompleteDialogOptions(
-                values,
-                autocompleteDialogVariant
-              )}
+              {...dialogs.Autocomplete.dialogOptions}
             />
           )}
           <PromptDialog
-            dialogOpen={removeDialogOpen}
-            setDialogOpen={setRemoveDialogOpen}
+            dialogOpen={dialogs.Remove.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Remove",
+                open: false,
+              })
+            }
             onSave={() => {
               isNewItem
                 ? dispatch(removeNewItem({ index }))
@@ -317,8 +324,13 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
             saveButtonText="Remove"
           />
           <PromptDialog
-            dialogOpen={completeDialogOpen}
-            setDialogOpen={setCompleteDialogOpen}
+            dialogOpen={dialogs.Complete.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Complete",
+                open: false,
+              })
+            }
             title="Are you sure you want to set this as completed?"
             saveButtonText="Complete"
             onSave={() => {}}

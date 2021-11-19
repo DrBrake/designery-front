@@ -49,7 +49,7 @@ const List = () => {
     { isSuccess: postMultipleItemsSuccess },
   ] = usePostMultipleItemsMutation();
   const data = useSelector(selectData);
-  const { sort, allSortValues, handleRequestSort } = useSort();
+  const { sort, allSortValues, handleRequestSort } = useSort("List");
   const handleData = handleDataForList(data, sort.value, sort.direction);
 
   const dispatch = useDispatch();

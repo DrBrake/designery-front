@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 interface Props {
   dialogOpen: boolean;
-  setDialogOpen: (value: boolean) => void;
+  setDialogOpen: () => void;
   onClose?: () => void;
   transparent?: boolean;
 }
@@ -36,7 +36,7 @@ const Dialog: FC<Props> = ({
       open={dialogOpen}
       onClose={() => {
         if (onClose) onClose();
-        setDialogOpen(false);
+        setDialogOpen();
       }}
       classes={{
         paper: classnames(classes.dialogPadding, {

@@ -69,7 +69,10 @@ const RandomDialog: FC<Props> = ({
     return [];
   };
   return (
-    <Dialog dialogOpen={randomDialogOpen} setDialogOpen={setRandomDialogOpen}>
+    <Dialog
+      dialogOpen={randomDialogOpen}
+      setDialogOpen={() => setRandomDialogOpen(false)}
+    >
       <div className={classes.flex}>
         {getRamdonItems().map((item, index) => (
           <>
@@ -82,13 +85,16 @@ const RandomDialog: FC<Props> = ({
               </Typography>
               <div className={classes.randomPopUpImageContainer}>
                 {item.ImageRefs &&
-                  item.ImageRefs.map((image) => (
-                    <Image
-                      variant={IMAGE_TYPE.RANDOM_POPUP}
-                      src={image}
-                      key={uuidv4()}
-                    />
-                  ))}
+                  item.ImageRefs.map(
+                    (image) =>
+                      typeof image === "string" && (
+                        <Image
+                          variant={IMAGE_TYPE.RANDOM_POPUP}
+                          src={image}
+                          key={image}
+                        />
+                      )
+                  )}
               </div>
               <div className={classes.marginBottom2}>
                 {item.Tags &&

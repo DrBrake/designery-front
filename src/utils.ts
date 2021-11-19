@@ -29,24 +29,35 @@ export const handleDataForList = (
   return [];
 };
 
+const shuffleArray = (array: any[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 export const sortByKey = (
   array: Array<Inspiration | Idea | Project>,
   key: SortValue,
   dir: SortDir
 ) => {
-  return [...array].sort((a, b) => {
-    const aVal = key === "DateCreated" ? dayjs(a[key]) : a[key];
-    const bVal = key === "DateCreated" ? dayjs(b[key]) : b[key];
-    if (dir === "asc") {
-      if (bVal < aVal) return -1;
-      else if (bVal > aVal) return 1;
-      return 0;
-    } else {
-      if (bVal < aVal) return 1;
-      else if (bVal > aVal) return -1;
-      return 0;
-    }
-  });
+  if (key !== "Random") {
+    return [...array].sort((a, b) => {
+      const aVal = key === "DateCreated" ? dayjs(a[key]) : a[key];
+      const bVal = key === "DateCreated" ? dayjs(b[key]) : b[key];
+      if (dir === "asc") {
+        if (bVal < aVal) return -1;
+        else if (bVal > aVal) return 1;
+        return 0;
+      } else {
+        if (bVal < aVal) return 1;
+        else if (bVal > aVal) return -1;
+        return 0;
+      }
+    });
+  }
+  return shuffleArray([...array]);
 };
 
 export const getRandomBetween = (min: number, max: number) => {

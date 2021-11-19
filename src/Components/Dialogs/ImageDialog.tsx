@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   image: string;
   dialogOpen: boolean;
-  setDialogOpen: (value: boolean) => void;
+  setDialogOpen: () => void;
   variant: string;
   onRemove: () => void;
 }

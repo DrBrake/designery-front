@@ -6,7 +6,7 @@ import Dialog from "./Dialog";
 
 interface Props {
   dialogOpen: boolean;
-  setDialogOpen: (value: boolean) => void;
+  setDialogOpen: () => void;
   title: string;
   onSave?: () => void;
   onCancel?: () => void;
@@ -48,7 +48,7 @@ const PromptDialog: FC<Props> = ({
         <Button
           onClick={() => {
             if (onSave) onSave();
-            setDialogOpen(false);
+            setDialogOpen();
           }}
           variant="contained"
           color="primary"
@@ -59,7 +59,7 @@ const PromptDialog: FC<Props> = ({
         <Button
           onClick={() => {
             if (onCancel) onCancel();
-            setDialogOpen(false);
+            setDialogOpen();
           }}
           variant="contained"
           color="primary"

@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { SortDir, SortValue } from "../Types/dataTypes";
 
 const sortState = {
   Title: {
@@ -10,6 +11,11 @@ const sortState = {
     direction: "asc",
     value: "DateCreated",
     name: "Date",
+  },
+  Random: {
+    direction: "asc",
+    value: "Random",
+    name: "Random",
   },
   active: "Date",
 };
@@ -33,11 +39,21 @@ const sortReducer = (state: any, action: any) => {
   }
 };
 
-const useSort = () => {
+const useSort = (type: "List" | "Grid") => {
   const [sort, handleRequestSort] = useReducer(sortReducer, sortState);
+  let allSortValues = [] as Array<{
+    name: string;
+    direction: SortDir;
+    value: SortValue;
+  }>;
+  if (type === "List") {
+    allSortValues = [sort.Title, sort.Date];
+  } else if (type === "Grid") {
+    allSortValues = [sort.Date, sort.Random];
+  }
   return {
     sort: sort[sort.active],
-    allSortValues: [sort.Title, sort.Date],
+    allSortValues: allSortValues,
     handleRequestSort,
   };
 };
