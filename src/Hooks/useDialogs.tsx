@@ -99,7 +99,7 @@ const getDialogOptions = (dialogVariant: string) => {
       name: "CompletedWorks",
     };
   }
-  return { title: "", name: "", values: [] };
+  return { title: "", name: "" };
 };
 
 const useDialogs = () => {
