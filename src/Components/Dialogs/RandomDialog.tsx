@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { v4 as uuidv4 } from "uuid";
 import { convertFromRaw } from "draft-js";
 
 import { IMAGE_TYPE, RANDOM_DIALOG_TYPE, VARIANTS } from "../../constants";
@@ -75,15 +76,13 @@ const RandomDialog: FC<Props> = ({
       <div className={classes.flex}>
         {getRamdonItems().map((item, index) => (
           <>
-            <div className={classes.randomPopUpDialogContainer} key={item._id}>
+            <div className={classes.randomPopUpDialogContainer} key={uuidv4()}>
               <Typography className={classes.marginBottom2}>
                 {item.Title}
               </Typography>
-              {item.Description && (
-                <Typography className={classes.marginBottom2}>
-                  {convertFromRaw(item.Description).getPlainText()}
-                </Typography>
-              )}
+              <Typography className={classes.marginBottom2}>
+                {convertFromRaw(item.Description).getPlainText()}
+              </Typography>
               <div className={classes.randomPopUpImageContainer}>
                 {item.ImageRefs &&
                   item.ImageRefs.map(
@@ -112,13 +111,11 @@ const RandomDialog: FC<Props> = ({
               </Typography>
               {item.Variant === VARIANTS.IDEA &&
                 item?.Inspirations?.map((inspiration) => (
-                  <Typography key={inspiration._id}>
-                    {inspiration.Title}
-                  </Typography>
+                  <Typography key={uuidv4()}>{inspiration}</Typography>
                 ))}
               {item.Variant === VARIANTS.INSPIRATION &&
                 item?.Ideas?.map((idea) => (
-                  <Typography key={idea._id}>{idea.Title}</Typography>
+                  <Typography key={uuidv4()}>{idea}</Typography>
                 ))}
             </div>
             {index === 0 && <div className={classes.border} />}

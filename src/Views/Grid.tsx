@@ -1,5 +1,6 @@
 import React from "react";
 import { Typography, Grid as MuiGrid } from "@material-ui/core";
+import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -37,7 +38,7 @@ const Grid = () => {
           />
           <MuiGrid container spacing={1}>
             {images.map((image) => (
-              <MuiGrid item xs={3} key={image}>
+              <MuiGrid item xs={3} key={uuidv4()}>
                 <Image variant={IMAGE_TYPE.GRID} src={image} />
               </MuiGrid>
             ))}

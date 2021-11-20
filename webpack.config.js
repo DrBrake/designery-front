@@ -17,7 +17,7 @@ module.exports = {
       {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
-        use: "ts-loader",
+        loader: "babel-loader",
       },
       {
         test: /\.svg$/,
@@ -27,7 +27,7 @@ module.exports = {
   },
   plugins: [
     new CompressionPlugin({
-      test: /\.(js?|jsx|ts|tsx|svg|gif|png|jpe?g|otf|eot|woff|woff2|ttf|ico)$/,
+      test: /\.(js?|jsx|svg|gif|png|jpe?g|otf|eot|woff|woff2|ttf|ico)$/,
     }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
