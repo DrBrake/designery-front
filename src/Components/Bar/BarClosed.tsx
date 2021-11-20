@@ -90,7 +90,7 @@ const BarClosed: FC<Props> = ({
   return (
     <Grid
       container
-      justify="space-between"
+      justifyContent="space-between"
       className={classnames(classes.container, {
         [classes.lastContainer]: isLast,
         [classes.firstContainer]: isFirst,

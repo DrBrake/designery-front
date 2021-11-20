@@ -324,7 +324,7 @@ const Navigation: FC<RouteComponentProps> = ({
         wrap="nowrap"
         spacing={2}
         alignItems="center"
-        justify="space-between"
+        justifyContent="space-between"
         className={classes.container}
       >
         <Grid
