@@ -13,7 +13,7 @@ import {
   useGetDataQuery,
   usePostMultipleItemsMutation,
 } from "../Services/dataAPI";
-import { handleDataForList } from "../utils";
+import { sortData } from "../utils";
 import useSort from "../Hooks/useSort";
 
 import Sort from "../Components/Sort";
@@ -44,13 +44,10 @@ const useStyles = makeStyles((theme) => ({
 const List = () => {
   const classes = useStyles();
   const { error, isLoading } = useGetDataQuery();
-  const [
-    postMultipleItems,
-    { isSuccess: postMultipleItemsSuccess },
-  ] = usePostMultipleItemsMutation();
+  const [postMultipleItems, { isSuccess: postMultipleItemsSuccess }] =
+    usePostMultipleItemsMutation();
   const data = useSelector(selectData);
   const { sort, allSortValues, handleRequestSort } = useSort("List");
-  const handleData = handleDataForList(data, sort.value, sort.direction);
 
   const dispatch = useDispatch();
 
@@ -102,7 +99,7 @@ const List = () => {
       </div>
       {loadingProd && <Typography>Loading</Typography>}
       {error && <Typography>Error</Typography>}
-      {handleData && handleData.length > 0 && !loadingProd && (
+      {data && data.length > 0 && !loadingProd && (
         <>
           <Sort
             handleRequestSort={handleRequestSort}
@@ -110,11 +107,11 @@ const List = () => {
             value={sort.value}
             values={allSortValues}
           />
-          {handleData.map((item, index) => (
+          {sortData(data, sort.value, sort.direction).map((item, index) => (
             <Bar
               itemData={item}
               isFirst={index === 0}
-              isLast={index + 1 === handleData.length}
+              isLast={index + 1 === data.length}
               isNewItem={false}
               key={item._id}
               index={index}
@@ -122,7 +119,7 @@ const List = () => {
           ))}
         </>
       )}
-      {handleData?.length === 0 && !loadingProd && newItems?.length === 0 && (
+      {data?.length === 0 && !loadingProd && newItems?.length === 0 && (
         <Typography>No data yet</Typography>
       )}
     </div>

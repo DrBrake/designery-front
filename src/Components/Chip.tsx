@@ -16,8 +16,14 @@ const useStyles = makeStyles((theme) =>
       marginRight: theme.spacing(2),
       paddingLeft: theme.spacing(3),
       paddingRight: theme.spacing(3),
-      color: theme.palette.primary.light,
-      background: "white",
+      color:
+        theme.palette.type === "dark"
+          ? theme.palette.common.white
+          : theme.palette.primary.light,
+      background:
+        theme.palette.type === "dark"
+          ? theme.palette.grey["A400"]
+          : theme.palette.common.white,
       border: `1px solid ${theme.palette.primary.dark}`,
       pointerEvents: (props: any) => (props.clickable ? "auto" : "none"),
     },

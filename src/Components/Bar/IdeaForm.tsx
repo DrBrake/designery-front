@@ -278,7 +278,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                     </div>
                     <Typography
                       className={classnames(
-                        classes.text,
+                        classes.fontSize16,
                         classes.lightGrey,
                         classes.date
                       )}
@@ -432,7 +432,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                   {!values.Completed && (
                     <Button
                       variant="text"
-                      color="primary"
                       className={classnames(
                         classes.button,
                         classes.marginRight
@@ -450,7 +449,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                   {!isNewItem && (
                     <Button
                       variant="text"
-                      color="primary"
                       className={classnames(
                         classes.button,
                         classes.marginRight
@@ -462,13 +460,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         })
                       }
                     >
-                      Complete
+                      Archive
                     </Button>
                   )}
                   <div className={classes.verticalDivider} />
                   <Button
                     variant="text"
-                    color="primary"
                     className={classnames(classes.button, classes.marginRight)}
                     onClick={() => setOpen(false)}
                   >

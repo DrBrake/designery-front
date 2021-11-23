@@ -7,7 +7,13 @@ export const useFormStyles = makeStyles((theme) =>
       fontWeight: "bold",
     },
     lightGrey: {
-      color: theme.palette.primary.dark,
+      color:
+        theme.palette.type === "dark"
+          ? theme.palette.common.white
+          : theme.palette.primary.dark,
+    },
+    fontSize16: {
+      fontSize: "16px",
     },
     icon: {
       cursor: "pointer",
@@ -87,13 +93,13 @@ export const useFormStyles = makeStyles((theme) =>
       zIndex: -1,
     },
     ideaBar: {
-      background: "#ff346c",
+      background: theme.palette.secondary.main,
     },
     inspirationBar: {
-      background: "#ff9cfe",
+      background: theme.palette.secondary.light,
     },
     projectBar: {
-      background: "#9c48c3",
+      background: theme.palette.secondary.dark,
     },
   })
 );

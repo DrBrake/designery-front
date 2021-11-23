@@ -110,7 +110,6 @@ const RichTextEditor: FC<Props> = ({
               ),
             });
           }}
-          color="primary"
           size="small"
           key={item.id}
           classes={{ root: classes.marginRight }}
@@ -127,7 +126,6 @@ const RichTextEditor: FC<Props> = ({
               editor: RichUtils.toggleBlockType(localEditor.editor, item.value),
             });
           }}
-          color="primary"
           size="small"
           key={item.id}
           classes={{ root: classes.marginRight }}

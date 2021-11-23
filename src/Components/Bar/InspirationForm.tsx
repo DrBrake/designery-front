@@ -220,7 +220,7 @@ const InspirationForm: FC<Props> = ({
                     </div>
                     <Typography
                       className={classnames(
-                        classes.text,
+                        classes.fontSize16,
                         classes.lightGrey,
                         classes.date
                       )}
@@ -302,7 +302,6 @@ const InspirationForm: FC<Props> = ({
                 <div className={classes.buttonContainer}>
                   <Button
                     variant="text"
-                    color="primary"
                     className={classnames(classes.button, classes.marginRight)}
                     onClick={() =>
                       setDialogs({
@@ -316,7 +315,6 @@ const InspirationForm: FC<Props> = ({
                   <div className={classes.verticalDivider} />
                   <Button
                     variant="text"
-                    color="primary"
                     className={classnames(classes.button, classes.marginRight)}
                     onClick={() => setOpen(false)}
                   >

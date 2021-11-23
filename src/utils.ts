@@ -9,14 +9,15 @@ import {
   ItemResponse,
   SortDir,
   SortValue,
+  Filters,
+  Item,
 } from "./Types/dataTypes";
+import { VARIANTS } from "./constants";
 
 export const browserHistory = createBrowserHistory();
 
-export const handleDataForList = (
-  data: ItemResponse | undefined,
-  sortBy?: SortValue,
-  sortDir?: SortDir
+export const combineData = (
+  data: ItemResponse | undefined
 ): Array<Inspiration | Idea | Project> => {
   if (data) {
     const combinedData = [
@@ -24,7 +25,7 @@ export const handleDataForList = (
       ...data.inspirations,
       ...data.projects,
     ];
-    return sortByKey(combinedData, sortBy || "DateCreated", sortDir || "asc");
+    return combinedData;
   }
   return [];
 };
@@ -37,7 +38,7 @@ const shuffleArray = (array: any[]) => {
   return array;
 };
 
-export const sortByKey = (
+export const sortData = (
   array: Array<Inspiration | Idea | Project>,
   key: SortValue,
   dir: SortDir
@@ -111,4 +112,28 @@ export const readDataURLAsync = (file: File) => {
       return reject(err);
     }
   });
+};
+
+export const filterData = (array: Item[], filters: Filters) => {
+  if (
+    filters.ideas ||
+    filters.inspirations ||
+    filters.projects ||
+    filters.tags.length > 0 ||
+    filters.search !== ""
+  ) {
+    return array.filter((item) => {
+      if (
+        (filters.ideas && item.Variant !== VARIANTS.IDEA) ||
+        (filters.inspirations && item.Variant !== VARIANTS.INSPIRATION) ||
+        (filters.projects && item.Variant !== VARIANTS.PROJECT) ||
+        (filters.tags.length > 0 &&
+          item.Tags.find((tag) => tag._id && filters.tags.includes(tag._id))) ||
+        (filters.search !== "" && item.Title.includes(filters.search))
+      ) {
+        return item;
+      }
+    });
+  }
+  return array;
 };

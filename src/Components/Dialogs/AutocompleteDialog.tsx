@@ -189,7 +189,7 @@ const AutocompleteDialog: FC<Props> = ({
             setDialogOpen();
           }}
         >
-          Add
+          Save
         </Button>
       </div>
     </Dialog>

@@ -56,3 +56,11 @@ export interface ImageFile {
 
 export type SortDir = "asc" | "desc";
 export type SortValue = "Title" | "DateCreated" | "Random";
+
+export interface Filters {
+  ideas: boolean;
+  inspirations: boolean;
+  projects: boolean;
+  tags: string[];
+  search: string;
+}

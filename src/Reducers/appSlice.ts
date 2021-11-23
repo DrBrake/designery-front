@@ -7,15 +7,17 @@ import {
   Idea,
   Inspiration,
   Project,
+  Filters,
 } from "../Types/dataTypes";
 import { RootState } from "./rootReducer";
 
-import { handleDataForList } from "../utils";
+import { filterData, combineData } from "../utils";
 import { VARIANTS } from "../constants";
 
 interface InitialState {
   data: ItemResponse;
   newItems: Array<Item>;
+  filters: Filters;
 }
 
 export const appSlice = createSlice({
@@ -23,6 +25,13 @@ export const appSlice = createSlice({
   initialState: {
     data: { ideas: [], projects: [], inspirations: [], tags: [] },
     newItems: [],
+    filters: {
+      ideas: false,
+      inspirations: false,
+      projects: false,
+      tags: [],
+      search: "",
+    },
   } as InitialState,
   reducers: {
     addNewItem: (
@@ -40,6 +49,20 @@ export const appSlice = createSlice({
     removeAllNewItems: (state) => {
       state.newItems = [];
     },
+    setFilters: (state, action) => {
+      if (action.payload.tag) {
+        const tag = action.payload.tag;
+        if (state.filters.tags.some((item) => item === tag)) {
+          state.filters.tags = state.filters.tags.filter(
+            (item) => item !== tag
+          );
+        } else {
+          state.filters.tags.push(tag);
+        }
+      } else {
+        state.filters = Object.assign(state.filters, action.payload);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -51,16 +74,19 @@ export const appSlice = createSlice({
   },
 });
 
-export const selectData = (state: RootState) => state.app.data;
+export const selectData = (state: RootState) => {
+  return filterData(combineData(state.app.data), state.app.filters);
+};
 export const selectIdeas = (state: RootState) => state.app.data.ideas;
 export const selectProjects = (state: RootState) => state.app.data.projects;
 export const selectInspirations = (state: RootState) =>
   state.app.data.inspirations;
 export const selectTags = (state: RootState) => state.app.data.tags;
+export const selectFilters = (state: RootState) => state.app.filters;
 
 export const selectNewItems = (state: RootState) => state.app.newItems;
 export const selectAllImages = (state: RootState) => {
-  return handleDataForList(state.app.data).reduce<string[]>((acc, cur) => {
+  return combineData(state.app.data).reduce<string[]>((acc, cur) => {
     if (
       (cur.Variant === VARIANTS.IDEA || cur.Variant === VARIANTS.INSPIRATION) &&
       typeof cur.ImageRefs === "string"
@@ -76,5 +102,6 @@ export const {
   removeNewItem,
   updateNewItem,
   removeAllNewItems,
+  setFilters,
 } = appSlice.actions;
 export default appSlice.reducer;

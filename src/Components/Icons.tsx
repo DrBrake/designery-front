@@ -136,3 +136,10 @@ export const Edit = ({ ...props }) => (
     <path d="M18.37,3.29c-0.39-0.39-1.02-0.39-1.41,0l-1.83,1.83l3.75,3.75l1.83-1.83c0.39-0.39,0.39-1.02,0-1.41L18.37,3.29z" />
   </SvgIcon>
 );
+
+export const List = ({ ...props }) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
+    <path d="M0 0h24v24H0z" fill="none" />
+  </SvgIcon>
+);
