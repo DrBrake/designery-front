@@ -62,12 +62,9 @@ export const sortData = (
 };
 
 export const getRandomBetween = (min: number, max: number) => {
-  if (min && max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-  return 0;
+  min = Math.ceil(min || 0);
+  max = Math.floor(max || 0);
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
 export const getTwoRandomUniqueValuesFromArray = (
@@ -136,4 +133,16 @@ export const filterData = (array: Item[], filters: Filters) => {
     });
   }
   return array;
+};
+
+export const getAllImages = (array: Array<Inspiration | Idea | Project>) => {
+  return array.reduce((acc: string[], cur) => {
+    if (cur.Variant === VARIANTS.IDEA || cur.Variant === VARIANTS.INSPIRATION) {
+      const images = cur.ImageRefs?.filter(
+        (image) => typeof image === "string"
+      ) as string[];
+      if (images) acc.concat(images);
+    }
+    return acc;
+  }, []);
 };

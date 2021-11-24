@@ -12,7 +12,6 @@ import {
 import { RootState } from "./rootReducer";
 
 import { filterData, combineData } from "../utils";
-import { VARIANTS } from "../constants";
 
 interface InitialState {
   data: ItemResponse;
@@ -83,19 +82,7 @@ export const selectInspirations = (state: RootState) =>
   state.app.data.inspirations;
 export const selectTags = (state: RootState) => state.app.data.tags;
 export const selectFilters = (state: RootState) => state.app.filters;
-
 export const selectNewItems = (state: RootState) => state.app.newItems;
-export const selectAllImages = (state: RootState) => {
-  return combineData(state.app.data).reduce<string[]>((acc, cur) => {
-    if (
-      (cur.Variant === VARIANTS.IDEA || cur.Variant === VARIANTS.INSPIRATION) &&
-      typeof cur.ImageRefs === "string"
-    ) {
-      acc.concat(cur.ImageRefs);
-    }
-    return acc;
-  }, []);
-};
 
 export const {
   addNewItem,

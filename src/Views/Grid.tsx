@@ -3,13 +3,14 @@ import { Typography, Grid as MuiGrid } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { selectAllImages } from "../Reducers/appSlice";
+import { selectData } from "../Reducers/appSlice";
 import { useGetDataQuery } from "../Services/dataAPI";
 
 import Sort from "../Components/Sort";
 import Image from "../Components/Image/Image";
 import { IMAGE_TYPE } from "../constants";
 import useSort from "../Hooks/useSort";
+import { sortData, getAllImages } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -22,7 +23,9 @@ const Grid = () => {
   const { sort, allSortValues, handleRequestSort } = useSort("Grid");
   const { isLoading, error } = useGetDataQuery();
   const classes = useStyles();
-  const images = useSelector(selectAllImages);
+
+  const data = useSelector(selectData);
+  const images = getAllImages(sortData(data, sort.value, sort.direction));
   return (
     <div className={classes.container}>
       {isLoading && <Typography>Loading</Typography>}

@@ -13,8 +13,10 @@ import {
   selectNewItems,
   setFilters,
   selectFilters,
+  selectInspirations,
+  selectIdeas,
+  selectTags,
 } from "../Reducers/appSlice";
-import { useGetDataQuery } from "../Services/dataAPI";
 
 import { ROUTES, RANDOM_DIALOG_TYPE, VARIANTS } from "../constants";
 import Chip from "./Chip";
@@ -117,7 +119,9 @@ const Navigation: FC<RouteComponentProps> = ({
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { data } = useGetDataQuery();
+  const ideas = useSelector(selectIdeas);
+  const inspirations = useSelector(selectInspirations);
+  const tags = useSelector(selectTags);
   const newItems = useSelector(selectNewItems);
   const filters = useSelector(selectFilters);
 
@@ -210,10 +214,9 @@ const Navigation: FC<RouteComponentProps> = ({
   );
 
   const getRandomPopper = () => {
-    const enoughInspirations = data && data.inspirations?.length > 1;
-    const enoughIdeas = data && data.ideas?.length > 1;
-    const enoughBoth =
-      data && data.ideas?.length > 0 && data.inspirations?.length > 0;
+    const enoughInspirations = inspirations?.length > 1;
+    const enoughIdeas = ideas?.length > 1;
+    const enoughBoth = ideas?.length > 0 && inspirations?.length > 0;
     return (
       <>
         <div className={classes.overlay} onClick={() => setRandomOpen(false)} />
@@ -236,6 +239,7 @@ const Navigation: FC<RouteComponentProps> = ({
                 if (enoughInspirations) {
                   setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.INSPIRATIONS);
+                  setRandomOpen(false);
                 }
               }}
             >
@@ -250,6 +254,7 @@ const Navigation: FC<RouteComponentProps> = ({
                 if (enoughIdeas) {
                   setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.IDEAS);
+                  setRandomOpen(false);
                 }
               }}
             >
@@ -264,6 +269,7 @@ const Navigation: FC<RouteComponentProps> = ({
                 if (enoughBoth) {
                   setRandomDialogOpen(true);
                   setRandomDialogType(RANDOM_DIALOG_TYPE.BOTH);
+                  setRandomOpen(false);
                 }
               }}
             >
@@ -321,9 +327,8 @@ const Navigation: FC<RouteComponentProps> = ({
           >
             Tags
           </Typography>
-          {data &&
-            data.tags &&
-            data.tags.map((item) => (
+          {tags &&
+            tags.map((item) => (
               <Chip
                 label={item.Title}
                 onClick={() => dispatch(setFilters({ tag: item._id }))}
@@ -451,7 +456,8 @@ const Navigation: FC<RouteComponentProps> = ({
         randomDialogType={randomDialogType}
         randomDialogOpen={randomDialogOpen}
         setRandomDialogOpen={setRandomDialogOpen}
-        data={data}
+        ideas={ideas}
+        inspirations={inspirations}
       />
     </>
   );

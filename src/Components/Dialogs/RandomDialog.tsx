@@ -1,16 +1,14 @@
 import React, { FC } from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { convertFromRaw } from "draft-js";
 
-import { IMAGE_TYPE, RANDOM_DIALOG_TYPE, VARIANTS } from "../../constants";
+import { IMAGE_TYPE, RANDOM_DIALOG_TYPE } from "../../constants";
 import {
   getRandomBetween,
   getTwoRandomUniqueValuesFromArray,
 } from "../../utils";
-import { ItemResponse, Idea, Inspiration } from "../../Types/dataTypes";
+import { Idea, Inspiration } from "../../Types/dataTypes";
 
-import Chip from "../Chip";
 import Dialog from "./Dialog";
 import Image from "../Image/Image";
 
@@ -20,7 +18,7 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
     },
     border: {
-      borderRight: `10px solid ${theme.palette.primary.main}`,
+      borderRight: `5px solid ${theme.palette.primary.main}`,
       margin: `0 ${theme.spacing(2)}px`,
     },
     randomPopUpDialogContainer: {
@@ -38,7 +36,8 @@ const useStyles = makeStyles((theme) =>
 );
 
 interface Props {
-  data: ItemResponse | undefined;
+  ideas: Array<Idea>;
+  inspirations: Array<Inspiration>;
   randomDialogType: string | null;
   randomDialogOpen: boolean;
   setRandomDialogOpen: (value: boolean) => void;
@@ -48,22 +47,19 @@ const RandomDialog: FC<Props> = ({
   randomDialogType,
   randomDialogOpen,
   setRandomDialogOpen,
-  data,
+  ideas,
+  inspirations,
 }) => {
   const classes = useStyles();
   const getRamdonItems = (): Array<Idea | Inspiration> => {
-    if (data) {
-      if (randomDialogType === RANDOM_DIALOG_TYPE.IDEAS) {
-        return getTwoRandomUniqueValuesFromArray(data.ideas);
-      } else if (randomDialogType === RANDOM_DIALOG_TYPE.INSPIRATIONS) {
-        return getTwoRandomUniqueValuesFromArray(data.inspirations);
-      } else if (randomDialogType === RANDOM_DIALOG_TYPE.BOTH) {
-        const firstItem = data.ideas[getRandomBetween(0, data.ideas.length)];
-        const secondItem =
-          data.inspirations[getRandomBetween(0, data.inspirations.length)];
-        return [firstItem, secondItem];
-      }
-      return [];
+    if (randomDialogType === RANDOM_DIALOG_TYPE.IDEAS) {
+      return getTwoRandomUniqueValuesFromArray(ideas);
+    } else if (randomDialogType === RANDOM_DIALOG_TYPE.INSPIRATIONS) {
+      return getTwoRandomUniqueValuesFromArray(inspirations);
+    } else if (randomDialogType === RANDOM_DIALOG_TYPE.BOTH) {
+      const firstItem = ideas[getRandomBetween(0, ideas.length)];
+      const secondItem = inspirations[getRandomBetween(0, inspirations.length)];
+      return [firstItem, secondItem];
     }
     return [];
   };
@@ -79,11 +75,6 @@ const RandomDialog: FC<Props> = ({
               <Typography className={classes.marginBottom2}>
                 {item.Title}
               </Typography>
-              {item.Description && (
-                <Typography className={classes.marginBottom2}>
-                  {convertFromRaw(item.Description).getPlainText()}
-                </Typography>
-              )}
               <div className={classes.randomPopUpImageContainer}>
                 {item.ImageRefs &&
                   item.ImageRefs.map(
@@ -97,29 +88,6 @@ const RandomDialog: FC<Props> = ({
                       )
                   )}
               </div>
-              <div className={classes.marginBottom2}>
-                {item.Tags &&
-                  item.Tags.map((tag, tagIndex) => (
-                    <Chip
-                      label={tag.Title}
-                      lastTag={tagIndex + 1 === item.Tags.length}
-                      key={tag._id}
-                    />
-                  ))}
-              </div>
-              <Typography className={classes.marginBottom2}>
-                {item.Variant === VARIANTS.IDEA && item.Project}
-              </Typography>
-              {item.Variant === VARIANTS.IDEA &&
-                item?.Inspirations?.map((inspiration) => (
-                  <Typography key={inspiration._id}>
-                    {inspiration.Title}
-                  </Typography>
-                ))}
-              {item.Variant === VARIANTS.INSPIRATION &&
-                item?.Ideas?.map((idea) => (
-                  <Typography key={idea._id}>{idea.Title}</Typography>
-                ))}
             </div>
             {index === 0 && <div className={classes.border} />}
           </>
