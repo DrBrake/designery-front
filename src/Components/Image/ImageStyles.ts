@@ -9,6 +9,7 @@ const useImageStyles = makeStyles((theme) => ({
     width: 240,
     height: 240,
     marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   completedWork: {
     maxHeight: 280,
@@ -21,17 +22,21 @@ const useImageStyles = makeStyles((theme) => ({
     width: 240,
     height: 240,
     cursor: "initial",
-    marginRight: theme.spacing(2),
-    "&:last-child": {
-      marginRight: 0,
-    },
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   dragAndDrop: {
-    background: theme.palette.grey["100"],
+    background:
+      theme.palette.type === "dark"
+        ? theme.palette.grey["800"]
+        : theme.palette.grey["100"],
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: theme.palette.grey["400"],
+    color:
+      theme.palette.type === "dark"
+        ? theme.palette.common.white
+        : theme.palette.grey["400"],
     flexFlow: "column",
   },
 }));

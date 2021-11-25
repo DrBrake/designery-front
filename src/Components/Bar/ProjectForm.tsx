@@ -134,6 +134,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -190,6 +191,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -206,10 +208,10 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                         }}
                       />
                     </div>
-                    <div className={classes.flex}>
+                    <div className={classnames(classes.flex, classes.flexWrap)}>
                       {values.Ideas &&
                         values.Ideas.map(
-                          (item) =>
+                          (item, index) =>
                             item &&
                             item.Title !== "" && (
                               <>
@@ -217,7 +219,12 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                                   key={item._id}
                                   className={classes.marginRight}
                                 >
-                                  <Link href="#">{item.Title}</Link>
+                                  <Link
+                                    className={classes.defaultLinkColor}
+                                    href="#"
+                                  >
+                                    {item.Title}
+                                  </Link>
                                 </Typography>
                                 {index + 1 < values.Ideas!.length && (
                                   <div className={classes.verticalDivider} />
@@ -263,7 +270,6 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                   <div className={classes.verticalDivider} />
                   <Button
                     variant="text"
-                    color="primary"
                     className={classnames(classes.button, classes.marginRight)}
                     onClick={() => setOpen(false)}
                   >
@@ -290,7 +296,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
                   : ideas
               }
               itemValues={
-                dialogs.Autocomplete.variant === DIALOG_VARIANT.IDEA
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.TAG
                   ? values.Tags
                   : values.Ideas
               }

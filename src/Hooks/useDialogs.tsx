@@ -75,6 +75,13 @@ const getDialogOptions = (dialogVariant: string) => {
       name: "Tags",
       dialogVariant: dialogVariant,
     };
+  } else if (dialogVariant === DIALOG_VARIANT.IDEA) {
+    return {
+      title: "Add an idea",
+      name: "Ideas",
+      dialogVariant: dialogVariant,
+      dataVariant: VARIANTS.IDEA,
+    };
   } else if (dialogVariant === DIALOG_VARIANT.INSPIRATION) {
     return {
       title: "Add a inspiration",

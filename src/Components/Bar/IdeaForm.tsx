@@ -93,7 +93,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
       <div className={classes.marginBottom3}>
         <div className={classnames(classes.flex, classes.marginBottom2)}>
           <Typography
-            className={classnames(classes.marginRight, classes.fontWeightBold)}
+            className={classnames(
+              classes.marginRight,
+              classes.marginBottom2,
+              classes.fontWeightBold
+            )}
           >
             Drafts
           </Typography>
@@ -118,7 +122,11 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
           ))}
         <div className={classes.flex}>
           <Typography
-            className={classnames(classes.marginRight, classes.fontWeightBold)}
+            className={classnames(
+              classes.marginRight,
+              classes.marginBottom2,
+              classes.fontWeightBold
+            )}
           >
             Image references
           </Typography>
@@ -133,7 +141,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
             }}
           />
         </div>
-        <div className={classes.flex}>
+        <div className={classnames(classes.flex, classes.flexWrap)}>
           {values.ImageRefs &&
             values.ImageRefs.map((item) => (
               <Image
@@ -260,6 +268,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -350,6 +359,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -366,7 +376,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                         }}
                       />
                     </div>
-                    <div className={classes.flex}>
+                    <div className={classnames(classes.flex, classes.flexWrap)}>
                       {values.Inspirations &&
                         values.Inspirations.map(
                           (item, index) =>
@@ -377,7 +387,12 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                                   key={item._id}
                                   className={classes.marginRight}
                                 >
-                                  <Link href="#">{item.Title}</Link>
+                                  <Link
+                                    className={classes.defaultLinkColor}
+                                    href="#"
+                                  >
+                                    {item.Title}
+                                  </Link>
                                 </Typography>
                                 {index + 1 < values.Inspirations!.length && (
                                   <div className={classes.verticalDivider} />
@@ -507,7 +522,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                   : inspirations
               }
               itemValues={
-                dialogs.Autocomplete.variant === DIALOG_VARIANT.INSPIRATION
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.TAG
                   ? values.Tags
                   : values.Inspirations
               }

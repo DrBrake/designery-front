@@ -81,7 +81,11 @@ const InspirationForm: FC<Props> = ({
       <div className={classes.marginBottom3}>
         <div className={classes.flex}>
           <Typography
-            className={classnames(classes.marginRight, classes.fontWeightBold)}
+            className={classnames(
+              classes.marginRight,
+              classes.marginBottom2,
+              classes.fontWeightBold
+            )}
           >
             Image references
           </Typography>
@@ -96,7 +100,7 @@ const InspirationForm: FC<Props> = ({
             }}
           />
         </div>
-        <div className={classes.flex}>
+        <div className={classnames(classes.flex, classes.flexWrap)}>
           {values.ImageRefs &&
             values.ImageRefs.map((item) => (
               <Image
@@ -202,6 +206,7 @@ const InspirationForm: FC<Props> = ({
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -258,6 +263,7 @@ const InspirationForm: FC<Props> = ({
                       <Typography
                         className={classnames(
                           classes.marginRight,
+                          classes.marginBottom2,
                           classes.fontWeightBold
                         )}
                       >
@@ -274,10 +280,10 @@ const InspirationForm: FC<Props> = ({
                         }}
                       />
                     </div>
-                    <div className={classes.flex}>
+                    <div className={classnames(classes.flex, classes.flexWrap)}>
                       {values.Ideas &&
                         values.Ideas.map(
-                          (item) =>
+                          (item, index) =>
                             item &&
                             item.Title !== "" && (
                               <>
@@ -285,7 +291,12 @@ const InspirationForm: FC<Props> = ({
                                   key={item._id}
                                   className={classes.marginRight}
                                 >
-                                  <Link href="#">{item.Title}</Link>
+                                  <Link
+                                    className={classes.defaultLinkColor}
+                                    href="#"
+                                  >
+                                    {item.Title}
+                                  </Link>
                                 </Typography>
                                 {index + 1 < values.Ideas!.length && (
                                   <div className={classes.verticalDivider} />
@@ -356,7 +367,7 @@ const InspirationForm: FC<Props> = ({
                   : ideas
               }
               itemValues={
-                dialogs.Autocomplete.variant === DIALOG_VARIANT.IDEA
+                dialogs.Autocomplete.variant === DIALOG_VARIANT.TAG
                   ? values.Tags
                   : values.Ideas
               }

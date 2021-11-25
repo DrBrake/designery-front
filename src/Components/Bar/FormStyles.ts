@@ -101,5 +101,14 @@ export const useFormStyles = makeStyles((theme) =>
     projectBar: {
       background: theme.palette.secondary.dark,
     },
+    flexWrap: {
+      flexWrap: "wrap",
+    },
+    defaultLinkColor: {
+      color:
+        theme.palette.type === "dark"
+          ? theme.palette.common.white
+          : theme.palette.common.black,
+    },
   })
 );

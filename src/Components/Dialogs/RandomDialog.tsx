@@ -1,8 +1,9 @@
 import React, { FC } from "react";
+import classnames from "classnames";
 import { Typography } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 
-import { IMAGE_TYPE, RANDOM_DIALOG_TYPE } from "../../constants";
+import { IMAGE_TYPE, RANDOM_DIALOG_TYPE, BASE_URL } from "../../constants";
 import {
   getRandomBetween,
   getTwoRandomUniqueValuesFromArray,
@@ -11,6 +12,7 @@ import { Idea, Inspiration } from "../../Types/dataTypes";
 
 import Dialog from "./Dialog";
 import Image from "../Image/Image";
+import { Close } from "../Icons";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
     },
     border: {
-      borderRight: `5px solid ${theme.palette.primary.main}`,
+      borderRight: `2px solid ${theme.palette.primary.main}`,
       margin: `0 ${theme.spacing(2)}px`,
     },
     randomPopUpDialogContainer: {
@@ -26,11 +28,24 @@ const useStyles = makeStyles((theme) =>
     },
     randomPopUpImageContainer: {
       display: "flex",
-      overflow: "scroll",
+      flexWrap: "wrap",
       marginBottom: theme.spacing(2),
     },
     marginBottom2: {
       marginBottom: theme.spacing(2),
+    },
+    textRight: {
+      textAlign: "right",
+    },
+    flexJustifyRight: {
+      justifyContent: "right",
+    },
+    bold: {
+      fontWeight: "bold",
+    },
+    close: {
+      marginBottom: theme.spacing(2),
+      cursor: "pointer",
     },
   })
 );
@@ -68,21 +83,36 @@ const RandomDialog: FC<Props> = ({
       dialogOpen={randomDialogOpen}
       setDialogOpen={() => setRandomDialogOpen(false)}
     >
+      <div className={classnames(classes.flex, classes.flexJustifyRight)}>
+        <Close
+          className={classes.close}
+          onClick={() => setRandomDialogOpen(false)}
+        />
+      </div>
       <div className={classes.flex}>
         {getRamdonItems().map((item, index) => (
           <>
             <div className={classes.randomPopUpDialogContainer} key={item._id}>
-              <Typography className={classes.marginBottom2}>
+              <Typography
+                variant="h4"
+                className={classnames(classes.marginBottom2, classes.bold, {
+                  [classes.textRight]: index !== 0,
+                })}
+              >
                 {item.Title}
               </Typography>
-              <div className={classes.randomPopUpImageContainer}>
+              <div
+                className={classnames(classes.randomPopUpImageContainer, {
+                  [classes.flexJustifyRight]: index !== 0,
+                })}
+              >
                 {item.ImageRefs &&
                   item.ImageRefs.map(
                     (image) =>
                       typeof image === "string" && (
                         <Image
                           variant={IMAGE_TYPE.RANDOM_POPUP}
-                          src={image}
+                          src={`${BASE_URL}/images/${item.Variant}/${image}`}
                           key={image}
                         />
                       )
