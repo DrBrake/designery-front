@@ -206,7 +206,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     >
       {({ values, handleChange, setFieldValue }) => (
         <Form>
-          <Grid container wrap="nowrap">
+          <Grid container wrap="nowrap" id={values._id}>
             <Grid item>
               <Close
                 className={classes.icon}
@@ -389,7 +389,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                                 >
                                   <Link
                                     className={classes.defaultLinkColor}
-                                    href="#"
+                                    href={`#${item._id || item.TempID}`}
                                   >
                                     {item.Title}
                                   </Link>
@@ -551,10 +551,6 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
               image={dialogs.Image.image}
               variant={values.Variant}
               onRemove={() => {
-                setDialogs({
-                  type: "Remove",
-                  open: false,
-                });
                 setFieldValue(
                   "ImageRefs",
                   values.ImageRefs?.filter((item) =>

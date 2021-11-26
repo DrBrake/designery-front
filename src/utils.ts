@@ -10,7 +10,6 @@ import {
   SortDir,
   SortValue,
   Filters,
-  Item,
 } from "./Types/dataTypes";
 import { VARIANTS } from "./constants";
 
@@ -111,13 +110,17 @@ export const readDataURLAsync = (file: File) => {
   });
 };
 
-export const filterData = (array: Item[], filters: Filters) => {
+export const filterData = (
+  array: Array<Inspiration | Idea | Project>,
+  filters: Filters
+) => {
   if (
     filters.ideas ||
     filters.inspirations ||
     filters.projects ||
     filters.tags.length > 0 ||
-    filters.search !== ""
+    filters.search !== "" ||
+    !filters.archived
   ) {
     return array.filter((item) => {
       if (
@@ -126,7 +129,10 @@ export const filterData = (array: Item[], filters: Filters) => {
         (filters.projects && item.Variant !== VARIANTS.PROJECT) ||
         (filters.tags.length > 0 &&
           item.Tags.find((tag) => tag._id && filters.tags.includes(tag._id))) ||
-        (filters.search !== "" && item.Title.includes(filters.search))
+        (filters.search !== "" && item.Title.includes(filters.search)) ||
+        (filters.archived &&
+          item.Variant !== VARIANTS.INSPIRATION &&
+          !item.Completed)
       ) {
         return item;
       }
@@ -136,12 +142,15 @@ export const filterData = (array: Item[], filters: Filters) => {
 };
 
 export const getAllImages = (array: Array<Inspiration | Idea | Project>) => {
-  return array.reduce((acc: string[], cur) => {
+  return array.reduce((acc: Array<{ image: string; variant: string }>, cur) => {
     if (cur.Variant === VARIANTS.IDEA || cur.Variant === VARIANTS.INSPIRATION) {
       const images = cur.ImageRefs?.filter(
         (image) => typeof image === "string"
       ) as string[];
-      if (images) acc.concat(images);
+      if (images)
+        return acc.concat(
+          images.map((image) => ({ image, variant: cur.Variant }))
+        );
     }
     return acc;
   }, []);

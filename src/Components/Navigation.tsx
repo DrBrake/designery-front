@@ -323,6 +323,19 @@ const Navigation: FC<RouteComponentProps> = ({
             </Typography>
           </div>
           <Typography
+            className={classnames(
+              classes.text,
+              classes.marginBottom2,
+              classes.pointer,
+              { [classes.disabledColor]: !filters.archived }
+            )}
+            onClick={() =>
+              dispatch(setFilters({ archived: !filters.archived }))
+            }
+          >
+            Only show archived
+          </Typography>
+          <Typography
             className={classnames(classes.text, classes.marginBottom2)}
           >
             Tags
@@ -421,9 +434,6 @@ const Navigation: FC<RouteComponentProps> = ({
               })}
               onClick={() => history.push(ROUTES.GRID)}
             />
-          </div>
-          <div className={classes.icon}>
-            <Archive onClick={() => null} />
           </div>
           <div
             className={classnames(classes.icon, {

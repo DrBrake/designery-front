@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(17),
     borderRadius: theme.spacing(1),
   },
+  image: {
+    objectFit: "contain",
+    height: "100%",
+  },
 }));
 
 interface Props {
@@ -24,7 +28,7 @@ interface Props {
   dialogOpen: boolean;
   setDialogOpen: () => void;
   variant: string;
-  onRemove: () => void;
+  onRemove?: () => void;
 }
 
 const ImageDialog: FC<Props> = ({
@@ -40,18 +44,24 @@ const ImageDialog: FC<Props> = ({
       <Dialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} transparent>
         <img
           src={isURL(image) ? image : `${BASE_URL}/images/${variant}/${image}`}
+          className={classes.image}
         />
       </Dialog>
-      <div className={classes.buttonContainer}>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => onRemove()}
-        >
-          Remove
-        </Button>
-      </div>
+      {onRemove && (
+        <div className={classes.buttonContainer}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => {
+              onRemove();
+              setDialogOpen();
+            }}
+          >
+            Remove
+          </Button>
+        </div>
+      )}
     </>
   );
 };

@@ -8,8 +8,10 @@ import { useGetDataQuery } from "../Services/dataAPI";
 
 import Sort from "../Components/Sort";
 import Image from "../Components/Image/Image";
-import { IMAGE_TYPE } from "../constants";
+import ImageDialog from "../Components/Dialogs/ImageDialog";
+import { IMAGE_TYPE, BASE_URL } from "../constants";
 import useSort from "../Hooks/useSort";
+import useDialogs from "../Hooks/useDialogs";
 import { sortData, getAllImages } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Grid = () => {
   const { sort, allSortValues, handleRequestSort } = useSort("Grid");
+  const { dialogs, setDialogs } = useDialogs();
   const { isLoading, error } = useGetDataQuery();
   const classes = useStyles();
 
@@ -39,12 +42,41 @@ const Grid = () => {
             values={allSortValues}
           />
           <MuiGrid container spacing={1}>
-            {images.map((image) => (
-              <MuiGrid item xs={3} key={image}>
-                <Image variant={IMAGE_TYPE.GRID} src={image} />
+            {images.map((item) => (
+              <MuiGrid
+                item
+                key={item.image}
+                onClick={() =>
+                  setDialogs({
+                    type: "Image",
+                    open: true,
+                    variant: item.variant,
+                    image: item.image,
+                  })
+                }
+              >
+                <Image
+                  variant={IMAGE_TYPE.BAR}
+                  src={`${BASE_URL}/images/${item.variant}/${item.image}`}
+                />
               </MuiGrid>
             ))}
           </MuiGrid>
+          {dialogs.Image.open && (
+            <ImageDialog
+              dialogOpen={dialogs.Image.open}
+              setDialogOpen={() =>
+                setDialogs({
+                  type: "Image",
+                  open: false,
+                  variant: null,
+                  image: null,
+                })
+              }
+              image={dialogs.Image.image}
+              variant={dialogs.Image.variant}
+            />
+          )}
         </>
       ) : (
         <Typography>No data yet</Typography>

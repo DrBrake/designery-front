@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   transparent: {
     background: "transparent",
     boxShadow: "none",
+    padding: 0,
   },
 }));
 
@@ -44,6 +45,7 @@ const Dialog: FC<Props> = ({
         }),
       }}
       transitionDuration={{ enter: 200, exit: 1 }}
+      onClick={() => transparent && setDialogOpen()}
     >
       {children}
     </MuiDialog>

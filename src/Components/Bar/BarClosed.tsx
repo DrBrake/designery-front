@@ -96,6 +96,7 @@ const BarClosed: FC<Props> = ({
         [classes.firstContainer]: isFirst,
       })}
       onClick={() => setOpen(true)}
+      id={itemData._id || itemData.TempID}
     >
       <div
         className={classnames(formClasses.variantColor, {

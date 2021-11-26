@@ -63,4 +63,5 @@ export interface Filters {
   projects: boolean;
   tags: string[];
   search: string;
+  archived: boolean;
 }

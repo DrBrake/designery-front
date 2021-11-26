@@ -144,7 +144,7 @@ const InspirationForm: FC<Props> = ({
     >
       {({ values, handleChange, setFieldValue }) => (
         <Form>
-          <Grid container wrap="nowrap">
+          <Grid container wrap="nowrap" id={values._id}>
             <Grid item>
               <Close
                 className={classes.icon}
@@ -293,7 +293,7 @@ const InspirationForm: FC<Props> = ({
                                 >
                                   <Link
                                     className={classes.defaultLinkColor}
-                                    href="#"
+                                    href={`#${item._id || item.TempID}`}
                                   >
                                     {item.Title}
                                   </Link>
@@ -396,10 +396,6 @@ const InspirationForm: FC<Props> = ({
               image={dialogs.Image.image}
               variant={values.Variant}
               onRemove={() => {
-                setDialogs({
-                  type: "Remove",
-                  open: false,
-                });
                 setFieldValue(
                   "ImageRefs",
                   values.ImageRefs?.filter((item) =>
