@@ -11,7 +11,7 @@ import {
   SortValue,
   Filters,
 } from "./Types/dataTypes";
-import { VARIANTS } from "./constants";
+import { VARIANTS, SORT_VALUES } from "./constants";
 
 export const browserHistory = createBrowserHistory();
 
@@ -29,7 +29,7 @@ export const combineData = (
   return [];
 };
 
-const shuffleArray = (array: any[]) => {
+export const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -42,10 +42,10 @@ export const sortData = (
   key: SortValue,
   dir: SortDir
 ) => {
-  if (key !== "Random") {
+  if (key !== SORT_VALUES.RANDOM) {
     return [...array].sort((a, b) => {
-      const aVal = key === "DateCreated" ? dayjs(a[key]) : a[key];
-      const bVal = key === "DateCreated" ? dayjs(b[key]) : b[key];
+      const aVal = key === SORT_VALUES.DATE ? dayjs(a[key]) : a[key];
+      const bVal = key === SORT_VALUES.DATE ? dayjs(b[key]) : b[key];
       if (dir === "asc") {
         if (bVal < aVal) return -1;
         else if (bVal > aVal) return 1;
@@ -57,7 +57,7 @@ export const sortData = (
       }
     });
   }
-  return shuffleArray([...array]);
+  return array;
 };
 
 export const getRandomBetween = (min: number, max: number) => {

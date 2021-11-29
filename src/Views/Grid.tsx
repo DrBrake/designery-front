@@ -9,10 +9,10 @@ import { useGetDataQuery } from "../Services/dataAPI";
 import Sort from "../Components/Sort";
 import Image from "../Components/Image/Image";
 import ImageDialog from "../Components/Dialogs/ImageDialog";
-import { IMAGE_TYPE, BASE_URL } from "../constants";
+import { IMAGE_TYPE, BASE_URL, SORT_VALUES } from "../constants";
 import useSort from "../Hooks/useSort";
 import useDialogs from "../Hooks/useDialogs";
-import { sortData, getAllImages } from "../utils";
+import { sortData, getAllImages, shuffleArray } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,7 +28,12 @@ const Grid = () => {
   const classes = useStyles();
 
   const data = useSelector(selectData);
-  const images = getAllImages(sortData(data, sort.value, sort.direction));
+  const getImages = () => {
+    if (sort.value === SORT_VALUES.RANDOM) {
+      return shuffleArray(getAllImages(data));
+    } else return getAllImages(sortData(data, sort.value, sort.direction));
+  };
+  const images = getImages();
   return (
     <div className={classes.container}>
       {isLoading && <Typography>Loading</Typography>}

@@ -1,20 +1,21 @@
 import { useReducer } from "react";
 import { SortDir, SortValue } from "../Types/dataTypes";
+import { SORT_VALUES } from "../constants";
 
 const sortState = {
   Title: {
     direction: "desc",
-    value: "Title",
+    value: SORT_VALUES.TITLE,
     name: "Title",
   },
   Date: {
     direction: "asc",
-    value: "DateCreated",
+    value: SORT_VALUES.DATE,
     name: "Date",
   },
   Random: {
     direction: "asc",
-    value: "Random",
+    value: SORT_VALUES.RANDOM,
     name: "Random",
   },
   active: "Date",
@@ -22,17 +23,23 @@ const sortState = {
 
 const sortReducer = (state: any, action: any) => {
   switch (action.type) {
-    case "Title":
+    case SORT_VALUES.TITLE:
       return {
         ...state,
         Title: Object.assign(state.Title, action),
         active: "Title",
       };
-    case "DateCreated":
+    case SORT_VALUES.DATE:
       return {
         ...state,
         Date: Object.assign(state.Date, action),
         active: "Date",
+      };
+    case SORT_VALUES.RANDOM:
+      return {
+        ...state,
+        Random: Object.assign(state.Random, action),
+        active: "Random",
       };
     default:
       return state;

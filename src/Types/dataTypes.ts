@@ -1,8 +1,9 @@
 import { RawDraftContentState } from "draft-js";
 
-import { VARIANTS } from "../constants";
+import { VARIANTS, SORT_VALUES } from "../constants";
 
 type AllVariants = typeof VARIANTS;
+type AllSortValues = typeof SORT_VALUES;
 
 export interface BaseItem {
   _id?: string;
@@ -55,7 +56,7 @@ export interface ImageFile {
 }
 
 export type SortDir = "asc" | "desc";
-export type SortValue = "Title" | "DateCreated" | "Random";
+export type SortValue = AllSortValues[keyof AllSortValues];
 
 export interface Filters {
   ideas: boolean;

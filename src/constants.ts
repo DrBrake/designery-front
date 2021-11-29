@@ -33,3 +33,9 @@ export const RANDOM_DIALOG_TYPE = {
 } as const;
 
 export const BASE_URL = "http://localhost:8081";
+
+export const SORT_VALUES = {
+  DATE: "DateCreated",
+  RANDOM: "Random",
+  TITLE: "Title",
+} as const;

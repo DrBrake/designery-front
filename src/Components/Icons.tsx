@@ -22,15 +22,6 @@ export const Filter = ({ ...props }) => (
   </SvgIcon>
 );
 
-export const Archive = ({ ...props }) => (
-  <SvgIcon width="26" height="22.958" viewBox="0 0 26 22.958" {...props}>
-    <path
-      d="M1.625,23.568a1.631,1.631,0,0,0,1.625,1.64h19.5a1.631,1.631,0,0,0,1.625-1.64V8.809H1.625ZM9.75,12.7a.614.614,0,0,1,.609-.615h5.281a.614.614,0,0,1,.609.615v.41a.614.614,0,0,1-.609.615H10.359a.614.614,0,0,1-.609-.615ZM24.375,2.25H1.625A1.631,1.631,0,0,0,0,3.89V6.35a.819.819,0,0,0,.813.82H25.188A.819.819,0,0,0,26,6.35V3.89A1.631,1.631,0,0,0,24.375,2.25Z"
-      transform="translate(0 -2.25)"
-    />
-  </SvgIcon>
-);
-
 export const Search = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0z" fill="none" />
@@ -141,5 +132,12 @@ export const List = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
     <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
     <path d="M0 0h24v24H0z" fill="none" />
+  </SvgIcon>
+);
+
+export const Refresh = ({ ...props }) => (
+  <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>
+    <path d="M0 0h24v24H0V0z" fill="none" />
+    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
   </SvgIcon>
 );

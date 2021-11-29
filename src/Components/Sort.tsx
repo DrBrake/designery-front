@@ -2,8 +2,9 @@ import React, { FC } from "react";
 import { Select, MenuItem } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 
-import { ArrowDown, ArrowUp } from "./Icons";
+import { ArrowDown, ArrowUp, Refresh } from "./Icons";
 import { SortDir, SortValue } from "../Types/dataTypes";
+import { SORT_VALUES } from "../constants";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -40,6 +41,32 @@ interface Props {
 
 const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
   const classes = useStyles();
+  const getIcon = () => {
+    if (value !== SORT_VALUES.RANDOM) {
+      if (direction === "asc") {
+        return (
+          <ArrowDown
+            onClick={() =>
+              handleRequestSort({ type: value, direction: "desc" })
+            }
+            className={classes.pointer}
+          />
+        );
+      }
+      return (
+        <ArrowUp
+          onClick={() => handleRequestSort({ type: value, direction: "asc" })}
+          className={classes.pointer}
+        />
+      );
+    }
+    return (
+      <Refresh
+        onClick={() => handleRequestSort({ type: value, direction: "asc" })}
+        className={classes.pointer}
+      />
+    );
+  };
   return (
     <div className={classes.container}>
       <Select
@@ -62,17 +89,7 @@ const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
           </MenuItem>
         ))}
       </Select>
-      {direction === "asc" ? (
-        <ArrowDown
-          onClick={() => handleRequestSort({ type: value, direction: "desc" })}
-          className={classes.pointer}
-        />
-      ) : (
-        <ArrowUp
-          onClick={() => handleRequestSort({ type: value, direction: "asc" })}
-          className={classes.pointer}
-        />
-      )}
+      {getIcon()}
     </div>
   );
 };
