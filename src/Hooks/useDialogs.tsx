@@ -33,6 +33,9 @@ const dialogState = {
       name: "",
     },
   },
+  Discard: {
+    open: false,
+  },
 };
 
 const dialogReducer = (state: any, action: any) => {
@@ -62,6 +65,11 @@ const dialogReducer = (state: any, action: any) => {
       return {
         ...state,
         Image: Object.assign(state.Image, action),
+      };
+    case "Discard":
+      return {
+        ...state,
+        Discard: Object.assign(state.Discard, action),
       };
     default:
       return state;

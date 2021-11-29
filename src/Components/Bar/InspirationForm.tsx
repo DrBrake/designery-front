@@ -2,6 +2,7 @@ import React, { useEffect, FC } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { isEqual } from "lodash";
 import { Formik, Form } from "formik";
 import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,6 +64,17 @@ const InspirationForm: FC<Props> = ({
       }
     }
   }, [postItemSuccess]);
+
+  const initialValues = {
+    _id: inspiration._id || null,
+    Title: inspiration.Title || "",
+    Description: inspiration.Description,
+    ImageRefs: inspiration.ImageRefs || [],
+    Tags: inspiration.Tags || [],
+    Ideas: inspiration.Ideas || [],
+    DateCreated: inspiration.DateCreated || dayjs().format(),
+    Variant: inspiration.Variant || "",
+  };
 
   const getImageRefs = (
     values: Inspiration,
@@ -128,18 +140,7 @@ const InspirationForm: FC<Props> = ({
 
   return (
     <Formik
-      initialValues={
-        {
-          _id: inspiration._id || null,
-          Title: inspiration.Title || "",
-          Description: inspiration.Description,
-          ImageRefs: inspiration.ImageRefs || [],
-          Tags: inspiration.Tags || [],
-          Ideas: inspiration.Ideas || [],
-          DateCreated: inspiration.DateCreated || dayjs().format(),
-          Variant: inspiration.Variant || "",
-        } as Inspiration
-      }
+      initialValues={initialValues as Inspiration}
       onSubmit={(values) => postItem(values)}
     >
       {({ values, handleChange, setFieldValue }) => (
@@ -149,14 +150,22 @@ const InspirationForm: FC<Props> = ({
               <Close
                 className={classes.icon}
                 onClick={() => {
-                  setOpen(false);
-                  if (isNewItem)
-                    dispatch(
-                      updateNewItem({
-                        index,
-                        values: values,
-                      })
-                    );
+                  if (isEqual(values, initialValues)) {
+                    setOpen(false);
+                    if (isNewItem)
+                      dispatch(
+                        updateNewItem({
+                          index,
+                          values: values,
+                        })
+                      );
+                  } else {
+                    setDialogs({
+                      type: "Discard",
+                      open: true,
+                      variant: DIALOG_VARIANT.DISCARD,
+                    });
+                  }
                 }}
               />
             </Grid>
@@ -422,6 +431,18 @@ const InspirationForm: FC<Props> = ({
             }}
             title={`Are you sure you want to remove this ${values.Variant}?`}
             saveButtonText="Remove"
+          />
+          <PromptDialog
+            dialogOpen={dialogs.Discard.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Discard",
+                open: false,
+              })
+            }
+            title="Discard changes?"
+            saveButtonText="Yes"
+            onSave={() => setOpen(false)}
           />
         </Form>
       )}

@@ -3,6 +3,7 @@ import classnames from "classnames";
 import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { isEqual } from "lodash";
 import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -54,37 +55,45 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     }
   }, [postItemSuccess]);
 
+  const initialValues = {
+    _id: project._id || null,
+    Title: project.Title || "",
+    Description: project.Description,
+    Ideas: project.Ideas || [],
+    Tags: project.Tags || [],
+    DateCreated: project.DateCreated || dayjs().format(),
+    Completed: project.Completed || false,
+    Variant: project.Variant || "",
+  };
+
   return (
     <Formik
-      initialValues={
-        {
-          _id: project._id || null,
-          Title: project.Title || "",
-          Description: project.Description,
-          Ideas: project.Ideas || [],
-          Tags: project.Tags || [],
-          DateCreated: project.DateCreated || dayjs().format(),
-          Completed: project.Completed || false,
-          Variant: project.Variant || "",
-        } as Project
-      }
+      initialValues={initialValues as Project}
       onSubmit={(values) => postItem(values)}
     >
-      {({ values, handleChange, setFieldValue }) => (
+      {({ values, handleChange, setFieldValue, submitForm }) => (
         <Form>
           <Grid container wrap="nowrap" id={values._id}>
             <Grid item>
               <Close
                 className={classes.icon}
                 onClick={() => {
-                  setOpen(false);
-                  if (isNewItem)
-                    dispatch(
-                      updateNewItem({
-                        index,
-                        values: values,
-                      })
-                    );
+                  if (isEqual(values, initialValues)) {
+                    setOpen(false);
+                    if (isNewItem)
+                      dispatch(
+                        updateNewItem({
+                          index,
+                          values: values,
+                        })
+                      );
+                  } else {
+                    setDialogs({
+                      type: "Discard",
+                      open: true,
+                      variant: DIALOG_VARIANT.DISCARD,
+                    });
+                  }
                 }}
               />
             </Grid>
@@ -337,7 +346,22 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
             }
             title="Are you sure you want to set this as completed?"
             saveButtonText="Complete"
-            onSave={() => {}}
+            onSave={() => {
+              setFieldValue("Completed", true);
+              submitForm();
+            }}
+          />
+          <PromptDialog
+            dialogOpen={dialogs.Discard.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Discard",
+                open: false,
+              })
+            }
+            title="Discard changes?"
+            saveButtonText="Yes"
+            onSave={() => setOpen(false)}
           />
         </Form>
       )}

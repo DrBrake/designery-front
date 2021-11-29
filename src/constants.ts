@@ -24,6 +24,7 @@ export const DIALOG_VARIANT = {
   COMPLETED_WORK: "completedWork",
   DRAFT: "draft",
   IDEA: "idea",
+  DISCARD: "discard",
 } as const;
 
 export const RANDOM_DIALOG_TYPE = {
