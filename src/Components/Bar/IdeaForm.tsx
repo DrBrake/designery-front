@@ -99,7 +99,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     const getSrc = (image: string | ImageFile): string => {
       if (typeof image === "string") {
         if (isURL(image)) return image;
-        else return `${BASE_URL}/images/${values.Variant}/${image}`;
+        else return `${BASE_URL}/images/${values.Variant}/${image}?w=440`;
       } else if (image.file) {
         return image.file;
       }
@@ -131,8 +131,8 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
         {values.Drafts &&
           values.Drafts.map((item) => (
             <Image
-              variant={IMAGE_TYPE.DRAFT}
-              src={`${BASE_URL}/images/drafts/${item}`}
+              variant={IMAGE_TYPE.BAR}
+              src={`${BASE_URL}/images/drafts/${item}?w=440`}
               key={item}
             />
           ))}
@@ -443,8 +443,8 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                   {values.CompletedWorks &&
                     values.CompletedWorks.map((item) => (
                       <Image
-                        variant={IMAGE_TYPE.COMPLETED_WORK}
-                        src={`${BASE_URL}/images/completed/${item}`}
+                        variant={IMAGE_TYPE.BAR}
+                        src={`${BASE_URL}/images/completed/${item}?w=440`}
                         key={item}
                       />
                     ))}

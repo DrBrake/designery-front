@@ -12,6 +12,7 @@ import { ROUTES } from "./constants";
 const useStyles = makeStyles((theme) => ({
   container: {
     margin: theme.spacing(1),
+    marginBottom: theme.spacing(8),
   },
 }));
 

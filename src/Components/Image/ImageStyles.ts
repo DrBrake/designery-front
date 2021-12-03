@@ -11,16 +11,7 @@ const useImageStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
-  completedWork: {
-    maxHeight: 280,
-  },
-  grid: {
-    maxHeight: 370,
-    width: "100%",
-  },
   randomPopUp: {
-    width: 240,
-    height: 240,
     cursor: "initial",
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),

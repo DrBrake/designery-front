@@ -28,6 +28,7 @@ const Grid = () => {
   const classes = useStyles();
 
   const data = useSelector(selectData);
+
   const getImages = () => {
     if (sort.value === SORT_VALUES.RANDOM) {
       return shuffleArray(getAllImages(data));
@@ -62,7 +63,7 @@ const Grid = () => {
               >
                 <Image
                   variant={IMAGE_TYPE.BAR}
-                  src={`${BASE_URL}/images/${item.variant}/${item.image}`}
+                  src={`${BASE_URL}/images/${item.variant}/${item.image}?w=440`}
                 />
               </MuiGrid>
             ))}

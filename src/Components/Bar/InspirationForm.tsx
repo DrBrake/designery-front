@@ -83,7 +83,7 @@ const InspirationForm: FC<Props> = ({
     const getSrc = (image: string | ImageFile): string => {
       if (typeof image === "string") {
         if (isURL(image)) return image;
-        else return `${BASE_URL}/images/${values.Variant}/${image}`;
+        else return `${BASE_URL}/images/${values.Variant}/${image}?w=440`;
       } else if (image.file) {
         return image.file;
       }

@@ -16,10 +16,11 @@ const Image: FC<Props> = ({ src, onClick, variant }) => {
     <img
       src={src}
       onClick={onClick}
+      loading="lazy"
+      width="240"
+      height="240"
       className={classnames(classes.image, {
         [classes.barImageRef]: variant === IMAGE_TYPE.BAR,
-        [classes.completedWork]: variant === IMAGE_TYPE.COMPLETED_WORK,
-        [classes.grid]: variant === IMAGE_TYPE.GRID,
         [classes.randomPopUp]: variant === IMAGE_TYPE.RANDOM_POPUP,
       })}
     />

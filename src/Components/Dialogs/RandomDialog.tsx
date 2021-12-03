@@ -112,7 +112,7 @@ const RandomDialog: FC<Props> = ({
                       typeof image === "string" && (
                         <Image
                           variant={IMAGE_TYPE.RANDOM_POPUP}
-                          src={`${BASE_URL}/images/${item.Variant}/${image}`}
+                          src={`${BASE_URL}/images/${item.Variant}/${image}?w=440`}
                           key={image}
                         />
                       )

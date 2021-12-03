@@ -6,10 +6,7 @@ export const VARIANTS = {
 
 export const IMAGE_TYPE = {
   BAR: "bar",
-  COMPLETED_WORK: "completedWork",
-  GRID: "grid",
   RANDOM_POPUP: "randomPopup",
-  DRAFT: "draft",
 } as const;
 
 export const ROUTES = {
