@@ -69,7 +69,6 @@ const List = () => {
             <div className={classes.buttonContainer}>
               <Button
                 variant="text"
-                color="primary"
                 className={classnames(classes.button, classes.marginRight)}
                 onClick={() => dispatch(removeAllNewItems())}
               >

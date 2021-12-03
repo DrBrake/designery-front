@@ -54,12 +54,12 @@ const dialogReducer = (state: any, action: any) => {
     case "Remove":
       return {
         ...state,
-        Remove: { open: action },
+        Remove: { open: action.open },
       };
     case "Complete":
       return {
         ...state,
-        Complete: { open: action },
+        Complete: { open: action.open },
       };
     case "Image":
       return {
