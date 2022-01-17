@@ -392,7 +392,12 @@ const Navigation: FC<RouteComponentProps> = ({
         <Grid item className={classes.flex}>
           {searchOpen ? (
             <div className={classes.icon}>
-              <Close onClick={() => setSearchOpen(false)} />
+              <Close
+                onClick={() => {
+                  setSearchOpen(false);
+                  dispatch(setFilters({ search: "" }));
+                }}
+              />
             </div>
           ) : (
             <div className={classes.icon}>

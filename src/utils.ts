@@ -129,7 +129,8 @@ export const filterData = (
         (filters.projects && item.Variant !== VARIANTS.PROJECT) ||
         (filters.tags.length > 0 &&
           item.Tags.find((tag) => tag._id && filters.tags.includes(tag._id))) ||
-        (filters.search !== "" && item.Title.includes(filters.search)) ||
+        (filters.search !== "" &&
+          item.Title.toLowerCase().includes(filters.search.toLowerCase())) ||
         (filters.archived &&
           item.Variant !== VARIANTS.INSPIRATION &&
           !item.Completed)
