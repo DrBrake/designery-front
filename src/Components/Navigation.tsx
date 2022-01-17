@@ -24,7 +24,6 @@ import RandomDialog from "./Dialogs/RandomDialog";
 import {
   Add,
   Filter,
-  Archive,
   Search,
   Random,
   GridOn,

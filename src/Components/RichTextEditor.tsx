@@ -141,6 +141,12 @@ const RichTextEditor: FC<Props> = ({
           onChange={(editorState) =>
             setLocalEditor({ type: "EditorState", editor: editorState })
           }
+          onTab={(e) => {
+            e.preventDefault();
+            const newState = RichUtils.onTab(e, localEditor.editor, 2);
+            if (newState)
+              setLocalEditor({ type: "EditorState", editor: newState });
+          }}
           handleKeyCommand={handleKeyCommand}
           placeholder={placeholder}
         />

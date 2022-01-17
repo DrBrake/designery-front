@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
     padding: 0,
   },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+  },
 }));
 
 const Dialog: FC<Props> = ({
@@ -46,6 +49,7 @@ const Dialog: FC<Props> = ({
       }}
       transitionDuration={{ enter: 200, exit: 1 }}
       onClick={() => transparent && setDialogOpen()}
+      BackdropProps={{ classes: { root: classes.backdrop } }}
     >
       {children}
     </MuiDialog>
