@@ -36,6 +36,9 @@ const dialogState = {
   Discard: {
     open: false,
   },
+  Login: {
+    open: false,
+  },
 };
 
 const dialogReducer = (state: any, action: any) => {
@@ -70,6 +73,11 @@ const dialogReducer = (state: any, action: any) => {
       return {
         ...state,
         Discard: Object.assign(state.Discard, action),
+      };
+    case "Login":
+      return {
+        ...state,
+        Login: Object.assign(state.Login, action),
       };
     default:
       return state;

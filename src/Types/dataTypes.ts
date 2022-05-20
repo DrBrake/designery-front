@@ -9,11 +9,13 @@ export interface BaseItem {
   _id?: string;
   Title: string;
   TempID?: string;
+  Secret?: boolean;
 }
 
 export interface Item extends BaseItem {
   Description: RawDraftContentState;
   DateCreated: string;
+  Completed?: boolean;
   Tags: Array<Tag>;
   Variant: AllVariants[keyof AllVariants];
 }
@@ -22,7 +24,6 @@ export interface Idea extends Item {
   ImageRefs?: Array<string | ImageFile>;
   Drafts?: Array<string>;
   CompletedWorks?: Array<string>;
-  Completed?: boolean;
   Project?: Project;
   Inspirations?: Array<Inspiration>;
   Variant: AllVariants["IDEA"];
@@ -36,7 +37,6 @@ export interface Inspiration extends Item {
 
 export interface Project extends Item {
   Ideas?: Array<Idea>;
-  Completed?: boolean;
   Variant: AllVariants["PROJECT"];
 }
 

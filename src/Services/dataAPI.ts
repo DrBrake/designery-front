@@ -5,7 +5,17 @@ import { BASE_URL } from "../constants";
 
 export const dataAPI = createApi({
   reducerPath: "dataAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      // @ts-ignore
+      const { token } = (getState() as typeof rootReducer).auth;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Items"],
   endpoints: (builder) => ({
     getData: builder.query<ItemResponse, void>({
@@ -35,6 +45,14 @@ export const dataAPI = createApi({
       }),
       invalidatesTags: ["Items"],
     }),
+    postLogin: builder.mutation({
+      query: (body: { UserName: string; Password: string }) => ({
+        url: "/login",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Items"],
+    }),
   }),
 });
 
@@ -43,4 +61,5 @@ export const {
   usePostItemMutation,
   useRemoveItemMutation,
   usePostMultipleItemsMutation,
+  usePostLoginMutation,
 } = dataAPI;

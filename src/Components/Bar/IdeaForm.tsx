@@ -14,6 +14,8 @@ import {
   Link,
   Button,
   MenuItem,
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,6 +26,7 @@ import {
   selectTags,
   selectInspirations,
 } from "../../Reducers/appSlice";
+import { selectToken } from "../../Reducers/authSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -64,6 +67,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
   const projects = useSelector(selectProjects);
   const inspirations = useSelector(selectInspirations);
   const tags = useSelector(selectTags);
+  const token = useSelector(selectToken);
 
   const classes = useFormStyles();
   const dispatch = useDispatch();
@@ -90,6 +94,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     Inspirations: idea.Inspirations || [],
     DateCreated: idea.DateCreated || dayjs().format(),
     Variant: VARIANTS.IDEA,
+    Seacret: idea.Secret || false,
   };
 
   const getImageRefs = (
@@ -453,6 +458,13 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
               <div className={classes.bottomContainer}>
                 {getImageRefs(values, setFieldValue)}
                 <div className={classes.buttonContainer}>
+                  {token && (
+                    <FormControlLabel
+                      control={<Checkbox checked={values.Secret} />}
+                      label="Secret"
+                      onChange={() => setFieldValue("Secret", !values.Secret)}
+                    />
+                  )}
                   {!values.Completed && (
                     <Button
                       variant="text"

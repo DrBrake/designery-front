@@ -4,7 +4,15 @@ import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { isEqual } from "lodash";
-import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  Link,
+  Checkbox,
+  FormControlLabel,
+} from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -13,6 +21,7 @@ import {
   selectTags,
   selectIdeas,
 } from "../../Reducers/appSlice";
+import { selectToken } from "../../Reducers/authSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -45,6 +54,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
 
   const ideas = useSelector(selectIdeas);
   const tags = useSelector(selectTags);
+  const token = useSelector(selectToken);
 
   useEffect(() => {
     if (postItemSuccess) {
@@ -64,6 +74,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     DateCreated: project.DateCreated || dayjs().format(),
     Completed: project.Completed || false,
     Variant: project.Variant || "",
+    Seacret: project.Secret || false,
   };
 
   return (
@@ -247,6 +258,13 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
               </div>
               <div className={classes.bottomContainer}>
                 <div className={classes.buttonContainer}>
+                  {token && (
+                    <FormControlLabel
+                      control={<Checkbox checked={values.Secret} />}
+                      label="Secret"
+                      onChange={() => setFieldValue("Secret", !values.Secret)}
+                    />
+                  )}
                   <Button
                     variant="text"
                     className={classnames(classes.button, classes.marginRight)}

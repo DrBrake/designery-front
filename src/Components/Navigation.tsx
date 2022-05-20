@@ -30,6 +30,7 @@ import {
   SmallChevronDown,
   Close,
   List,
+  Tag,
 } from "./Icons";
 
 const useStyles = makeStyles((theme) =>
@@ -173,6 +174,7 @@ const Navigation: FC<RouteComponentProps> = ({
                   ),
                   ImageRefs: [],
                   Ideas: [],
+                  Completed: false,
                   Tags: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.INSPIRATION,
@@ -197,6 +199,7 @@ const Navigation: FC<RouteComponentProps> = ({
                     EditorState.createEmpty().getCurrentContent()
                   ),
                   Ideas: [],
+                  Completed: false,
                   Tags: [],
                   DateCreated: dayjs().format(),
                   Variant: VARIANTS.PROJECT,
@@ -437,6 +440,16 @@ const Navigation: FC<RouteComponentProps> = ({
                 ),
               })}
               onClick={() => history.push(ROUTES.GRID)}
+            />
+          </div>
+          <div className={classes.icon}>
+            <Tag
+              className={classnames({
+                [classes.highlightColor]: location.pathname.includes(
+                  ROUTES.TAGS
+                ),
+              })}
+              onClick={() => history.push(ROUTES.TAGS)}
             />
           </div>
           <div

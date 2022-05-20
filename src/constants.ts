@@ -12,6 +12,7 @@ export const IMAGE_TYPE = {
 export const ROUTES = {
   ROOT: "/",
   GRID: "/grid",
+  TAGS: "/tags",
 } as const;
 
 export const DIALOG_VARIANT = {

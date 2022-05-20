@@ -4,7 +4,15 @@ import dayjs from "dayjs";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { isEqual } from "lodash";
 import { Formik, Form } from "formik";
-import { Typography, Grid, TextField, Button, Link } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  Link,
+  Checkbox,
+  FormControlLabel,
+} from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -13,6 +21,7 @@ import {
   selectIdeas,
   selectTags,
 } from "../../Reducers/appSlice";
+import { selectToken } from "../../Reducers/authSlice";
 import {
   usePostItemMutation,
   useRemoveItemMutation,
@@ -55,6 +64,7 @@ const InspirationForm: FC<Props> = ({
 
   const ideas = useSelector(selectIdeas);
   const tags = useSelector(selectTags);
+  const token = useSelector(selectToken);
 
   useEffect(() => {
     if (postItemSuccess) {
@@ -70,10 +80,12 @@ const InspirationForm: FC<Props> = ({
     Title: inspiration.Title || "",
     Description: inspiration.Description,
     ImageRefs: inspiration.ImageRefs || [],
+    Completed: inspiration.Completed || false,
     Tags: inspiration.Tags || [],
     Ideas: inspiration.Ideas || [],
     DateCreated: inspiration.DateCreated || dayjs().format(),
     Variant: inspiration.Variant || "",
+    Secret: inspiration.Secret || false,
   };
 
   const getImageRefs = (
@@ -143,7 +155,7 @@ const InspirationForm: FC<Props> = ({
       initialValues={initialValues as Inspiration}
       onSubmit={(values) => postItem(values)}
     >
-      {({ values, handleChange, setFieldValue }) => (
+      {({ values, handleChange, setFieldValue, submitForm }) => (
         <Form>
           <Grid container wrap="nowrap" id={values._id}>
             <Grid item>
@@ -320,6 +332,13 @@ const InspirationForm: FC<Props> = ({
               {getImageRefs(values, setFieldValue)}
               <div className={classes.bottomContainer}>
                 <div className={classes.buttonContainer}>
+                  {token && (
+                    <FormControlLabel
+                      control={<Checkbox checked={values.Secret} />}
+                      label="Secret"
+                      onChange={() => setFieldValue("Secret", !values.Secret)}
+                    />
+                  )}
                   <Button
                     variant="text"
                     className={classnames(classes.button, classes.marginRight)}
@@ -443,6 +462,21 @@ const InspirationForm: FC<Props> = ({
             title="Discard changes?"
             saveButtonText="Yes"
             onSave={() => setOpen(false)}
+          />
+          <PromptDialog
+            dialogOpen={dialogs.Complete.open}
+            setDialogOpen={() =>
+              setDialogs({
+                type: "Complete",
+                open: false,
+              })
+            }
+            title="Are you sure you want to archive this?"
+            saveButtonText="Archive"
+            onSave={() => {
+              setFieldValue("Completed", true);
+              submitForm();
+            }}
           />
         </Form>
       )}
