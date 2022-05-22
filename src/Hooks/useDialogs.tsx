@@ -39,6 +39,9 @@ const dialogState = {
   Login: {
     open: false,
   },
+  EditTag: {
+    open: false,
+  },
 };
 
 const dialogReducer = (state: any, action: any) => {
@@ -78,6 +81,11 @@ const dialogReducer = (state: any, action: any) => {
       return {
         ...state,
         Login: Object.assign(state.Login, action),
+      };
+    case "EditTag":
+      return {
+        ...state,
+        EditTag: Object.assign(state.EditTag, action),
       };
     default:
       return state;

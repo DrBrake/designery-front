@@ -1,7 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import { Idea, Inspiration, Project, ItemResponse } from "../Types/dataTypes";
+import {
+  Idea,
+  Inspiration,
+  Project,
+  ItemResponse,
+  Tag,
+} from "../Types/dataTypes";
 import { BASE_URL } from "../constants";
+
+interface TagReq {
+  tag: Tag;
+  type: "POST" | "DELETE";
+}
 
 export const dataAPI = createApi({
   reducerPath: "dataAPI",
@@ -53,6 +64,14 @@ export const dataAPI = createApi({
       }),
       invalidatesTags: ["Items"],
     }),
+    postTag: builder.mutation({
+      query: (body: TagReq) => ({
+        url: "/tag",
+        method: body.type,
+        body: body,
+      }),
+      invalidatesTags: ["Items"],
+    }),
   }),
 });
 
@@ -62,4 +81,5 @@ export const {
   useRemoveItemMutation,
   usePostMultipleItemsMutation,
   usePostLoginMutation,
+  usePostTagMutation,
 } = dataAPI;

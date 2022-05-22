@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) =>
       borderBottomWidth: "0px",
       minHeight: "105px",
       position: "relative",
+      flexWrap: "nowrap",
     },
     firstContainer: {
       borderTopLeftRadius: "4px",
@@ -66,6 +67,12 @@ const useStyles = makeStyles((theme) =>
     },
     marginRight: {
       marginRight: theme.spacing(),
+    },
+    ellipsis: {
+      maxWidth: "500px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
     },
   })
 );
@@ -123,7 +130,9 @@ const BarClosed: FC<Props> = ({
               </Typography>
             )}
           </div>
-          <Typography className={classes.fontSize16}>
+          <Typography
+            className={classnames(classes.fontSize16, classes.ellipsis)}
+          >
             {itemData.Description &&
               convertFromRaw(itemData.Description).getPlainText()}
           </Typography>
