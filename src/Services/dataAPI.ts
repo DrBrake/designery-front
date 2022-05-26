@@ -68,7 +68,7 @@ export const dataAPI = createApi({
       query: (body: TagReq) => ({
         url: "/tag",
         method: body.type,
-        body: body,
+        body: body.tag,
       }),
       invalidatesTags: ["Items"],
     }),
