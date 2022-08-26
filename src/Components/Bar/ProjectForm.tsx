@@ -74,7 +74,7 @@ const ProjectForm: FC<Props> = ({ project, setOpen, isNewItem, index }) => {
     DateCreated: project.DateCreated || dayjs().format(),
     Completed: project.Completed || false,
     Variant: project.Variant || "",
-    Seacret: project.Secret || false,
+    Secret: project.Secret || false,
   };
 
   return (

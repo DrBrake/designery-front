@@ -94,7 +94,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
     Inspirations: idea.Inspirations || [],
     DateCreated: idea.DateCreated || dayjs().format(),
     Variant: VARIANTS.IDEA,
-    Seacret: idea.Secret || false,
+    Secret: idea.Secret || false,
   };
 
   const getImageRefs = (

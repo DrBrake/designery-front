@@ -47,7 +47,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.15.0",
-    "@hot-loader/react-dom": "^17.0.1",
+    "@hot-loader/react-dom": "^17.0.2",
     "@types/draft-js": "^0.11.5",
     "@types/lodash": "^4.14.177",
     "@types/node": "^16.10.1",
