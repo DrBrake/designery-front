@@ -133,7 +133,7 @@ export const filterData = (
           item.Title.toLowerCase().includes(filters.search.toLowerCase())) ||
         (filters.archived &&
           item.Variant !== VARIANTS.INSPIRATION &&
-          !item.Completed)
+          item.Completed)
       ) {
         return item;
       }

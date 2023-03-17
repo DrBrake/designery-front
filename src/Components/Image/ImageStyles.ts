@@ -17,17 +17,11 @@ const useImageStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   dragAndDrop: {
-    background:
-      theme.palette.type === "dark"
-        ? theme.palette.grey["800"]
-        : theme.palette.grey["100"],
+    background: theme.palette.grey["800"],
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color:
-      theme.palette.type === "dark"
-        ? theme.palette.common.white
-        : theme.palette.grey["400"],
+    color: theme.palette.common.white,
     flexFlow: "column",
   },
 }));

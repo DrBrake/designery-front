@@ -52,10 +52,7 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     left: "-7%",
     marginTop: "-24px", // Half the size of the element
-    background:
-      theme.palette.type === "dark"
-        ? theme.palette.grey["800"]
-        : theme.palette.common.white,
+    background: theme.palette.grey["800"],
     padding: theme.spacing(1),
     borderRadius: theme.spacing(1),
     display: "flex",

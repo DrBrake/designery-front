@@ -348,6 +348,7 @@ const Navigation: FC<RouteComponentProps> = ({
                 label={item.Title}
                 onClick={() => dispatch(setFilters({ tag: item._id }))}
                 key={item._id}
+                active={!!item._id && filters.tags.includes(item._id)}
               />
             ))}
         </Paper>

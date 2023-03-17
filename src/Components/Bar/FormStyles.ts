@@ -7,10 +7,7 @@ export const useFormStyles = makeStyles((theme) =>
       fontWeight: "bold",
     },
     lightGrey: {
-      color:
-        theme.palette.type === "dark"
-          ? theme.palette.common.white
-          : theme.palette.primary.dark,
+      color: theme.palette.common.white,
     },
     fontSize16: {
       fontSize: "16px",
@@ -105,10 +102,7 @@ export const useFormStyles = makeStyles((theme) =>
       flexWrap: "wrap",
     },
     defaultLinkColor: {
-      color:
-        theme.palette.type === "dark"
-          ? theme.palette.common.white
-          : theme.palette.common.black,
+      color: theme.palette.common.white,
     },
   })
 );
