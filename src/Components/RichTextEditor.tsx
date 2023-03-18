@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
 import "draft-js/dist/Draft.css";
 
-import { NumberedList, BulletList, Bold, Italic } from "./Icons";
+import { NumberedList, BulletList, Bold, Italic, Strikethrough } from "./Icons";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -37,6 +37,11 @@ const INLINE_BUTTONS = [
     value: "ITALIC",
     id: uuidv4(),
   },
+  {
+    label: <Strikethrough />,
+    value: "STRIKETHROUGH",
+    id: uuidv4(),
+  },
 ];
 
 const BLOCK_BUTTONS = [
@@ -51,6 +56,12 @@ const BLOCK_BUTTONS = [
     id: uuidv4(),
   },
 ];
+
+const styleMap = {
+  STRIKETHROUGH: {
+    textDecoration: "line-through",
+  },
+};
 
 interface Props {
   placeholder: string;
@@ -149,6 +160,7 @@ const RichTextEditor: FC<Props> = ({
           }}
           handleKeyCommand={handleKeyCommand}
           placeholder={placeholder}
+          customStyleMap={styleMap}
         />
       </div>
     </div>

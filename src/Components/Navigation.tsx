@@ -17,6 +17,7 @@ import {
   selectIdeas,
   selectTags,
 } from "../Reducers/appSlice";
+import { selectToken } from "../Reducers/authSlice";
 
 import { ROUTES, RANDOM_DIALOG_TYPE, VARIANTS } from "../constants";
 import Chip from "./Chip";
@@ -124,6 +125,7 @@ const Navigation: FC<RouteComponentProps> = ({
   const tags = useSelector(selectTags);
   const newItems = useSelector(selectNewItems);
   const filters = useSelector(selectFilters);
+  const token = useSelector(selectToken);
 
   const getAddPopper = () => (
     <>
@@ -332,11 +334,30 @@ const Navigation: FC<RouteComponentProps> = ({
               { [classes.disabledColor]: !filters.archived }
             )}
             onClick={() =>
-              dispatch(setFilters({ archived: !filters.archived }))
+              dispatch(
+                setFilters({ archived: !filters.archived, secret: false })
+              )
             }
           >
             Only show archived
           </Typography>
+          {token && (
+            <Typography
+              className={classnames(
+                classes.text,
+                classes.marginBottom2,
+                classes.pointer,
+                { [classes.disabledColor]: !filters.secret }
+              )}
+              onClick={() =>
+                dispatch(
+                  setFilters({ secret: !filters.secret, archived: false })
+                )
+              }
+            >
+              Only show secrets
+            </Typography>
+          )}
           <Typography
             className={classnames(classes.text, classes.marginBottom2)}
           >

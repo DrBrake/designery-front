@@ -120,20 +120,26 @@ export const filterData = (
     filters.projects ||
     filters.tags.length > 0 ||
     filters.search !== "" ||
-    !filters.archived
+    filters.archived ||
+    filters.secret
   ) {
     return array.filter((item) => {
       if (
+        filters.archived &&
+        item.Variant !== VARIANTS.INSPIRATION &&
+        item.Completed
+      ) {
+        return item;
+      } else if (filters.secret && item.Secret) {
+        return item;
+      } else if (
         (filters.ideas && item.Variant !== VARIANTS.IDEA) ||
         (filters.inspirations && item.Variant !== VARIANTS.INSPIRATION) ||
         (filters.projects && item.Variant !== VARIANTS.PROJECT) ||
         (filters.tags.length > 0 &&
           item.Tags.find((tag) => tag._id && filters.tags.includes(tag._id))) ||
         (filters.search !== "" &&
-          item.Title.toLowerCase().includes(filters.search.toLowerCase())) ||
-        (filters.archived &&
-          item.Variant !== VARIANTS.INSPIRATION &&
-          item.Completed)
+          item.Title.toLowerCase().includes(filters.search.toLowerCase()))
       ) {
         return item;
       }

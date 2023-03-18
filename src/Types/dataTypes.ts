@@ -65,4 +65,5 @@ export interface Filters {
   tags: string[];
   search: string;
   archived: boolean;
+  secret: boolean;
 }

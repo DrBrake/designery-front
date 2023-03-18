@@ -30,7 +30,8 @@ export const appSlice = createSlice({
       projects: false,
       tags: [],
       search: "",
-      archived: true,
+      archived: false,
+      secret: false,
     },
   } as InitialState,
   reducers: {
