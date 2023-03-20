@@ -1,8 +1,13 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
+import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import CompressionPlugin from "compression-webpack-plugin";
 
-module.exports = {
+import { fileURLToPath } from "url";
+
+const { dirname } = path;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default {
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
@@ -14,11 +19,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.(ts|js)x?$/,
-        exclude: /node_modules/,
-        loader: "babel-loader",
-      },
       {
         test: /\.svg$/,
         type: "asset/inline",

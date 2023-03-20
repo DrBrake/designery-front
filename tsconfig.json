@@ -3,7 +3,7 @@
     "target": "es5",
     "lib": ["es6", "dom"],
     "jsx": "react",
-    "module": "commonjs",
+    "module": "es2020",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -11,6 +11,11 @@
     "strictNullChecks": true,
     "noImplicitThis": true,
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "node"
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "esm": true
   }
 }

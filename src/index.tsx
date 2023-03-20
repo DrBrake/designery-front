@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { AppContainer } from "react-hot-loader";
 import { CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Provider } from "react-redux";
@@ -16,9 +15,7 @@ const render = (Component: FC) => {
     <Provider store={createStore}>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <AppContainer>
-            <Component />
-          </AppContainer>
+          <Component />
         </CssBaseline>
       </ThemeProvider>
     </Provider>,

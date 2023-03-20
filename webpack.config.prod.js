@@ -1,8 +1,8 @@
-const { merge } = require("webpack-merge");
-const baseConfig = require("./webpack.config");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import { merge } from "webpack-merge";
+import baseConfig from "./webpack.config.js";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-module.exports = merge(baseConfig, {
+export default merge(baseConfig, {
   optimization: {
     minimize: true,
   },
