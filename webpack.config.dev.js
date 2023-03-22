@@ -11,11 +11,6 @@ export default merge(baseConfig, {
   mode: "development",
   devtool: "eval-source-map",
   entry: ["webpack-hot-middleware/client", "./src/index.tsx"],
-  resolve: {
-    alias: {
-      "react-dom": "@hot-loader/react-dom",
-    },
-  },
   module: {
     rules: [
       {

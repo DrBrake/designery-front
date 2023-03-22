@@ -1,5 +1,5 @@
 import React from "react";
-import SvgIcon from "@material-ui/core/SvgIcon";
+import SvgIcon from "@mui/material/SvgIcon";
 
 export const Add = ({ ...props }) => (
   <SvgIcon width="24" height="24" viewBox="0 0 24 24" {...props}>

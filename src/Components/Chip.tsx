@@ -1,7 +1,8 @@
 import React, { FC } from "react";
 import classnames from "classnames";
-import { Chip as MuiChip } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Chip as MuiChip } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 interface Props {
   label: string;

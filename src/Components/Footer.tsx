@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import classnames from "classnames";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 import { selectToken, logout } from "../Reducers/authSlice";
 import { dataAPI } from "../Services/dataAPI";

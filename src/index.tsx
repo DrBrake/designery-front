@@ -1,25 +1,38 @@
 import React, { FC } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
-import { CssBaseline } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@mui/material";
+import {
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+} from "@mui/material/styles";
 import { Provider } from "react-redux";
 
 import store from "./store";
 import theme from "./theme";
 
+declare module "@mui/styles/defaultTheme" {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 const createStore = store();
 
+const container = document.getElementById("app");
+const root = createRoot(container!);
+
 const render = (Component: FC) => {
-  ReactDOM.render(
+  root.render(
     <Provider store={createStore}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <Component />
-        </CssBaseline>
-      </ThemeProvider>
-    </Provider>,
-    document.getElementById("app")
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CssBaseline>
+            <Component />
+          </CssBaseline>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </Provider>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import classnames from "classnames";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import { Project, Idea, Inspiration } from "../../Types/dataTypes";
 import IdeaForm from "./IdeaForm";
 import ProjectForm from "./ProjectForm";
@@ -12,9 +13,9 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
       border: `1px solid ${theme.palette.primary.dark}`,
-      padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(
+      padding: `${theme.spacing(5)} ${theme.spacing(5)} ${theme.spacing(
         1
-      )}px ${theme.spacing(5)}px`,
+      )} ${theme.spacing(5)}`,
       borderBottomWidth: "0px",
       position: "relative",
     },

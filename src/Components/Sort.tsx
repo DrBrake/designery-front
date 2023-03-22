@@ -1,6 +1,7 @@
 import React, { FC } from "react";
-import { Select, MenuItem } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Select, MenuItem } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 import { ArrowDown, ArrowUp, Refresh } from "./Icons";
 import { SortDir, SortValue } from "../Types/dataTypes";

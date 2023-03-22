@@ -1,7 +1,7 @@
 import React, { useRef, useReducer, FC } from "react";
 import { Editor, EditorState, RichUtils } from "draft-js";
-import { IconButton, Divider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { IconButton, Divider } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { v4 as uuidv4 } from "uuid";
 import "draft-js/dist/Draft.css";
 
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   divider: {
-    margin: `${theme.spacing(1)}px 0`,
+    margin: `${theme.spacing(1)} 0`,
   },
   marginRight: {
     marginRight: theme.spacing(2),

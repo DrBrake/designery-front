@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Typography, Grid as MuiGrid } from "@material-ui/core";
+import { Typography, Grid as MuiGrid } from "@mui/material";
 import { useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 import Chip from "../Components/Chip";
 import EditTagDialog from "../Components/Dialogs/EditTagDialog";

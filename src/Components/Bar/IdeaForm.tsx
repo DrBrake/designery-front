@@ -16,7 +16,7 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
 import {

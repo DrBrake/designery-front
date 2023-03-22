@@ -1,7 +1,8 @@
 import React, { FC } from "react";
 import classnames from "classnames";
-import { Typography } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 import { IMAGE_TYPE, RANDOM_DIALOG_TYPE, BASE_URL } from "../../constants";
 import {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) =>
     },
     border: {
       borderRight: `2px solid ${theme.palette.primary.main}`,
-      margin: `0 ${theme.spacing(2)}px`,
+      margin: `0 ${theme.spacing(2)}`,
     },
     randomPopUpDialogContainer: {
       width: "50%",

@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import classnames from "classnames";
 import { FieldArray, Field, Formik, Form } from "formik";
-import { Typography, TextField, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Typography, TextField, Button } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
 import Dialog from "./Dialog";
 import { Add, Remove } from "../Icons";

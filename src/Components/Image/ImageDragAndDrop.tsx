@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, DragEvent, FC } from "react";
 import classnames from "classnames";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 import usePrevious from "../../Hooks/usePrevious";
 import { readDataURLAsync } from "../../utils";

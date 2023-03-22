@@ -3,8 +3,9 @@ import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertToRaw } from "draft-js";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Grid, Popper, Paper, Typography, TextField } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Grid, Popper, Paper, Typography, TextField } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 

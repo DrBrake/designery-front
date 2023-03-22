@@ -2,8 +2,9 @@ import React, { FC } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { convertFromRaw } from "draft-js";
-import { Typography, Grid } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Typography, Grid } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 import Chip from "../Chip";
 import { ChevronDown } from "../Icons";
@@ -16,9 +17,9 @@ const useStyles = makeStyles((theme) =>
     container: {
       cursor: "pointer",
       border: `1px solid #000000`,
-      padding: `${theme.spacing(5)}px ${theme.spacing(5)}px ${theme.spacing(
+      padding: `${theme.spacing(5)} ${theme.spacing(5)} ${theme.spacing(
         1
-      )}px ${theme.spacing(5)}px`,
+      )} ${theme.spacing(5)}`,
       borderBottomWidth: "0px",
       minHeight: "105px",
       position: "relative",

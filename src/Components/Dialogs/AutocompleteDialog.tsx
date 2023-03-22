@@ -1,8 +1,9 @@
 import React, { useState, FC } from "react";
 import classnames from "classnames";
-import { Typography, TextField, Button } from "@material-ui/core";
-import { Autocomplete, createFilterOptions } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core/styles";
+import { Typography, TextField, Button } from "@mui/material";
+import { Autocomplete } from '@mui/material';
+import { createFilterOptions } from '@mui/material/useAutocomplete';
+import makeStyles from '@mui/styles/makeStyles';
 import { v4 as uuidv4 } from "uuid";
 
 import Dialog from "./Dialog";
