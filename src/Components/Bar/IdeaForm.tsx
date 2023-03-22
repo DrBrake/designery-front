@@ -404,7 +404,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                                   <Link
                                     className={classes.defaultLinkColor}
                                     href={`#${item._id || item.TempID}`}
-                                  >
+                                    underline="hover">
                                     {item.Title}
                                   </Link>
                                 </Typography>
