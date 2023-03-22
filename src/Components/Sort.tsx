@@ -71,6 +71,7 @@ const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
   return (
     <div className={classes.container}>
       <Select
+        variant="standard"
         value={value}
         onChange={(e) =>
           handleRequestSort({
@@ -78,8 +79,7 @@ const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
             value: e.target.value as SortValue,
           })
         }
-        className={classes.select}
-      >
+        className={classes.select}>
         {values.map((item) => (
           <MenuItem
             value={item.value}

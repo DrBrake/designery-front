@@ -328,7 +328,7 @@ const IdeaForm: FC<Props> = ({ idea, setOpen, isNewItem, index }) => {
                           )
                       )}
                   </div>
-                  <FormControl fullWidth className={classes.marginBottom3}>
+                  <FormControl variant="standard" fullWidth className={classes.marginBottom3}>
                     <InputLabel
                       id="projectSelect"
                       classes={{
