@@ -1,5 +1,5 @@
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 
 export const useFormStyles = makeStyles((theme) =>
   createStyles({
@@ -53,6 +53,7 @@ export const useFormStyles = makeStyles((theme) =>
     button: {
       minWidth: theme.spacing(17),
       borderRadius: theme.spacing(1),
+      color: theme.palette.common.white,
     },
     buttonContainer: {
       alignSelf: "flex-end",

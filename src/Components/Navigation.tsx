@@ -1,11 +1,11 @@
-import React, { useState, FC } from "react";
+import React, { useState, FC, ReactNode } from "react";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { EditorState, convertToRaw } from "draft-js";
 import { withRouter, RouteComponentProps } from "react-router";
 import { Grid, Popper, Paper, Typography, TextField } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const Navigation: FC<RouteComponentProps> = ({
+const Navigation: FC<RouteComponentProps & { children: ReactNode }> = ({
   children,
   history,
   location,

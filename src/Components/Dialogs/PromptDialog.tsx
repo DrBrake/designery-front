@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Typography, Button } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import Dialog from "./Dialog";
 

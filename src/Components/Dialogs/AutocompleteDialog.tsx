@@ -1,9 +1,9 @@
 import React, { useState, FC } from "react";
 import classnames from "classnames";
 import { Typography, TextField, Button } from "@mui/material";
-import { Autocomplete } from '@mui/material';
-import { createFilterOptions } from '@mui/material/useAutocomplete';
-import makeStyles from '@mui/styles/makeStyles';
+import { Autocomplete } from "@mui/material";
+import { createFilterOptions } from "@mui/material/useAutocomplete";
+import makeStyles from "@mui/styles/makeStyles";
 import { v4 as uuidv4 } from "uuid";
 
 import Dialog from "./Dialog";
@@ -122,7 +122,6 @@ const AutocompleteDialog: FC<Props> = ({
           return filtered;
         }}
         options={[...(values || []), ...(itemValues || []), ...tempNewValues]}
-        renderOption={(option) => option?.Title || ""}
         getOptionLabel={(option) => {
           if (option) {
             // Value selected with enter, right from the input

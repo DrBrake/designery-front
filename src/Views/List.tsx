@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import classnames from "classnames";
 import { Typography, Button } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { useSelector, useDispatch } from "react-redux";
 
 import {

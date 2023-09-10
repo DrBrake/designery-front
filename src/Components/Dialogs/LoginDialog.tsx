@@ -1,12 +1,7 @@
 import React, { useEffect, FC } from "react";
 import { Formik, Form, Field } from "formik";
-import {
-  TextField,
-  Button,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { TextField, Button, Typography, CircularProgress } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
 import Dialog from "./Dialog";
 import { usePostLoginMutation } from "../../Services/dataAPI";

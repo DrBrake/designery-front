@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import classnames from "classnames";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 import { Project, Idea, Inspiration } from "../../Types/dataTypes";
 import IdeaForm from "./IdeaForm";
 import ProjectForm from "./ProjectForm";

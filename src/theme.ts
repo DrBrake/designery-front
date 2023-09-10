@@ -1,6 +1,6 @@
-import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme(adaptV4Theme({
+const theme = createTheme({
   typography: {
     fontSize: 16,
   },
@@ -26,6 +26,6 @@ const theme = createTheme(adaptV4Theme({
       xl: 1640,
     },
   },
-}));
+});
 
 export default theme;

@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Select, MenuItem } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 
 import { ArrowDown, ArrowUp, Refresh } from "./Icons";
 import { SortDir, SortValue } from "../Types/dataTypes";
@@ -79,7 +79,8 @@ const Sort: FC<Props> = ({ direction, values, value, handleRequestSort }) => {
             value: e.target.value as SortValue,
           })
         }
-        className={classes.select}>
+        className={classes.select}
+      >
         {values.map((item) => (
           <MenuItem
             value={item.value}

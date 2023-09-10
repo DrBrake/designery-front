@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Router } from "react-router";
 import { Route } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import ScrollToTop from "./Components/ScrollToTop";
 import { List, Grid, Tags } from "./Views";

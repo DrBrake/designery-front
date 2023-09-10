@@ -1,13 +1,14 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import classnames from "classnames";
 import { Dialog as MuiDialog } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 interface Props {
   dialogOpen: boolean;
   setDialogOpen: () => void;
   onClose?: () => void;
   transparent?: boolean;
+  children: ReactNode;
 }
 
 const useStyles = makeStyles((theme) => ({

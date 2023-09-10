@@ -1,7 +1,7 @@
 import React, { useRef, useReducer, FC } from "react";
 import { Editor, EditorState, RichUtils } from "draft-js";
 import { IconButton, Divider } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { v4 as uuidv4 } from "uuid";
 import "draft-js/dist/Draft.css";
 

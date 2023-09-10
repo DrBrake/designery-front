@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, Grid as MuiGrid } from "@mui/material";
 import { useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import { selectData } from "../Reducers/appSlice";
 import { useGetDataQuery } from "../Services/dataAPI";

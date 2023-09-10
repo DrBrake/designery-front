@@ -3,8 +3,8 @@ import classnames from "classnames";
 import dayjs from "dayjs";
 import { convertFromRaw } from "draft-js";
 import { Typography, Grid } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 
 import Chip from "../Chip";
 import { ChevronDown } from "../Icons";

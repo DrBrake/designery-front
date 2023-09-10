@@ -10,7 +10,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import { selectToken } from "../../Reducers/authSlice";
 import { Tag } from "../../Types/dataTypes";

@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import classnames from "classnames";
 import { Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import createStyles from "@mui/styles/createStyles";
 
 import { IMAGE_TYPE, RANDOM_DIALOG_TYPE, BASE_URL } from "../../constants";
 import {
